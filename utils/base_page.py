@@ -318,6 +318,7 @@ class BasePage:
         self.driver.get(crawl_page)
         post_data = []  # Danh sách để lưu dữ liệu của các bài post hợp lệ
         current_post_index = index_start  # Bắt đầu từ index_start
+        skip_count = 0  # Biến đếm số bài bỏ qua
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
         output_file = "post.json"
@@ -333,26 +334,30 @@ class BasePage:
             try:
                 # Tạo XPath động cho phần tử chính (post)
                 post_xpath = self.POST.replace("{index}", str(current_post_index))
-                
+
                 # Đợi cho đến khi phần tử được tải xong
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
-                
+
                 # Tìm phần tử chính bằng XPath
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
-                
+
                 # Cuộn đến vị trí của phần tử chính
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
-                
+
                 # Chờ để đảm bảo phần tử đã tải đầy đủ
                 time.sleep(2)
-                
+
                 # Tìm các phần tử con trong element post tại vị trí index (title có thể là message đầu tiên)
                 message_elements = post_element.find_elements(By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]")
-                
+
                 # Kiểm tra nếu bài đăng có message (được coi là title)
                 if not message_elements or not message_elements[0].text.strip():
                     print(f"Post {current_post_index} không có title hợp lệ, bỏ qua.")
                     current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                        print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
+                        break  # Dừng quá trình nếu bỏ qua quá nhiều bài
                     continue  # Bỏ qua bài đăng này và tiếp tục với bài đăng tiếp theo
 
                 # Lấy text từ tất cả các phần tử message
@@ -362,6 +367,10 @@ class BasePage:
                 if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
                     print(f"Post {current_post_index} với messages đã tồn tại, bỏ qua.")
                     current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                        print("Đã bỏ qua quá 20 bài, dừng quá trình.")
+                        break  # Dừng quá trình nếu bỏ qua quá nhiều bài
                     continue  # Bỏ qua bài đăng này nếu messages đã tồn tại
 
                 # Tìm các phần tử ảnh trong post
@@ -380,13 +389,17 @@ class BasePage:
                 if len(image_urls) == 0:
                     print(f"Post {current_post_index} không có ảnh hợp lệ (> 100px), bỏ qua.")
                     current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                        print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
+                        break  # Dừng quá trình nếu bỏ qua quá nhiều bài
                     continue  # Bỏ qua bài đăng này và tiếp tục với bài đăng tiếp theo
 
                 # Tải xuống và lưu các ảnh vào thư mục "media"
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
                 image_paths = []
-                
+
                 for i, img_url in enumerate(image_urls):
                     try:
                         response = requests.get(img_url, stream=True)
@@ -402,25 +415,29 @@ class BasePage:
                     except Exception:
                         print(f"Lỗi khi tải ảnh")
                         break  # Ngừng tải ảnh nếu có lỗi
-                
+
                 # Kiểm tra nếu không có ảnh hợp lệ (trong trường hợp image_paths vẫn rỗng)
                 if len(image_paths) == 0:
                     print(f"Post {current_post_index} không có ảnh hợp lệ, bỏ qua.")
                     current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                        print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
+                        break  # Dừng quá trình nếu bỏ qua quá nhiều bài
                     continue  # Bỏ qua bài đăng này và tiếp tục với bài đăng tiếp theo
-                
+
                 # Lưu dữ liệu bài viết hợp lệ vào danh sách
                 post_data.append({
                     "post_index": current_post_index,
                     "messages": messages,
                     "images": image_paths  # Lưu chỉ tên ảnh
                 })
-                
+
                 print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
 
             except Exception as e:
                 print(f"Lỗi khi xử lý phần tử tại index {current_post_index}: {e}")
-            
+
             # Tăng index để tiếp tục cuộn và kiểm tra bài đăng tiếp theo
             current_post_index += 1
 
@@ -435,10 +452,10 @@ class BasePage:
                 # Đăng nhập một lần trước khi bắt đầu đăng bài
                 self.login_emso(username, password)
                 self.driver.get(post_page)
-                
+
                 # Đảm bảo trang đã được tải xong
                 WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))  # Thay INPUT_POST bằng phần tử quan trọng trong form đăng bài
-                
+
                 # Vòng lặp đăng bài
                 for post in post_data:
                     try:
@@ -449,11 +466,11 @@ class BasePage:
                     except Exception as post_err:
                         # Nếu có lỗi khi đăng bài, in ra lỗi và tiếp tục với bài tiếp theo
                         print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
-                
+
             except Exception as login_err:
                 # Nếu có lỗi trong quá trình đăng nhập, in ra và tiếp tục
                 print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
-            
+
             finally:
                 # Đăng xuất sau khi đăng xong tất cả các bài
                 self.logout()
