@@ -330,6 +330,9 @@ class BasePage:
             except Exception as json_err:
                 print(f"Lỗi khi đọc dữ liệu từ tệp JSON cũ: {json_err}")
 
+        if self.is_element_present_by_xpath(self.POST.replace("{index}", '1')) == False:
+            raise Exception(f"Page lỗi không lấy được post")
+
         while len(post_data) < nums_post:  # Tiếp tục đến khi đủ nums_post hợp lệ
             try:
                 # Tạo XPath động cho phần tử chính (post)
@@ -340,6 +343,9 @@ class BasePage:
 
                 # Tìm phần tử chính bằng XPath
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
+
+                # Nếu không tìm thấy phần tử đầu tiên, dừng vòng lặp và trả lỗi
+                
 
                 # Cuộn đến vị trí của phần tử chính
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
