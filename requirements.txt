@@ -14,3 +14,4 @@ html-testRunner
 webdriver-manager==4.0.2
 jsonpath
 PyAutoGUI
+yt-dlp

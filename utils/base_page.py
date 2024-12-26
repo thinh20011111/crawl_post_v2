@@ -18,6 +18,8 @@ import requests
 from utils.config import Config
 import json
 import time
+import yt_dlp
+
 
 logging.basicConfig(
     filename='error.log', 
@@ -494,3 +496,12 @@ class BasePage:
                 print(f"Dữ liệu đã được lưu vào {output_file}")
             except Exception as json_err:
                 print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+                
+    def download_facebook_video(video_url):
+        ydl_opts = {
+            'format': 'best',
+            'outtmpl': 'facebook_video.mp4',  # Đặt tên file đầu ra
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video_url])
