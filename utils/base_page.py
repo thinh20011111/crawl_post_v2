@@ -571,7 +571,7 @@ class BasePage:
 
                 messages = [message.text for message in message_elements]
 
-                # Check if this post already exists in the existing data
+                # Check if this post already exists in the existing data (existing_data and post_data)
                 if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
                     print(f"Post {current_post_index} with these messages already exists, skipping.")
                     current_post_index += 1
@@ -597,12 +597,24 @@ class BasePage:
                 # Wait for the download to finish (adjust time based on expected download duration)
                 time.sleep(5)  # Waiting 5 seconds after starting the download
 
-                # Store post data
+                # Store post data in post_data and update existing_data
                 post_data.append({
                     "post_index": current_post_index,
                     "messages": messages,
                     "video": video_path  # Save the downloaded video path
                 })
+
+                # Update the existing data to avoid duplicates in future runs
+                if crawl_page not in existing_data:
+                    existing_data[crawl_page] = []
+
+                # Check if this post already exists in existing data before appending
+                if not any(post['post_index'] == current_post_index and post['messages'] == messages for post in existing_data[crawl_page]):
+                    existing_data[crawl_page].append({
+                        "post_index": current_post_index,
+                        "messages": messages,
+                        "video": video_path
+                    })
 
                 print(f"Processed post {current_post_index}. Text: {messages}, Valid video: {len(video_path)}")
 
@@ -614,6 +626,13 @@ class BasePage:
             if len(post_data) >= nums_post:
                 print(f"Collected {nums_post} valid posts.")
                 break
+
+        # Write the updated existing_data back to the output file
+        try:
+            with open(output_file, "w", encoding="utf-8") as json_file:
+                json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+        except Exception as json_err:
+            print(f"Error writing to JSON file: {json_err}")
 
         # if post_data:
         #     try:
