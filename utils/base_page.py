@@ -19,6 +19,7 @@ from utils.config import Config
 import json
 import time
 import yt_dlp
+from send2trash import send2trash
 
 
 logging.basicConfig(
@@ -298,25 +299,30 @@ class BasePage:
         except Exception as e:
             print(f"Error creating post: {e}")
     
-    def clear_media_folder():
+    def clear_media_folder(self):
         try:
-            # Lấy đường dẫn thư mục 'media' trong cùng thư mục với chương trình
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            media_folder_path = os.path.join(current_dir, "media")
-            
+            # Lấy đường dẫn thư mục gốc của dự án (C:\Users\Thinh\OneDrive\Máy tính\crawl_post_v2)
+            current_dir = os.path.dirname(os.path.abspath(__file__))  # Lấy đường dẫn của file hiện tại (utils)
+            project_root = os.path.abspath(os.path.join(current_dir, '..'))  # Lùi hai cấp để tới thư mục gốc
+
+            media_folder_path = os.path.join(project_root, "media")  # Xây dựng đường dẫn đến thư mục media
+
             # Kiểm tra nếu thư mục tồn tại
             if not os.path.exists(media_folder_path):
                 print(f"Thư mục {media_folder_path} không tồn tại.")
                 return
 
-            # Xóa tất cả tệp trong thư mục
+            # Xóa tất cả tệp trong thư mục media và đưa chúng vào thùng rác
             for file_name in os.listdir(media_folder_path):
                 file_path = os.path.join(media_folder_path, file_name)
                 if os.path.isfile(file_path):
-                    os.remove(file_path)
-            print(f"Đã xóa tất cả các tệp trong thư mục: {media_folder_path}")
+                    send2trash(file_path)  # Di chuyển tệp vào thùng rác
+                    print(f"Đã di chuyển tệp {file_name} vào thùng rác.")
+
+            print(f"Đã xóa tất cả các tệp trong thư mục: {media_folder_path} và đưa vào thùng rác.")
+            
         except Exception as e:
-            print(f"Lỗi khi xóa thư mục media: {e}")
+            print(f"Lỗi khi xóa các tệp trong thư mục media: {e}")
     
     def wait_for_element_not_present(self, locator, timeout=30):
         try:

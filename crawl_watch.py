@@ -56,7 +56,7 @@ def main():
                 post_url = account_data["url1"]  # URL để đăng bài
 
                 # Crawl bài viết mới từ group_url
-                num_posts = 3
+                num_posts = 1
                 base_page.get_and_create_watch(
                     username=emso_username,
                     password=emso_password,
@@ -66,7 +66,7 @@ def main():
                 )
 
                 print(f"Hoàn tất xử lý tài khoản: {account_key}")
-
+                base_page.clear_media_folder()
             except Exception as e:
                 print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
                 continue  # Tiếp tục với tài khoản tiếp theo nếu gặp lỗi
