@@ -22,9 +22,9 @@ def main():
 
     # Mở trang web
     base_page = BasePage(driver)
-    accounts_filename = "account.json"  # Đọc dữ liệu tài khoản từ file account.json
-    output_file = "facebook_posts.json"
-    data_filename = "data.json"
+    accounts_filename = "data/account.json"  # Đọc dữ liệu tài khoản từ file account.json
+    output_file = "data/facebook_posts.json"
+    data_filename = "data/data.json"
     
     # Đọc dữ liệu tài khoản từ account.json
     with open(accounts_filename, 'r') as file:

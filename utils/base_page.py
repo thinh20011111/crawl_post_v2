@@ -59,6 +59,9 @@ class BasePage:
     POST = "//div[@aria-posinset='{index}']"
     MORE_OPTION = "(//div[@aria-haspopup='menu' and contains(@class, 'x1i10hfl') and contains(@aria-label, 'Hành động với bài viết này')])[{index}]"
     SKIP_BANNER = "//div[contains(text(), 'Tiếp tục')]"
+    ITEMS_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div/div/div/div/div/div/div/a"
+    ITEM_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a"
+    TITLE_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div[2]/span/div/a"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -323,7 +326,7 @@ class BasePage:
         skip_count = 0  # Biến đếm số bài bỏ qua
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
-        output_file = "post.json"
+        output_file = "data/post.json"
         existing_data = {}
         if os.path.exists(output_file):
             try:
@@ -497,11 +500,150 @@ class BasePage:
             except Exception as json_err:
                 print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
                 
-    def download_facebook_video(video_url):
+    def download_facebook_video(self, video_url):
+        # Lấy thời gian hiện tại để đảm bảo tên file là duy nhất
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        output_filename = f"media/facebook_video_{timestamp}.mp4"  # Tên file sẽ bao gồm timestamp
+
         ydl_opts = {
             'format': 'best',
-            'outtmpl': 'facebook_video.mp4',  # Đặt tên file đầu ra
+            'outtmpl': output_filename,  # Đặt tên file đầu ra với timestamp
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
+            return [output_filename]
+    
+    def get_and_create_watch(self, username, password, nums_post, crawl_page, post_page, index_start=1):
+        self.driver.get(crawl_page)
+        page_name = self.extract_username_from_url(crawl_page)
+        print(f"page_username = {page_name}")
+        self.driver.get(f"https://www.facebook.com/{page_name}/videos")
+        
+        post_data = []  # List to store valid post data
+        current_post_index = index_start  # Start from index_start
+        skip_count = 0  # Counter for skipped posts
+
+        output_file = "data/watch.json"
+        existing_data = {}
+        if os.path.exists(output_file):
+            try:
+                with open(output_file, "r", encoding="utf-8") as json_file:
+                    existing_data = json.load(json_file)
+            except Exception as json_err:
+                print(f"Error reading existing JSON file: {json_err}")
+
+        if self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", '1')) == False:
+            raise Exception(f"Page error: unable to fetch post")
+
+        while len(post_data) < nums_post:
+            try:
+                post_xpath = self.ITEM_VIDEO_WATCH.replace("{index}", str(current_post_index))
+
+                # Wait until the element is loaded
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
+
+                # Find the main element using XPath
+                post_element = self.driver.find_element(By.XPATH, post_xpath)
+
+                # Scroll to the element
+                self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
+
+                # Wait to ensure the element is fully loaded
+                time.sleep(2)
+
+                # Find the <a> element containing the video URL
+                video_link_element = post_element.find_element(By.XPATH, post_xpath)  # Find the <a> tag with href
+
+                video_url = video_link_element.get_attribute("href")  # Get the URL from href attribute
+
+                # Find message elements and process them
+                message_elements = post_element.find_elements(By.XPATH, self.TITLE_VIDEO_WATCH.replace("{index}", str(current_post_index)))
+
+                if not message_elements or not message_elements[0].text.strip():
+                    print(f"Post {current_post_index} has no valid title, skipping.")
+                    current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:
+                        print(f"Skipped over 20 posts, stopping process for page - {crawl_page}.")
+                        break
+                    continue
+
+                messages = [message.text for message in message_elements]
+
+                # Check if this post already exists in the existing data
+                if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
+                    print(f"Post {current_post_index} with these messages already exists, skipping.")
+                    current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:
+                        print("Skipped over 20 posts, stopping process.")
+                        break
+                    continue
+
+                # Check for duplicates in post_data before appending
+                if any(post['post_index'] == current_post_index and post['messages'] == messages for post in post_data):
+                    print(f"Duplicate post {current_post_index} with these messages, skipping.")
+                    current_post_index += 1
+                    skip_count += 1
+                    continue
+
+                # Directory for storing media
+                media_dir = "media"
+                os.makedirs(media_dir, exist_ok=True)
+
+                video_path = self.download_facebook_video(video_url)
+
+                # Wait for the download to finish (adjust time based on expected download duration)
+                time.sleep(5)  # Waiting 5 seconds after starting the download
+
+                # Store post data
+                post_data.append({
+                    "post_index": current_post_index,
+                    "messages": messages,
+                    "video": video_path  # Save the downloaded video path
+                })
+
+                print(f"Processed post {current_post_index}. Text: {messages}, Valid video: {len(video_path)}")
+
+            except Exception as e:
+                print(f"Error processing element at index {current_post_index}: {e}")
+
+            current_post_index += 1
+
+            if len(post_data) >= nums_post:
+                print(f"Collected {nums_post} valid posts.")
+                break
+
+        # if post_data:
+        #     try:
+        #         self.login_emso(username, password)
+        #         self.driver.get(post_page)
+        #         WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+
+        #         for post in post_data:
+        #             try:
+        #                 self.create_post(post["messages"][0], post["images"])
+        #                 print(f"Đã đăng bài thành công cho post {post['post_index']}")
+        #                 self.driver.refresh()
+        #             except Exception as post_err:
+        #                 print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+
+        #     except Exception as login_err:
+        #         print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+
+        #     finally:
+        #         self.logout()
+        #         print("Đã đăng xuất khỏi tài khoản.")
+
+            if crawl_page in existing_data:
+                existing_data[crawl_page].extend(post_data)
+            else:
+                existing_data[crawl_page] = post_data
+
+            try:
+                with open(output_file, "w", encoding="utf-8") as json_file:
+                    json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+                print(f"Dữ liệu đã được lưu vào {output_file}")
+            except Exception as json_err:
+                print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
