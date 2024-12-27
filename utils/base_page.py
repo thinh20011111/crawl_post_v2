@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
@@ -32,7 +31,6 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
         self.config = Config()
-        self.driver = driver
         self.media_dir = os.path.join(os.getcwd(), "media")
         os.makedirs(self.media_dir, exist_ok=True)
         self.output_file = "post.json"
@@ -63,6 +61,13 @@ class BasePage:
     ITEMS_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div/div/div/div/div/div/div/a"
     ITEM_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a"
     TITLE_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div[2]/span/div/a"
+    NEXT_REELS = "//div[@aria-label='Thẻ tiếp theo' and contains(@class, 'x1i10hfl')]"
+    OPEN_FORM_MOMENT = "//button[contains(@class, 'MuiButton-root') and .//p[text()='Khoảnh khắc']]"
+    INPUT_UPLOAD_MOMENT = "//input[@id='files' and @name='files']"
+    BUTTON_CREATE_MOMENT = "//button[@class='MuiLoadingButton-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root css-n5x2z']"
+    INPUT_TITLE_MOMENT = "//textarea[@id='textInputCreateMoment']"
+    TITLE_REELS = "//div[@class='xyamay9 x1pi30zi x1swvt13 xjkvuk6']"
+    CLOSE_BAN_ACCOUNT = "//button[@type='button' and .//i[contains(@class, 'fa-xmark')]]"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -295,6 +300,28 @@ class BasePage:
             # Nhấn nút đăng bài
             self.click_element(self.CREATE_POST_BUTTON)
             self.wait_for_element_not_present(self.CREATE_POST_BUTTON)
+
+        except Exception as e:
+            print(f"Error creating post: {e}")
+    
+    def create_moment(self, title, image_names):
+        try:
+            # Mở form tạo bài đăng
+            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM_MOMENT)))  # Ensure post loads
+            self.click_element(self.OPEN_FORM_MOMENT)
+
+            # Nhập tiêu đề bài đăng
+            self.wait_for_element_present(self.INPUT_TITLE_MOMENT)
+            self.input_text(self.INPUT_TITLE_MOMENT, title)
+
+            # Tải lên các ảnh (nếu có)
+            if image_names:
+                for image_name in image_names:
+                    self.upload_image(self.INPUT_UPLOAD_MOMENT, image_name)  # Giả sử upload_image hỗ trợ tải ảnh
+
+            # Nhấn nút đăng bài
+            self.click_element(self.BUTTON_CREATE_MOMENT)
+            self.wait_for_element_not_present(self.BUTTON_CREATE_MOMENT)
 
         except Exception as e:
             print(f"Error creating post: {e}")
@@ -705,3 +732,141 @@ class BasePage:
         except Exception as e:
             print(f"Error getting video duration: {e}")
             return None
+    
+    def get_and_create_moment(self, username, password, nums_post):
+        self.driver.get("https://www.facebook.com/reel/")
+        self.click_element(self.NEXT_REELS)
+
+        post_data = []  # List to store valid post data
+        output_file = "data/moment.json"
+        current_post_index = 0
+        existing_data = {}
+
+        # Read existing data from the JSON file if available
+        if os.path.exists(output_file):
+            try:
+                with open(output_file, "r", encoding="utf-8") as json_file:
+                    existing_data = json.load(json_file)
+            except Exception as json_err:
+                print(f"Error reading existing JSON file: {json_err}")
+
+        while len(post_data) < nums_post:
+            try:
+                time.sleep(2)
+                # Get the current video URL
+                video_url = self.driver.current_url
+
+                # Get video duration
+                duration_seconds = self.get_video_duration(video_url)
+                if duration_seconds is None or duration_seconds > 300:
+                    current_post_index += 1
+                    print(f"Skipped video over 5 minutes for post {current_post_index}.")
+                    self.click_element(self.NEXT_REELS)  # Skip to the next video
+                    continue
+
+                # Chờ các phần tử xuất hiện
+                message_elements = self.wait_for_element_present(self.TITLE_REELS)
+
+                # Kiểm tra nếu message_elements là danh sách hoặc iterable
+                if isinstance(message_elements, list) or hasattr(message_elements, '__iter__'):
+                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message.text) for message in message_elements]
+                else:
+                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)]
+
+                # Kiểm tra danh sách tin nhắn có rỗng hoặc chỉ chứa văn bản trống
+                if not messages or all(not msg.strip() for msg in messages):
+                    self.click_element(self.NEXT_REELS)
+                    print("No messages found, clicked Next.")
+                    continue
+
+                # Cắt ngắn từng tin nhắn đến 150 ký tự
+                shortened_messages = []
+                for msg in messages:
+                    if len(msg) > 150:
+                        msg = msg[:150]
+                        if len(msg.split()) > 1:
+                            msg = ' '.join(msg.split()[:-1])
+                    shortened_messages.append(msg)
+
+                print("Processed messages:", shortened_messages)
+
+                # Directory for storing media
+                media_dir = "media"
+                os.makedirs(media_dir, exist_ok=True)
+
+                # Tải xuống video vì thời lượng hợp lệ
+                try:
+                    video_path = self.download_facebook_video(video_url)
+                    time.sleep(5)
+                    post_data.append({
+                        "messages": shortened_messages,
+                        "video": video_path
+                    })
+                    print(f"Downloaded video under 5 minutes for post {current_post_index}.")
+                except Exception as download_err:
+                    print(f"Error downloading video for post {current_post_index}: {download_err}")
+                    self.click_element(self.NEXT_REELS)
+                    continue
+
+                # Cập nhật dữ liệu
+                if f"moment_{current_post_index}" not in existing_data:
+                    existing_data[f"moment_{current_post_index}"] = []
+
+                existing_data[f"moment_{current_post_index}"].append({
+                    "post_index": current_post_index,
+                    "messages": shortened_messages,
+                    "video": video_path
+                })
+
+                print(f"Processed post {current_post_index}. Text: {shortened_messages}, Valid video: {len(video_path)}")
+                self.click_element(self.NEXT_REELS)
+
+            except Exception as e:
+                print(f"Error processing element at index {current_post_index}: {e}")
+                self.click_element(self.NEXT_REELS)
+
+            current_post_index += 1
+
+            if len(post_data) >= nums_post:
+                print(f"Collected {nums_post} valid posts.")
+                break
+
+        # Save the collected data to the JSON file after the loop
+        try:
+            with open(output_file, "w", encoding="utf-8") as json_file:
+                json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+            print(f"Data successfully saved to {output_file}")
+        except Exception as json_err:
+            print(f"Error writing to JSON file: {json_err}")
+
+        # Đăng nhập và tạo bài viết trên trang post_page
+        if post_data:
+            try:
+                self.login_emso(username, password)
+                WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+                
+                if self.is_element_present_by_xpath(self.OPEN_FORM) == False:
+                    self.driver.refresh()
+
+                for post in post_data:
+                    try:
+                        self.create_moment(post["messages"][0], post["video"])
+                        print(f"Đã đăng bài thành công cho post {post['post_index']}")
+                    except Exception as post_err:
+                        print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+
+            except Exception as login_err:
+                self.click_element(self.CLOSE_BAN_ACCOUNT)
+                print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+
+            finally:
+                self.logout()
+                print("Đã đăng xuất khỏi tài khoản.")
+
+            # Cập nhật và lưu lại dữ liệu vào file JSON
+            try:
+                with open(output_file, "w", encoding="utf-8") as json_file:
+                    json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+                print(f"Dữ liệu đã được lưu vào {output_file}")
+            except Exception as json_err:
+                print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
