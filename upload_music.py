@@ -23,9 +23,34 @@ def main():
     
     # Mở trang web
     base_page = BasePage(driver)
+    data_filename = "data/page_music.json"
+    music_filename = "data/data_music.json"
     
+    # Đọc dữ liệu tài khoản từ account.json
+    with open(data_filename, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+            
+    with open(music_filename, 'r', encoding='utf-8') as file:
+        musics = json.load(file)
+        
     try:
-        print("ok")
+        page_music = data.get("page_music", {})
+        page_name = page_music["pagename"]
+        username = page_music["username"]
+        password = page_music["password"]
+        category = page_music["category"]
+        author = page_music["author"]
+        description = page_music["description"]
+        field = page_music["field"]
+        
+        first_music = musics[0]
+        mp3_filename = first_music["mp3_filename"]
+        song_name = os.path.splitext(mp3_filename)[0]
+        music_banner = first_music["banner_filename"]
+        
+        base_page.login_emso(username, password)
+        driver.get("https://staging-fe.emso.vn/music_space")
+        base_page.upload_music(song_name, description, music_banner, mp3_filename, category, page_name, author, field)
     finally:
         driver.quit()
 

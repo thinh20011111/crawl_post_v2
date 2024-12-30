@@ -68,8 +68,19 @@ class BasePage:
     INPUT_TITLE_MOMENT = "//textarea[@id='textInputCreateMoment']"
     TITLE_REELS = "//div[@class='xyamay9 x1pi30zi x1swvt13 xjkvuk6']"
     CLOSE_BAN_ACCOUNT = "//button[@type='button' and .//i[contains(@class, 'fa-xmark')]]"
+    OPEN_FORM_CREATE_MUSIC_BUTTON = "//div[@role='button' and contains(@class, 'MuiListItem-button')]//p[contains(text(), 'Tạo mới Album/Bài hát')]"
+    TITLE_MUSIC = "//textarea[@id='title']"
+    DES_MUSIC = "//textarea[@id='description_song']"
+    INPUT_UPLOAD_BANNER_MUSIC = "//input[@name='banner']"
+    INPUT_UPLOAD_MP3 = "//input[@name='file_mp3']"
+    INPUT_CATEGORY_MUSIC = "//input[@name='category_music_id']"
+    INPUT_PAGE_OWNER = "//input[@name='page_owner_id']"
+    INPUT_AUTHOR = "//input[@name='music_host_added']"
+    INPUT_FIELD = "//textarea[@name='field']"
+    SEND_REQUEST_MUSIC = "//button[.//div[text()='Gửi phê duyệt']]"
     
     def find_element(self, locator_type, locator_value):
+        
         return self.driver.find_element(locator_type, locator_value)
     
     def login_facebook(self, username, password):
@@ -241,6 +252,33 @@ class BasePage:
 
             # Đảm bảo đường dẫn tuyệt đối tới thư mục 'media' và ảnh
             media_dir = os.path.join(os.getcwd(), 'media')  # Lấy đường dẫn tuyệt đối thư mục 'media'
+            image_path = os.path.join(media_dir, image_name)  # Đảm bảo đường dẫn chính xác
+
+            # In ra đường dẫn ảnh để kiểm tra
+            print(f"Đường dẫn ảnh: {image_path}")
+
+            # Kiểm tra xem file có tồn tại không
+            if not os.path.exists(image_path):
+                print(f"File không tồn tại: {image_path}")
+                return
+
+            # Tìm phần tử input và gửi đường dẫn ảnh
+            file_input = self.wait_for_element_present(file_input_locator)
+            file_input.send_keys(image_path)
+
+            print(f"Đã upload ảnh: {image_path}")
+
+        except Exception as e:
+            print(f"Error uploading image: {e}")
+    
+    def upload_mp3(self, file_input_locator, image_name):
+        try:
+            # Kiểm tra nếu image_name là một danh sách, nếu có, lấy phần tử đầu tiên
+            if isinstance(image_name, list):
+                image_name = image_name[0]  # Lấy ảnh đầu tiên trong danh sách
+
+            # Đảm bảo đường dẫn tuyệt đối tới thư mục 'media' và ảnh
+            media_dir = os.path.join(os.getcwd(), 'music')  # Lấy đường dẫn tuyệt đối thư mục 'media'
             image_path = os.path.join(media_dir, image_name)  # Đảm bảo đường dẫn chính xác
 
             # In ra đường dẫn ảnh để kiểm tra
@@ -870,3 +908,40 @@ class BasePage:
                 print(f"Dữ liệu đã được lưu vào {output_file}")
             except Exception as json_err:
                 print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+    
+    def upload_file(self, xpath: str, file_path: str):
+        try:
+            # Find the file input element by its xpath
+            file_input_element = self.driver.find_element(By.XPATH, xpath)
+
+            # Clear any previous value (if needed)
+            file_input_element.clear()
+
+            # Send the file path to the input element
+            file_input_element.send_keys(file_path)
+
+            # Wait for the file to upload (optional)
+            time.sleep(2)
+        except Exception as e:
+            print(f"Error uploading file: {e}")
+    
+    def set_input_value_by_xpath(self, xpath, value):
+        # Tìm phần tử input theo XPath và thay đổi giá trị
+        input_element = self.driver.find_element(By.XPATH, xpath)
+        input_element.clear()  # Xóa giá trị hiện tại
+        input_element.send_keys(value)  # Chèn giá trị mới vào input
+        
+    def upload_music(self, music_name, music_des, banner, mp3, category, page_name, author, field):
+        self.click_element(self.OPEN_FORM_CREATE_MUSIC_BUTTON)
+        self.input_text(self.TITLE_MUSIC, music_name)
+        self.input_text(self.DES_MUSIC, music_des)
+        self.upload_image(self.INPUT_UPLOAD_BANNER_MUSIC, banner)
+        self.upload_mp3(self.INPUT_UPLOAD_MP3, mp3)
+        self.set_input_value_by_xpath(self.INPUT_CATEGORY_MUSIC, category)
+        self.set_input_value_by_xpath(self.INPUT_PAGE_OWNER, page_name)
+        self.set_input_value_by_xpath(self.INPUT_AUTHOR, author)
+        self.upload_file(self.INPUT_FIELD, field)
+        self.click_element(self.SEND_REQUEST_MUSIC)
+        
+        
+        
