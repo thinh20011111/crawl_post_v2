@@ -19,6 +19,7 @@ import json
 import time
 import yt_dlp
 from send2trash import send2trash
+import random
 
 
 logging.basicConfig(
@@ -76,11 +77,14 @@ class BasePage:
     INPUT_CATEGORY_MUSIC = "//input[@name='category_music_id']"
     INPUT_PAGE_OWNER = "//input[@name='page_owner_id']"
     INPUT_AUTHOR = "//input[@name='music_host_added']"
-    INPUT_FIELD = "//textarea[@name='field']"
+    INPUT_FIELD = "//input[@type='file' and @accept='.doc, .docx, .pdf, .pptx, .ppt']"
+    INPUT_FIELD2 = "//textarea[ @name='field']"
     SEND_REQUEST_MUSIC = "//button[.//div[text()='Gửi phê duyệt']]"
+    OPTION_CATEGORY = "//div[@id='mui-52-option-{index}']/div/div/p"
+    PAGE_OWNER_MUSIC = "//p[contains(.,'{page_name}')]"
+    AUTHOR_MUSIC = "//div[@id='mui-56-option-0']" #Tài khoản phải có bạn bè
     
     def find_element(self, locator_type, locator_value):
-        
         return self.driver.find_element(locator_type, locator_value)
     
     def login_facebook(self, username, password):
@@ -909,39 +913,39 @@ class BasePage:
             except Exception as json_err:
                 print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
     
-    def upload_file(self, xpath: str, file_path: str):
-        try:
-            # Find the file input element by its xpath
-            file_input_element = self.driver.find_element(By.XPATH, xpath)
-
-            # Clear any previous value (if needed)
-            file_input_element.clear()
-
-            # Send the file path to the input element
-            file_input_element.send_keys(file_path)
-
-            # Wait for the file to upload (optional)
-            time.sleep(2)
-        except Exception as e:
-            print(f"Error uploading file: {e}")
-    
+    def upload_file(self, file_input_locator, image_path):
+        absolute_image_path = os.path.abspath(image_path)
+        file_input = self.wait_for_element_present(file_input_locator)
+        file_input.send_keys(absolute_image_path)
+        
     def set_input_value_by_xpath(self, xpath, value):
         # Tìm phần tử input theo XPath và thay đổi giá trị
         input_element = self.driver.find_element(By.XPATH, xpath)
         input_element.clear()  # Xóa giá trị hiện tại
         input_element.send_keys(value)  # Chèn giá trị mới vào input
         
-    def upload_music(self, music_name, music_des, banner, mp3, category, page_name, author, field):
+    def upload_music(self, music_name, music_des, banner, mp3, page_name, author, field):
         self.click_element(self.OPEN_FORM_CREATE_MUSIC_BUTTON)
         self.input_text(self.TITLE_MUSIC, music_name)
         self.input_text(self.DES_MUSIC, music_des)
         self.upload_image(self.INPUT_UPLOAD_BANNER_MUSIC, banner)
         self.upload_mp3(self.INPUT_UPLOAD_MP3, mp3)
-        self.set_input_value_by_xpath(self.INPUT_CATEGORY_MUSIC, category)
-        self.set_input_value_by_xpath(self.INPUT_PAGE_OWNER, page_name)
-        self.set_input_value_by_xpath(self.INPUT_AUTHOR, author)
+        self.click_element(self.INPUT_CATEGORY_MUSIC)
+        time.sleep(1)
+        self.click_element(self.OPTION_CATEGORY.replace("{index}", "0"))
+        
+        self.click_element(self.INPUT_PAGE_OWNER)
+        self.click_element(self.PAGE_OWNER_MUSIC.replace("{page_name}", page_name))
+        
+        self.click_element(self.INPUT_AUTHOR)
+        self.click_element(self.AUTHOR_MUSIC)
         self.upload_file(self.INPUT_FIELD, field)
         self.click_element(self.SEND_REQUEST_MUSIC)
+    
+    def approve_music(self, music_name):
+        
+        
+        print("duyệt bài hát")
         
         
         

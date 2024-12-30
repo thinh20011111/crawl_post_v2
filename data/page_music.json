@@ -5,8 +5,7 @@
         "password": "1231231234",
         "pagename": "Grab Việt",
         "author": "Yến Vũ",
-        "field": "HĐ_MUSIC.docx",
-        "category": "Nhạc việt",
+        "field": "data/HĐ_MUSIC.docx",
         "description": "mô tả bài hát"
     }
 }
