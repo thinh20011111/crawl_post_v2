@@ -14,5 +14,6 @@ html-testRunner
 webdriver-manager==4.0.2
 jsonpath
 PyAutoGUI
+pytube
 send2trash
 yt_dlp
