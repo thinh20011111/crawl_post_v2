@@ -1,5 +1,6 @@
 import yt_dlp
 import os
+import csv
 
 def download_audio(youtube_url):
     # Tạo thư mục 'music' trong thư mục hiện tại nếu chưa tồn tại
@@ -17,6 +18,17 @@ def download_audio(youtube_url):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([youtube_url])
 
-# Ví dụ URL YouTube
-youtube_url = "https://www.youtube.com/watch?v=zDNOhR-Ms-I&list=RDMMnHP2y3EeshQ&index=9"
-download_audio(youtube_url)
+def download_from_csv(csv_file):
+    # Đọc dữ liệu từ file CSV và lấy URL trong cột A
+    with open(csv_file, newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            # Kiểm tra nếu có URL trong cột A (cột 0)
+            if row:
+                youtube_url = row[0]
+                print(f"Downloading: {youtube_url}")
+                download_audio(youtube_url)
+
+# Đọc file CSV có tên 'data_crawl_music.csv'
+csv_file = 'data/data_crawl_music.csv'
+download_from_csv(csv_file)
