@@ -41,6 +41,8 @@ def main():
         author = page_music["author"]
         description = page_music["description"]
         field = page_music["field"]
+        token = page_music["token"]
+        
         
         first_music = musics[0]
         mp3_filename = first_music["mp3_filename"]
@@ -49,7 +51,7 @@ def main():
         
         base_page.login_emso(username, password)
         driver.get("https://staging-fe.emso.vn/music_space")
-        base_page.upload_music(song_name, description, music_banner, mp3_filename, page_name, author, field)
+        base_page.upload_music(song_name, description, music_banner, mp3_filename, page_name, author, field, token, username, password)
     finally:
         driver.quit()
 

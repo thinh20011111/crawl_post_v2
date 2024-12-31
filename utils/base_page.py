@@ -20,7 +20,7 @@ import time
 import yt_dlp
 from send2trash import send2trash
 import random
-
+from api.Music_Api import Music_Api
 
 logging.basicConfig(
     filename='error.log', 
@@ -35,6 +35,7 @@ class BasePage:
         self.media_dir = os.path.join(os.getcwd(), "media")
         os.makedirs(self.media_dir, exist_ok=True)
         self.output_file = "post.json"
+        self.music_api = Music_Api()
     
     INPUT_USERNAME = "//input[@id='email']"
     INPUT_PASSWORD = "//input[@id='pass']"    
@@ -924,7 +925,7 @@ class BasePage:
         input_element.clear()  # Xóa giá trị hiện tại
         input_element.send_keys(value)  # Chèn giá trị mới vào input
         
-    def upload_music(self, music_name, music_des, banner, mp3, page_name, author, field):
+    def upload_music(self, music_name, music_des, banner, mp3, page_name, author, field, token, username, password):
         self.click_element(self.OPEN_FORM_CREATE_MUSIC_BUTTON)
         self.input_text(self.TITLE_MUSIC, music_name)
         self.input_text(self.DES_MUSIC, music_des)
@@ -932,7 +933,7 @@ class BasePage:
         self.upload_mp3(self.INPUT_UPLOAD_MP3, mp3)
         self.click_element(self.INPUT_CATEGORY_MUSIC)
         time.sleep(1)
-        self.click_element(self.OPTION_CATEGORY.replace("{index}", "0"))
+        self.click_element(self.OPTION_CATEGORY.replace("{index}", "1"))
         
         self.click_element(self.INPUT_PAGE_OWNER)
         self.click_element(self.PAGE_OWNER_MUSIC.replace("{page_name}", page_name))
@@ -941,11 +942,35 @@ class BasePage:
         self.click_element(self.AUTHOR_MUSIC)
         self.upload_file(self.INPUT_FIELD, field)
         self.click_element(self.SEND_REQUEST_MUSIC)
+        time.sleep(5)
+        token = self.music_api.get_access_token(username, password)
+        data = self.music_api.get_id_music(token, 200)
+        
+        id_value = data[0].get('id')  # Using .get() to avoid KeyError if 'id' is missing
+        return id_value
     
-    def approve_music(self, music_name):
+    def approve_music(self, music_name, music_des, banner, mp3, page_name, author, field, token, username, password):
+        id = self.upload_music(music_name, music_des, banner, mp3, page_name, author, field, token, username, password)
         
-        
+        self.click_element()
         print("duyệt bài hát")
-        
+    
+    def get_data_from_api(self, url, params=None, headers=None):
+        try:
+            # Gửi yêu cầu GET đến API
+            response = requests.get(url, params=params, headers=headers)
+            
+            # Kiểm tra mã trạng thái HTTP của phản hồi (status code)
+            response.raise_for_status()  # Nếu mã trạng thái không phải 2xx sẽ ném lỗi
+
+            # Chuyển đổi dữ liệu trả về từ API (dự đoán JSON)
+            data = response.json()
+
+            return data
+
+        except requests.exceptions.RequestException as e:
+            # In lỗi nếu có vấn đề với yêu cầu
+            print(f"Đã xảy ra lỗi khi gọi API: {e}")
+            return None
         
         

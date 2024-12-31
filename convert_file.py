@@ -32,4 +32,4 @@ def csv_to_json(csv_file, json_file):
             json.dump(data, jsonf, indent=4, ensure_ascii=False)
 
 # Ví dụ sử dụng hàm
-csv_to_json('data_page.csv', 'account.json')
+csv_to_json('data/data_page.csv', 'data/account.json')
