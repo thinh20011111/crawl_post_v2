@@ -692,8 +692,17 @@ class BasePage:
                 os.makedirs(media_dir, exist_ok=True)
 # //////////////////////////////////////////////////////////////
                 # Check if video duration is under 5 minutes
-                if self.is_video_under_5_minutes(video_url):
-                    # Video duration is under 5 minutes, download it
+                time_video = self.get_text_from_element(self.TIME_VIDEO_WATCH.replace("{index}", str(current_post_index)))
+
+                try:
+                    video_duration_seconds = self.time_to_seconds(time_video)
+                except ValueError as e:
+                    print(f"Error parsing time for post {current_post_index}: {e}")
+                    current_post_index += 1
+                    skip_count += 1
+                    continue
+
+                if video_duration_seconds <= 300:  # Video dưới 5 phút
                     video_path = self.download_facebook_video(video_url)
                     time.sleep(5)
                     post_data.append({
@@ -702,7 +711,7 @@ class BasePage:
                         "video": video_path
                     })
                     print(f"Downloaded video under 5 minutes for post {current_post_index}.")
-                else:
+                else:  # Video dài hơn 5 phút
                     print(f"Skipped video over 5 minutes for post {current_post_index}.")
                     current_post_index += 1
                     skip_count += 1
@@ -764,7 +773,7 @@ class BasePage:
             except Exception as json_err:
                 print(f"Error writing to JSON file: {json_err}")
 
-    def time_to_seconds(time_str):
+    def time_to_seconds(self, time_str):
         parts = list(map(int, time_str.split(':')))
         if len(parts) == 3:  # HH:MM:SS
             return parts[0] * 3600 + parts[1] * 60 + parts[2]

@@ -1,10 +1,4 @@
 {
-    "account_1": {
-        "url1": "https://prod-fe.emso.vn/page/vuanem.vn",
-        "url2": "https://www.facebook.com/vuanem.vn",
-        "username": "emsomanagerhd@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
     "account_2": {
         "url1": "https://prod-fe.emso.vn/page/LCKTiengViet",
         "url2": "https://www.facebook.com/LCKTiengViet",
