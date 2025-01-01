@@ -98,6 +98,12 @@ class BasePage:
     
     LOGIN_ADMIN_BUTTON = "//button[normalize-space(text())='Đăng nhập']"
     VIDEO_TIKTOK = "//video"
+    TITLE_VIDEO_TIKTOK = "(//h1[@data-e2e='video-desc'])[{index}]"
+    SKIP_LOGIN = "//div[@class='css-1gtmaw0-DivBoxContainer e1cgu1qo0']//div[@class='css-1cp64nz-DivTextContainer e1cgu1qo3']//div[text()='Continue as guest']"
+    SHARE_BUTTON = "(//span[@data-e2e='share-icon'])[{index}]"
+    INPUT_URL = "//input[@class='TUXTextInputCore-input']"
+    CLOSE_POPUP_URL = "//button[@class='TUXUnstyledButton TUXNavBarIconButton' and @aria-label='close']"
+    CLOSE_GUIDE = "//div[@class='css-mp9aqo-DivIconCloseContainer e1vz198y6']"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -426,6 +432,20 @@ class BasePage:
         except NoSuchElementException:
             logging.warning(f"Element located by {locator} was not found in the DOM initially.")
 
+    def get_input_value(self, input_xpath):
+        try:
+            # Chờ cho phần tử input xuất hiện
+            input_element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, input_xpath))
+            )
+            
+            # Lấy giá trị value từ input
+            value = input_element.get_attribute('value')
+            
+            return value
+        except Exception as e:
+            print(f"Lỗi khi lấy giá trị từ input: {e}")
+            return None
     # ====================================================================================================
     def scroll_to_element_and_crawl(self, username, password, nums_post, crawl_page, post_page, index_start=1):
         self.driver.get(crawl_page)
@@ -631,7 +651,7 @@ class BasePage:
         page_name = self.extract_username_from_url(crawl_page)
         print(f"page_username = {page_name}")
         self.driver.get(f"https://www.facebook.com/{page_name}/videos")
-        
+
         post_data = []  # List to store valid post data
         current_post_index = index_start  # Start from index_start
         skip_count = 0  # Counter for skipped posts
@@ -647,8 +667,10 @@ class BasePage:
             except Exception as json_err:
                 print(f"Error reading existing JSON file: {json_err}")
 
-        if self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", '1')) == False:
-            raise Exception(f"Page error: unable to fetch post")
+        # Check if the first post exists
+        if not self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", '1')):
+            print(f"No items found on the page {crawl_page}, proceeding to create posts.")
+            return self.create_posts(post_data, username, password, post_page, output_file)
 
         while len(post_data) < nums_post:
             try:
@@ -755,6 +777,11 @@ class BasePage:
                 print(f"Collected {nums_post} valid posts.")
                 break
 
+        # Check if no items were found and proceed to post
+        if not post_data:
+            print(f"No valid posts collected. Proceeding to create posts.")
+            return self.create_posts(post_data, username, password, post_page, output_file)
+
         # Save data to JSON file after collection
         try:
             with open(output_file, "w", encoding="utf-8") as json_file:
@@ -792,6 +819,38 @@ class BasePage:
             except Exception as json_err:
                 print(f"Error writing to JSON file: {json_err}")
 
+    def create_posts(self, post_data, username, password, post_page, output_file):
+        """Helper method to create posts if no items were found"""
+        if not post_data:
+            print(f"No posts to create.")
+            return
+
+        try:
+            self.login_emso(username, password)
+            self.driver.get(post_page)
+            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+
+            for post in post_data:
+                try:
+                    self.create_post(post["messages"][0], post["video"])
+                    print(f"Successfully posted for post {post['post_index']}")
+                except Exception as post_err:
+                    print(f"Error creating post {post['post_index']}: {post_err}")
+
+        except Exception as login_err:
+            print(f"Error logging in or accessing the post page: {login_err}")
+
+        finally:
+            self.logout()
+            print("Logged out from account.")
+
+        # Update and save the data again into the JSON file
+        try:
+            with open(output_file, "w", encoding="utf-8") as json_file:
+                json.dump({}, json_file, ensure_ascii=False, indent=4)
+            print(f"Data successfully saved to {output_file}")
+        except Exception as json_err:
+            print(f"Error writing to JSON file: {json_err}")
 
     def time_to_seconds(self, time_str):
         parts = list(map(int, time_str.split(':')))
@@ -961,7 +1020,6 @@ class BasePage:
                 except Exception as json_err:
                     print(f"Lỗi khi xóa dữ liệu trong tệp JSON: {json_err}")
 
-    
     def upload_file(self, file_input_locator, image_path):
         absolute_image_path = os.path.abspath(image_path)
         file_input = self.wait_for_element_present(file_input_locator)
@@ -1005,46 +1063,73 @@ class BasePage:
         print("duyệt bài hát")
         
     # ///////////////////////////////////////////////////////////////////////////////
-    
-    def download_video(self, save_path: str = "media/video.mp4"):
-        # Đợi phần tử video xuất hiện
+    def download_video_tiktok(self, video_url, save_path="media/"):
         try:
-            video_element = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, self.VIDEO_TIKTOK))
-            )
-        except TimeoutException:
-            raise ValueError("Không tìm thấy phần tử video.")
+            # Cấu hình của yt-dlp để tải video
+            ydl_opts = {
+                'format': 'best',      # Chọn định dạng tốt nhất
+                'noplaylist': True,    # Chỉ tải video, không tải playlist
+                'outtmpl': os.path.join(save_path, '%(id)s_%(title)s.%(ext)s'),  # Lưu video vào thư mục media
+            }
 
-        # Đợi thuộc tính 'src' sẵn sàng
-        for _ in range(10):  # Thử nhiều lần nếu chưa có
-            video_src = video_element.get_attribute('src')
-            if video_src:
-                break
-            time.sleep(1)  # Chờ thêm 1 giây
-        else:
-            raise ValueError("Không tìm thấy thuộc tính 'src' trong phần tử video.")
+            # Tạo thư mục media nếu chưa tồn tại
+            os.makedirs(save_path, exist_ok=True)
 
-        print(f"Video src: {video_src}")
+            # Tải video và lấy thông tin video
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info_dict = ydl.extract_info(video_url, download=True)
+                filename = ydl.prepare_filename(info_dict)  # Lấy tên file sau khi tải xong
+            
+            # Thêm timestamp vào tên file để đảm bảo tính duy nhất
+            timestamp = int(time.time())
+            unique_filename = f"{timestamp}_{os.path.basename(filename)}"
 
-        # Gửi request tải video
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-            "Referer": "https://www.tiktok.com/",
-        }
-        response = requests.get(video_src, headers=headers, stream=True)
-        response.raise_for_status()
+            # Đổi tên file thành tên duy nhất trong thư mục media
+            os.rename(filename, os.path.join(save_path, unique_filename))
 
-        # Nếu đường dẫn là thư mục, thêm tên file mặc định
-        if os.path.isdir(save_path):
-            save_path = os.path.join(save_path, "video.mp4")
+            print(f"Video đã được tải xuống và lưu vào: {os.path.join(save_path, unique_filename)}")
+            return os.path.join(save_path, unique_filename)  # Trả về đường dẫn đầy đủ của file video
 
-        # Tạo thư mục nếu chưa tồn tại
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        except Exception as e:
+            print(f"Lỗi khi tải video: {e}")
+            return None
+        
+    def get_and_create_tiktok(self, username, password, nums_post):
+        self.driver.get("https://www.tiktok.com/foryou")
+        time.sleep(2)
+        if self.is_element_present_by_xpath(self.CLOSE_GUIDE):
+            self.click_element(self.CLOSE_GUIDE)
 
-        # Lưu file video
-        with open(save_path, 'wb') as video_file:
-            for chunk in response.iter_content(chunk_size=1024):
-                video_file.write(chunk)
+        post_data = []  # List to store valid post data
+        output_file = "data/tiktok.json"
+        current_post_index = 1
+        existing_data = {}
 
-        print(f"Video đã được tải về: {save_path}")
-        return save_path
+        # Read existing data from the JSON file if available
+        if os.path.exists(output_file):
+            try:
+                with open(output_file, "r", encoding="utf-8") as json_file:
+                    existing_data = json.load(json_file)
+            except Exception as json_err:
+                print(f"Error reading existing JSON file: {json_err}")
+
+        while len(post_data) < nums_post:
+            try:
+                while self.is_element_present_by_xpath(self.SKIP_LOGIN):
+                    self.click_element(self.SKIP_LOGIN)
+                    print("Clicked SKIP_LOGIN.")
+                    time.sleep(1)  # Optional: add a short delay to avoid repeated clicks in rapid succession
+                # Click SHARE_BUTTON and get video URL
+                time.sleep(2)
+                self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
+                video_url = self.get_input_value(self.INPUT_URL)
+                print(f"video_url = {video_url}")
+
+                # Continuously check for SKIP_LOGIN button and click if visible
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                
+                current_post_index += 1
+
+            except Exception as e:
+                time.sleep(200)
+                print(f"Error processing post {current_post_index}: {e}")
