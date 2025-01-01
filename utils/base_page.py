@@ -778,11 +778,12 @@ class BasePage:
 
             current_post_index += 1
 
-            if len(post_data) >= nums_post:
-                print(f"Collected {nums_post} valid posts.")
+            # If no more items found, break the loop and proceed to posting
+            if not self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", str(current_post_index))):
+                print("No more items found. Proceeding to create posts.")
                 break
 
-        # If no items found during scraping, automatically proceed to posting
+        # If no items were found or processed, directly call create_posts
         if not post_data:
             print(f"No valid posts collected. Proceeding to create posts.")
             return self.create_posts(post_data, username, password, post_page, output_file)
