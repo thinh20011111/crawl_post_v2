@@ -97,7 +97,7 @@ class BasePage:
     CONFIRM_ACCEPT_MUSIC = "//button[normalize-space(text())='Duyệt']"
     
     LOGIN_ADMIN_BUTTON = "//button[normalize-space(text())='Đăng nhập']"
-    VIDEO_TIKTOK = "//video/source[3]"
+    VIDEO_TIKTOK = "//video"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -626,7 +626,7 @@ class BasePage:
     def remove_icons(text):
         return ''.join(ch for ch in text if ch.isalnum() or ch.isspace())
     
-    def get_and_create_watch(self, username, password, nums_post, crawl_page, post_page, index_start=1):
+    def get_and_create_watch(self, username, password, nums_post, crawl_page, post_page, index_start=1, account_list=None):
         self.driver.get(crawl_page)
         page_name = self.extract_username_from_url(crawl_page)
         print(f"page_username = {page_name}")
@@ -679,11 +679,11 @@ class BasePage:
                     current_post_index += 1
                     skip_count += 1
                     if skip_count >= 20:
-                        print(f"Skipped over 20 posts, stopping process for page - {crawl_page}.")
-                        break
+                        print(f"Skipped over 20 posts for page {crawl_page}. Switching to next account.")
+                        break  # Exit the loop to switch to the next account
                     continue
 
-                # Loại bỏ các ký tự icon khỏi title
+                # Remove non-alphanumeric characters from title
                 messages = [''.join(ch for ch in message.text if ch.isalnum() or ch.isspace()) for message in message_elements]
 
                 # Check if post already exists in existing_data
@@ -710,7 +710,7 @@ class BasePage:
                 # Create media directory if not exists
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
-                
+
                 # Check if video duration is under 5 minutes
                 time_video = self.get_text_from_element(self.TIME_VIDEO_WATCH.replace("{index}", str(current_post_index)))
 
@@ -791,6 +791,7 @@ class BasePage:
                 print(f"Data successfully saved to {output_file}")
             except Exception as json_err:
                 print(f"Error writing to JSON file: {json_err}")
+
 
     def time_to_seconds(self, time_str):
         parts = list(map(int, time_str.split(':')))
@@ -931,7 +932,8 @@ class BasePage:
         if post_data:
             try:
                 self.login_emso(username, password)
-                WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+                WebDriverWait(self.driver, 120).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+                self.wait_for_element_present(self.OPEN_FORM)
 
                 if not self.is_element_present_by_xpath(self.OPEN_FORM):
                     self.driver.refresh()
@@ -1004,30 +1006,45 @@ class BasePage:
         
     # ///////////////////////////////////////////////////////////////////////////////
     
-    def download_video_from_xpath(self, output_file):
+    def download_video(self, save_path: str = "media/video.mp4"):
+        # Đợi phần tử video xuất hiện
         try:
-            # Tìm thẻ video bằng XPath
-            video_element = self.driver.find_element(By.XPATH, self.VIDEO_TIKTOK)
-            
-            # Lấy danh sách thẻ <source> bên trong <video>
-            source_elements = video_element.find_elements(By.TAG_NAME, 'source')
-            
-            # Kiểm tra từng thẻ <source> để lấy URL
-            for source in source_elements:
-                video_url = source.get_attribute('src')
-                if video_url:
-                    print(f"Tìm thấy URL video: {video_url}")
-                    
-                    # Tải video xuống
-                    video_response = requests.get(video_url)
-                    if video_response.status_code == 200:
-                        with open(output_file, 'wb') as f:
-                            f.write(video_response.content)
-                        print(f"Video đã được tải xuống và lưu tại {output_file}")
-                        break
-                    else:
-                        print("Không thể tải video.")
-            else:
-                print("Không tìm thấy URL video hợp lệ.")
-        except Exception as e:
-            print(f"Lỗi: {e}")
+            video_element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, self.VIDEO_TIKTOK))
+            )
+        except TimeoutException:
+            raise ValueError("Không tìm thấy phần tử video.")
+
+        # Đợi thuộc tính 'src' sẵn sàng
+        for _ in range(10):  # Thử nhiều lần nếu chưa có
+            video_src = video_element.get_attribute('src')
+            if video_src:
+                break
+            time.sleep(1)  # Chờ thêm 1 giây
+        else:
+            raise ValueError("Không tìm thấy thuộc tính 'src' trong phần tử video.")
+
+        print(f"Video src: {video_src}")
+
+        # Gửi request tải video
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Referer": "https://www.tiktok.com/",
+        }
+        response = requests.get(video_src, headers=headers, stream=True)
+        response.raise_for_status()
+
+        # Nếu đường dẫn là thư mục, thêm tên file mặc định
+        if os.path.isdir(save_path):
+            save_path = os.path.join(save_path, "video.mp4")
+
+        # Tạo thư mục nếu chưa tồn tại
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+        # Lưu file video
+        with open(save_path, 'wb') as video_file:
+            for chunk in response.iter_content(chunk_size=1024):
+                video_file.write(chunk)
+
+        print(f"Video đã được tải về: {save_path}")
+        return save_path

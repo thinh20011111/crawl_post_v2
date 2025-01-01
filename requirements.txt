@@ -17,3 +17,4 @@ PyAutoGUI
 pytube
 send2trash
 yt_dlp
+bs4
