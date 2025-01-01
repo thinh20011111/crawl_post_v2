@@ -679,6 +679,11 @@ class BasePage:
                 # Wait for the element to load
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
 
+                # Check if the post item is found
+                if not self.is_element_present_by_xpath(post_xpath):
+                    print("No more items found, proceeding to collect posts and create new ones.")
+                    return self.create_posts(post_data, username, password, post_page, output_file)
+
                 # Find the post element using XPath
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
 
@@ -777,7 +782,7 @@ class BasePage:
                 print(f"Collected {nums_post} valid posts.")
                 break
 
-        # Check if no items were found and proceed to post
+        # If no items found during scraping, automatically proceed to posting
         if not post_data:
             print(f"No valid posts collected. Proceeding to create posts.")
             return self.create_posts(post_data, username, password, post_page, output_file)
@@ -818,6 +823,7 @@ class BasePage:
                 print(f"Data successfully saved to {output_file}")
             except Exception as json_err:
                 print(f"Error writing to JSON file: {json_err}")
+
 
     def create_posts(self, post_data, username, password, post_page, output_file):
         """Helper method to create posts if no items were found"""
