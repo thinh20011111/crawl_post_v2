@@ -54,7 +54,7 @@ def main():
                 emso_password = account_data["password"]
 
                 # Crawl bài viết mới từ group_url
-                num_posts = 1
+                num_posts = 3
                 base_page.get_and_create_moment(
                     username=emso_username,
                     password=emso_password,

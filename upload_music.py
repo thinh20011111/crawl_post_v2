@@ -38,20 +38,24 @@ def main():
         page_name = page_music["pagename"]
         username = page_music["username"]
         password = page_music["password"]
+        admin_username = page_music["admin_username"]
+        password_admin = page_music["password_admin"]
         author = page_music["author"]
         description = page_music["description"]
         field = page_music["field"]
         token = page_music["token"]
-        
-        
-        first_music = musics[0]
-        mp3_filename = first_music["mp3_filename"]
-        song_name = os.path.splitext(mp3_filename)[0]
-        music_banner = first_music["banner_filename"]
-        
+     
         base_page.login_emso(username, password)
-        driver.get("https://staging-fe.emso.vn/music_space")
-        base_page.upload_music(song_name, description, music_banner, mp3_filename, page_name, author, field, token, username, password)
+        base_page.login_admin(admin_username, password_admin)
+        
+        for index, music in musics.items():
+            driver.get("https://staging-fe.emso.vn/music_space")
+            mp3_filename = music["mp3_filename"]
+            song_name = os.path.splitext(mp3_filename)[0]
+            music_banner = music["banner_filename"]
+            id_music = base_page.upload_music(song_name, description, music_banner, mp3_filename, page_name, author, field, token, username, password)
+            base_page.approve_music(id_music, token, username, password)
+            
     finally:
         driver.quit()
 

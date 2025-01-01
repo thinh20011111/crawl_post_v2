@@ -21,6 +21,8 @@ import yt_dlp
 from send2trash import send2trash
 import random
 from api.Music_Api import Music_Api
+import uuid
+from bs4 import BeautifulSoup
 
 logging.basicConfig(
     filename='error.log', 
@@ -86,6 +88,17 @@ class BasePage:
     PAGE_OWNER_MUSIC = "//p[contains(.,'{page_name}')]"
     AUTHOR_MUSIC = "//div[@id='mui-56-option-0']" #Tài khoản phải có bạn bè
     
+    MUSICS_MANAGER_ADMIN = "//div[@role='button' and .//p[text()='Âm nhạc']]"
+    REQUEST_MUSIC = "//div[@role='button' and .//p[text()='Phê duyệt tác phẩm']]"
+    INPUT_SEARCH_MUSIC = "//input[@id='search-input']"
+    MORE_OPTION_ITEM_MUSIC = "/html/body/div[1]/div/div/div[3]/div[3]/table/tbody/tr[1]/td[12]/div/div/button"
+    ACCEPT_MUSIC = "//li[@role='menuitem' and contains(text(), 'Duyệt')]"
+    REJECT_MUSIC = "//li[@role='menuitem' and contains(text(), 'Từ chối')]"
+    CONFIRM_ACCEPT_MUSIC = "//button[normalize-space(text())='Duyệt']"
+    
+    LOGIN_ADMIN_BUTTON = "//button[normalize-space(text())='Đăng nhập']"
+    VIDEO_TIKTOK = "//video/source[3]"
+    
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
     
@@ -94,6 +107,13 @@ class BasePage:
         self.input_text(self.INPUT_PASSWORD, password)
         self.click_element(self.LOGIN_BUTTON) 
         time.sleep(5)
+    
+    def login_admin(self, username, password):
+        self.driver.get(self.config.ADMIN_URL)
+        time.sleep(1)
+        self.input_text(self.LOGIN_EMAIL_INPUT, username)
+        self.input_text(self.LOGIN_PWD_INPUT, password)
+        self.click_element(self.LOGIN_SUBMIT_BTN)
     
     def login_emso(self, username, password):
         self.driver.get(self.config.EMSO_URL)
@@ -690,7 +710,7 @@ class BasePage:
                 # Create media directory if not exists
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
-# //////////////////////////////////////////////////////////////
+                
                 # Check if video duration is under 5 minutes
                 time_video = self.get_text_from_element(self.TIME_VIDEO_WATCH.replace("{index}", str(current_post_index)))
 
@@ -716,7 +736,6 @@ class BasePage:
                     current_post_index += 1
                     skip_count += 1
                     continue
-# //////////////////////////////////////////////////////////////
 
                 # Add post to existing_data if not already present
                 existing_data[crawl_page].append({
@@ -833,22 +852,22 @@ class BasePage:
                     self.click_element(self.NEXT_REELS)  # Skip to the next video
                     continue
 
-                # Chờ các phần tử xuất hiện
+                # Wait for elements to appear
                 message_elements = self.wait_for_element_present(self.TITLE_REELS)
 
-                # Kiểm tra nếu message_elements là danh sách hoặc iterable
+                # Check if message_elements is iterable
                 if isinstance(message_elements, list) or hasattr(message_elements, '__iter__'):
                     messages = [re.sub(r'[^\w\s,.\'\"#]', '', message.text) for message in message_elements]
                 else:
                     messages = [re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)]
 
-                # Kiểm tra danh sách tin nhắn có rỗng hoặc chỉ chứa văn bản trống
+                # Check if messages list is empty or only contains blank text
                 if not messages or all(not msg.strip() for msg in messages):
                     self.click_element(self.NEXT_REELS)
                     print("No messages found, clicked Next.")
                     continue
 
-                # Cắt ngắn từng tin nhắn đến 150 ký tự
+                # Truncate each message to 150 characters
                 shortened_messages = []
                 for msg in messages:
                     if len(msg) > 150:
@@ -863,7 +882,7 @@ class BasePage:
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
 
-                # Tải xuống video vì thời lượng hợp lệ
+                # Download video if duration is valid
                 try:
                     video_path = self.download_facebook_video(video_url)
                     time.sleep(5)
@@ -877,7 +896,7 @@ class BasePage:
                     self.click_element(self.NEXT_REELS)
                     continue
 
-                # Cập nhật dữ liệu
+                # Update existing data
                 if f"moment_{current_post_index}" not in existing_data:
                     existing_data[f"moment_{current_post_index}"] = []
 
@@ -908,37 +927,38 @@ class BasePage:
         except Exception as json_err:
             print(f"Error writing to JSON file: {json_err}")
 
-        # Đăng nhập và tạo bài viết trên trang post_page
+        # Login and create posts on post_page
         if post_data:
             try:
                 self.login_emso(username, password)
                 WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
-                
-                if self.is_element_present_by_xpath(self.OPEN_FORM) == False:
+
+                if not self.is_element_present_by_xpath(self.OPEN_FORM):
                     self.driver.refresh()
 
-                for post in post_data:
+                # Iterate through all posts in post_data
+                for index, post in enumerate(post_data):
                     try:
                         self.create_moment(post["messages"][0], post["video"])
-                        print(f"Đã đăng bài thành công cho post {post['post_index']}")
+                        print(f"Đã đăng bài thành công cho post {index + 1}")
                     except Exception as post_err:
-                        print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+                        print(f"Lỗi khi đăng bài {index + 1}: {post_err}")
 
             except Exception as login_err:
-                self.click_element(self.CLOSE_BAN_ACCOUNT)
                 print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
 
             finally:
                 self.logout()
                 print("Đã đăng xuất khỏi tài khoản.")
 
-            # Cập nhật và lưu lại dữ liệu vào file JSON
-            try:
-                with open(output_file, "w", encoding="utf-8") as json_file:
-                    json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-                print(f"Dữ liệu đã được lưu vào {output_file}")
-            except Exception as json_err:
-                print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+                # Clear the output file after posting all collected posts
+                try:
+                    with open(output_file, "w", encoding="utf-8") as json_file:
+                        json.dump({}, json_file, ensure_ascii=False, indent=4)
+                    print(f"Dữ liệu đã được xóa khỏi {output_file} sau khi đăng bài thành công.")
+                except Exception as json_err:
+                    print(f"Lỗi khi xóa dữ liệu trong tệp JSON: {json_err}")
+
     
     def upload_file(self, file_input_locator, image_path):
         absolute_image_path = os.path.abspath(image_path)
@@ -972,31 +992,42 @@ class BasePage:
         token = self.music_api.get_access_token(username, password)
         data = self.music_api.get_id_music(token, 200)
         
-        id_value = data[0].get('id')  # Using .get() to avoid KeyError if 'id' is missing
+        id_value = data[0].get('id')  
         return id_value
+    # /////////////////////////////////Đang làm đoạn này//////////////////////////////////////////////
     
-    def approve_music(self, music_name, music_des, banner, mp3, page_name, author, field, token, username, password):
-        id = self.upload_music(music_name, music_des, banner, mp3, page_name, author, field, token, username, password)
-        
-        self.click_element()
+    def approve_music(self, id_music):
+        self.click_element(self.MUSICS_MANAGER_ADMIN)
+        self.click_element(self.REQUEST_MUSIC)
+        self.input_text(self.INPUT_SEARCH_MUSIC, id_music)
         print("duyệt bài hát")
+        
+    # ///////////////////////////////////////////////////////////////////////////////
     
-    def get_data_from_api(self, url, params=None, headers=None):
+    def download_video_from_xpath(self, output_file):
         try:
-            # Gửi yêu cầu GET đến API
-            response = requests.get(url, params=params, headers=headers)
+            # Tìm thẻ video bằng XPath
+            video_element = self.driver.find_element(By.XPATH, self.VIDEO_TIKTOK)
             
-            # Kiểm tra mã trạng thái HTTP của phản hồi (status code)
-            response.raise_for_status()  # Nếu mã trạng thái không phải 2xx sẽ ném lỗi
-
-            # Chuyển đổi dữ liệu trả về từ API (dự đoán JSON)
-            data = response.json()
-
-            return data
-
-        except requests.exceptions.RequestException as e:
-            # In lỗi nếu có vấn đề với yêu cầu
-            print(f"Đã xảy ra lỗi khi gọi API: {e}")
-            return None
-        
-        
+            # Lấy danh sách thẻ <source> bên trong <video>
+            source_elements = video_element.find_elements(By.TAG_NAME, 'source')
+            
+            # Kiểm tra từng thẻ <source> để lấy URL
+            for source in source_elements:
+                video_url = source.get_attribute('src')
+                if video_url:
+                    print(f"Tìm thấy URL video: {video_url}")
+                    
+                    # Tải video xuống
+                    video_response = requests.get(video_url)
+                    if video_response.status_code == 200:
+                        with open(output_file, 'wb') as f:
+                            f.write(video_response.content)
+                        print(f"Video đã được tải xuống và lưu tại {output_file}")
+                        break
+                    else:
+                        print("Không thể tải video.")
+            else:
+                print("Không tìm thấy URL video hợp lệ.")
+        except Exception as e:
+            print(f"Lỗi: {e}")

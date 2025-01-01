@@ -5,3 +5,4 @@ class Config:
     CHROME_DRIVER_PATH = ChromeDriverManager().install()  # Đường dẫn đến tệp chromedriver
     FACEBOOK_URL = "https://www.facebook.com/"
     EMSO_URL = "https://prod-fe.emso.vn/"
+    ADMIN_URL = "https://cmc-admin.emso.vn/"

@@ -19,6 +19,7 @@ def main():
     chrome_options.add_argument("--disable-gpu")  # Vô hiệu hóa GPU khi chạy headless
     chrome_options.add_argument("--window-size=1920x1080")  # Thiết lập kích thước cửa sổ để tránh một số vấn đề hiển thị
     driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.maximize_window()
 
     # Mở trang web
     base_page = BasePage(driver)
@@ -32,7 +33,6 @@ def main():
     with open(data_filename, 'r') as data_file:
         data = json.load(data_file)
 
-    driver.maximize_window()
 
     try:
         # Đăng nhập vào Facebook một lần

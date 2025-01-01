@@ -7,6 +7,8 @@
         "pagename": "Grab Việt",
         "author": "Yến Vũ",
         "field": "data/HĐ_MUSIC.docx",
-        "description": "mô tả bài hát"
+        "description": "mô tả bài hát",
+        "username_admin": "testeremso@gmail.com",
+        "password_admin": "Neko10121311"
     }
 }
