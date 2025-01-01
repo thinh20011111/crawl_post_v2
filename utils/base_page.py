@@ -62,6 +62,7 @@ class BasePage:
     SKIP_BANNER = "//div[contains(text(), 'Tiếp tục')]"
     ITEMS_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div/div/div/div/div/div/div/a"
     ITEM_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a"
+    TIME_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a/div/div/div/div[2]/span"
     TITLE_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div[2]/span/div/a"
     NEXT_REELS = "//div[@aria-label='Thẻ tiếp theo' and contains(@class, 'x1i10hfl')]"
     OPEN_FORM_MOMENT = "//button[contains(@class, 'MuiButton-root') and .//p[text()='Khoảnh khắc']]"
@@ -329,7 +330,7 @@ class BasePage:
     def create_post(self, title, image_names):
         try:
             # Mở form tạo bài đăng
-            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))  # Ensure post loads
+            WebDriverWait(self.driver, 120).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))  # Ensure post loads
             self.click_element(self.OPEN_FORM)
 
             # Nhập tiêu đề bài đăng
@@ -394,7 +395,7 @@ class BasePage:
         except Exception as e:
             print(f"Lỗi khi xóa các tệp trong thư mục media: {e}")
     
-    def wait_for_element_not_present(self, locator, timeout=30):
+    def wait_for_element_not_present(self, locator, timeout=120):
         try:
             WebDriverWait(self.driver, timeout).until_not(
                 EC.presence_of_element_located((By.XPATH, locator))
@@ -602,6 +603,9 @@ class BasePage:
             ydl.download([video_url])
             return [video_name]
     
+    def remove_icons(text):
+        return ''.join(ch for ch in text if ch.isalnum() or ch.isspace())
+    
     def get_and_create_watch(self, username, password, nums_post, crawl_page, post_page, index_start=1):
         self.driver.get(crawl_page)
         page_name = self.extract_username_from_url(crawl_page)
@@ -615,7 +619,7 @@ class BasePage:
         output_file = "data/watch.json"
         existing_data = {}
 
-        # Đọc dữ liệu hiện có từ file JSON nếu có
+        # Read existing data from JSON file if available
         if os.path.exists(output_file):
             try:
                 with open(output_file, "r", encoding="utf-8") as json_file:
@@ -630,24 +634,24 @@ class BasePage:
             try:
                 post_xpath = self.ITEM_VIDEO_WATCH.replace("{index}", str(current_post_index))
 
-                # Chờ cho phần tử tải xong
+                # Wait for the element to load
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
 
-                # Tìm phần tử chính bằng XPath
+                # Find the post element using XPath
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
 
-                # Cuộn đến phần tử
+                # Scroll to the element
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
 
-                # Chờ để đảm bảo phần tử đã tải hoàn toàn
+                # Wait to ensure the element is fully loaded
                 time.sleep(2)
 
-                # Tìm <a> chứa đường link video
+                # Find <a> containing the video URL
                 video_link_element = post_element.find_element(By.XPATH, post_xpath)  # Find the <a> tag with href
 
-                video_url = video_link_element.get_attribute("href")  # Lấy URL video từ thuộc tính href
+                video_url = video_link_element.get_attribute("href")  # Get video URL from href attribute
 
-                # Tìm các phần tử chứa thông điệp và xử lý chúng
+                # Find message elements and process them
                 message_elements = post_element.find_elements(By.XPATH, self.TITLE_VIDEO_WATCH.replace("{index}", str(current_post_index)))
 
                 if not message_elements or not message_elements[0].text.strip():
@@ -659,13 +663,14 @@ class BasePage:
                         break
                     continue
 
-                messages = [message.text for message in message_elements]
+                # Loại bỏ các ký tự icon khỏi title
+                messages = [''.join(ch for ch in message.text if ch.isalnum() or ch.isspace()) for message in message_elements]
 
-                # Kiểm tra nếu bài đăng đã tồn tại trong existing_data
+                # Check if post already exists in existing_data
                 if crawl_page not in existing_data:
                     existing_data[crawl_page] = []
 
-                # Kiểm tra trùng lặp trong existing_data
+                # Check for duplicates in existing_data
                 if any(post["messages"] == messages and post["video"] == video_url for post in existing_data[crawl_page]):
                     print(f"Post {current_post_index} with these messages already exists, skipping.")
                     current_post_index += 1
@@ -675,23 +680,22 @@ class BasePage:
                         break
                     continue
 
-                # Kiểm tra trùng lặp trong post_data
+                # Check for duplicates in post_data
                 if any(post['post_index'] == current_post_index and post['messages'] == messages for post in post_data):
                     print(f"Duplicate post {current_post_index} with these messages, skipping.")
                     current_post_index += 1
                     skip_count += 1
                     continue
 
-                # Thư mục chứa media
+                # Create media directory if not exists
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
-
-                # Kiểm tra video có dưới 5 phút hay không
+# //////////////////////////////////////////////////////////////
+                # Check if video duration is under 5 minutes
                 if self.is_video_under_5_minutes(video_url):
+                    # Video duration is under 5 minutes, download it
                     video_path = self.download_facebook_video(video_url)
-                    # Đợi sau khi tải xong video
                     time.sleep(5)
-                    # Lưu dữ liệu bài đăng
                     post_data.append({
                         "post_index": current_post_index,
                         "messages": messages,
@@ -699,12 +703,13 @@ class BasePage:
                     })
                     print(f"Downloaded video under 5 minutes for post {current_post_index}.")
                 else:
+                    print(f"Skipped video over 5 minutes for post {current_post_index}.")
                     current_post_index += 1
                     skip_count += 1
-                    print(f"Skipped video over 5 minutes for post {current_post_index}.")
                     continue
+# //////////////////////////////////////////////////////////////
 
-                # Thêm bài đăng vào existing_data nếu chưa có
+                # Add post to existing_data if not already present
                 existing_data[crawl_page].append({
                     "post_index": current_post_index,
                     "messages": messages,
@@ -722,7 +727,7 @@ class BasePage:
                 print(f"Collected {nums_post} valid posts.")
                 break
 
-        # Lưu dữ liệu vào file JSON sau khi thu thập xong
+        # Save data to JSON file after collection
         try:
             with open(output_file, "w", encoding="utf-8") as json_file:
                 json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
@@ -730,7 +735,7 @@ class BasePage:
         except Exception as json_err:
             print(f"Error writing to JSON file: {json_err}")
 
-        # Đăng nhập và tạo bài viết trên trang post_page
+        # Login and create posts on the post_page
         if post_data:
             try:
                 self.login_emso(username, password)
@@ -740,37 +745,49 @@ class BasePage:
                 for post in post_data:
                     try:
                         self.create_post(post["messages"][0], post["video"])
-                        print(f"Đã đăng bài thành công cho post {post['post_index']}")
+                        print(f"Successfully posted for post {post['post_index']}")
                     except Exception as post_err:
-                        print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+                        print(f"Error creating post {post['post_index']}: {post_err}")
 
             except Exception as login_err:
-                print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+                print(f"Error logging in or accessing the post page: {login_err}")
 
             finally:
                 self.logout()
-                print("Đã đăng xuất khỏi tài khoản.")
+                print("Logged out from account.")
 
-            # Cập nhật và lưu lại dữ liệu vào file JSON
+            # Update and save the data again into the JSON file
             try:
                 with open(output_file, "w", encoding="utf-8") as json_file:
                     json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-                print(f"Dữ liệu đã được lưu vào {output_file}")
+                print(f"Data successfully saved to {output_file}")
             except Exception as json_err:
-                print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+                print(f"Error writing to JSON file: {json_err}")
 
-    
-    # Thêm một hàm kiểm tra thời lượng video
+    def time_to_seconds(time_str):
+        parts = list(map(int, time_str.split(':')))
+        if len(parts) == 3:  # HH:MM:SS
+            return parts[0] * 3600 + parts[1] * 60 + parts[2]
+        elif len(parts) == 2:  # MM:SS
+            return parts[0] * 60 + parts[1]
+        elif len(parts) == 1:  # SS
+            return parts[0]
+        else:
+            raise ValueError("Invalid time format")
+
+    # Modified `is_video_under_5_minutes` function to ensure only videos under 5 minutes are downloaded
     def is_video_under_5_minutes(self, video_url):
         duration_seconds = self.get_video_duration(video_url)
-        if duration_seconds and duration_seconds <= 300:  # 5 phút = 300 giây
+        if duration_seconds is not None and duration_seconds <= 300:  # 5 minutes = 300 seconds
             return True
-        return False
+        else:
+            print(f"Video duration is longer than 5 minutes or could not fetch the duration.")
+            return False
 
-    # Hàm giả lập kiểm tra thời lượng video (tùy vào cách bạn thực hiện thực tế)
+    # Placeholder for getting the video duration
     def get_video_duration(self, video_url):
         try:
-            duration_seconds = 180  # Ví dụ: Video 3 phút
+            duration_seconds = 180  # Example: Video 3 minutes
             return duration_seconds
         except Exception as e:
             print(f"Error getting video duration: {e}")

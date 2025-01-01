@@ -56,7 +56,7 @@ def main():
                 post_url = account_data["url1"]  # URL để đăng bài
 
                 # Crawl bài viết mới từ group_url
-                num_posts = 1
+                num_posts = 3
                 base_page.get_and_create_watch(
                     username=emso_username,
                     password=emso_password,
