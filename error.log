@@ -1,0 +1,14 @@
+2025-01-02 00:15:03,628 - ERROR - Error retrieving QR code from canvas with XPath: //canvas[@height='141' and @width='141']
+'BasePage' object has no attribute 'wait_for_element_by_xpath'
+Traceback (most recent call last):
+  File "C:\Users\Thinh\OneDrive\Máy tính\crawl_post_v2\utils\base_page.py", line 1152, in get_qa_code
+    canvas_element = self.wait_for_element_by_xpath(self.QA_CODE)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BasePage' object has no attribute 'wait_for_element_by_xpath'. Did you mean: 'wait_for_element_present'?
+2025-01-02 00:19:20,331 - ERROR - Error retrieving QR code from canvas with XPath: //div[@data-e2e='qr-code']/canvas
+'BasePage' object has no attribute 'wait_for_element_by_xpath'
+Traceback (most recent call last):
+  File "C:\Users\Thinh\OneDrive\Máy tính\crawl_post_v2\utils\base_page.py", line 1152, in get_qa_code
+    canvas_element = self.wait_for_element_by_xpath(self.QA_CODE)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BasePage' object has no attribute 'wait_for_element_by_xpath'. Did you mean: 'wait_for_element_present'?

@@ -29,27 +29,30 @@ def main():
         accounts_data = json.load(file)
 
     driver.maximize_window()
-
     try:
         # Lặp qua tất cả các tài khoản và xử lý
+        driver.get("https://www.tiktok.com/foryou")
+        time.sleep(30)
+        num_posts_per_account = 3  # Số lượng bài viết cần crawl mỗi tài khoản
+
         for account_key, account_data in accounts_data.items():
             try:
                 print(f"\nĐang xử lý tài khoản: {account_key}")
 
-                # Lấy thông tin từ tài khoản (url1, url2, username, password)
+                # Lấy thông tin từ tài khoản
                 emso_username = account_data["username"]
                 emso_password = account_data["password"]
 
-                # Crawl bài viết mới từ group_url
-                num_posts = 3
+                # Crawl bài viết mới từ TikTok
                 base_page.get_and_create_tiktok(
                     username=emso_username,
                     password=emso_password,
-                    nums_post=num_posts,
+                    nums_post=num_posts_per_account,
                 )
 
                 print(f"Hoàn tất xử lý tài khoản: {account_key}")
                 base_page.clear_media_folder()
+                driver.refresh()
             except Exception as e:
                 print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
                 continue  # Tiếp tục với tài khoản tiếp theo nếu gặp lỗi

@@ -6,6 +6,7 @@ import re
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webelement import WebElement
 import os
 import logging
 from PIL import Image
@@ -22,7 +23,10 @@ from send2trash import send2trash
 import random
 from api.Music_Api import Music_Api
 import uuid
+import emoji
+import unicodedata
 from bs4 import BeautifulSoup
+from unidecode import unidecode
 
 logging.basicConfig(
     filename='error.log', 
@@ -99,11 +103,15 @@ class BasePage:
     LOGIN_ADMIN_BUTTON = "//button[normalize-space(text())='Đăng nhập']"
     VIDEO_TIKTOK = "//video"
     TITLE_VIDEO_TIKTOK = "(//h1[@data-e2e='video-desc'])[{index}]"
-    SKIP_LOGIN = "//div[@class='css-1gtmaw0-DivBoxContainer e1cgu1qo0']//div[@class='css-1cp64nz-DivTextContainer e1cgu1qo3']//div[text()='Continue as guest']"
+    SKIP_LOGIN = "/html/body/div[7]/div[3]/div/div/div/div[1]/div/div/div[3]/div/div[2]"
     SHARE_BUTTON = "(//span[@data-e2e='share-icon'])[{index}]"
     INPUT_URL = "//input[@class='TUXTextInputCore-input']"
     CLOSE_POPUP_URL = "//button[@class='TUXUnstyledButton TUXNavBarIconButton' and @aria-label='close']"
     CLOSE_GUIDE = "//div[@class='css-mp9aqo-DivIconCloseContainer e1vz198y6']"
+    LOGIN_TIKTOK = "//button[@id='header-login-button' and @data-e2e='top-login-button']"
+    SHOW_QA_CODE = "//div[@data-e2e='channel-item']//div[contains(text(), 'Use QR code')]"
+    QA_CODE = "//div[@data-e2e='qr-code']/canvas"
+    NEXT_VIDEO_TIKTOK = "/html/body/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/button"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -163,40 +171,17 @@ class BasePage:
             raise
  
     def input_text(self, xpath: str, text: str):
-        try:
-            # Chờ phần tử khả dụng
-            WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, xpath))
-            )
+        # Chờ phần tử có thể tương tác trong 1 giây
+        WebDriverWait(self.driver, 1).until(EC.element_to_be_clickable((By.XPATH, xpath)))
 
-            # Tìm phần tử và cuộn tới nó
-            element = self.driver.find_element(By.XPATH, xpath)
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element).perform()
+        # Lấy phần tử và nhập trực tiếp văn bản
+        element = self.driver.find_element(By.XPATH, xpath)
 
-            # Đảm bảo phần tử hiện hữu và không bị thay đổi trạng thái
-            for _ in range(3):  # Thử tối đa 3 lần nếu có lỗi StaleElementReferenceException
-                try:
-                    # Chờ phần tử khả dụng lại nếu cần
-                    WebDriverWait(self.driver, 3).until(EC.visibility_of(element))
-                    
-                    # Xóa văn bản hiện tại
-                    element.click()
-                    element.send_keys(Keys.CONTROL + "a")  # Chọn tất cả văn bản
-                    element.send_keys(Keys.DELETE)  # Xóa văn bản cũ
-                    
-                    # Nhập văn bản mới
-                    element.send_keys(text)
-                    return  # Thành công, thoát khỏi hàm
-                except StaleElementReferenceException:
-                    # Reload phần tử nếu DOM thay đổi
-                    element = self.driver.find_element(By.XPATH, xpath)
-            raise Exception("Không thể tương tác với phần tử sau nhiều lần thử.")
-        except TimeoutException:
-            print("Phần tử không sẵn sàng hoặc không khả dụng trong thời gian chờ.")
-        except Exception as e:
-            print(f"Không thể nhập văn bản vào phần tử: {e}")
-    
+        # Xóa và nhập văn bản nhanh
+        element.click()
+        element.clear()  # Xóa nội dung cũ
+        element.send_keys(text)  # Nhập toàn bộ văn bản ngay lập tức
+        
     def get_text_from_element(self, locator):
         text = self.driver.find_element(By.XPATH, locator).text
         return text
@@ -499,8 +484,13 @@ class BasePage:
                         break  # Dừng quá trình nếu bỏ qua quá nhiều bài
                     continue  # Bỏ qua bài đăng này và tiếp tục với bài đăng tiếp theo
 
-                # Lấy text từ tất cả các phần tử message
-                messages = [message.text for message in message_elements]
+                if not isinstance(message_elements, list):
+                    raise ValueError("message_elements phải là danh sách WebElement.")
+                if not all(isinstance(e, WebElement) for e in message_elements):
+                    raise ValueError("Tất cả phần tử trong message_elements phải là WebElement.")
+
+                # Lấy text từ tất cả các WebElement trong danh sách
+                messages = [self.get_text_and_icon(message) for message in message_elements]
 
                 # Kiểm tra nếu messages đã tồn tại trong dữ liệu cũ
                 if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
@@ -825,7 +815,6 @@ class BasePage:
             except Exception as json_err:
                 print(f"Error writing to JSON file: {json_err}")
 
-
     def create_posts(self, post_data, username, password, post_page, output_file):
         """Helper method to create posts if no items were found"""
         if not post_data:
@@ -1072,11 +1061,19 @@ class BasePage:
     # ///////////////////////////////////////////////////////////////////////////////
     def download_video_tiktok(self, video_url, save_path="media/"):
         try:
+            # Trích xuất ID từ URL
+            video_id_match = re.search(r'/video/(\d+)', video_url)
+            video_id = video_id_match.group(1) if video_id_match else None
+
+            if not video_id:
+                print("Không thể trích xuất ID từ URL.")
+                return None
+
             # Cấu hình của yt-dlp để tải video
             ydl_opts = {
                 'format': 'best',      # Chọn định dạng tốt nhất
                 'noplaylist': True,    # Chỉ tải video, không tải playlist
-                'outtmpl': os.path.join(save_path, '%(id)s_%(title)s.%(ext)s'),  # Lưu video vào thư mục media
+                'outtmpl': os.path.join(save_path, f"{video_id}.%(ext)s"),  # Lưu video với tên dựa trên ID
             }
 
             # Tạo thư mục media nếu chưa tồn tại
@@ -1086,57 +1083,130 @@ class BasePage:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(video_url, download=True)
                 filename = ydl.prepare_filename(info_dict)  # Lấy tên file sau khi tải xong
-            
-            # Thêm timestamp vào tên file để đảm bảo tính duy nhất
-            timestamp = int(time.time())
-            unique_filename = f"{timestamp}_{os.path.basename(filename)}"
 
-            # Đổi tên file thành tên duy nhất trong thư mục media
-            os.rename(filename, os.path.join(save_path, unique_filename))
-
-            print(f"Video đã được tải xuống và lưu vào: {os.path.join(save_path, unique_filename)}")
-            return os.path.join(save_path, unique_filename)  # Trả về đường dẫn đầy đủ của file video
+            print(f"Video đã được tải xuống và lưu vào: {filename}")
+            return filename  # Trả về đường dẫn đầy đủ của file video
 
         except Exception as e:
             print(f"Lỗi khi tải video: {e}")
             return None
         
     def get_and_create_tiktok(self, username, password, nums_post):
-        self.driver.get("https://www.tiktok.com/foryou")
         time.sleep(2)
+        
+        # Đóng hướng dẫn nếu có
         if self.is_element_present_by_xpath(self.CLOSE_GUIDE):
             self.click_element(self.CLOSE_GUIDE)
-
-        post_data = []  # List to store valid post data
+        
+        post_data = {}  # Dictionary để lưu dữ liệu bài viết
         output_file = "data/tiktok.json"
-        current_post_index = 1
+        current_post_index = 1  # Bắt đầu từ bài viết đầu tiên
+        collected_posts = 0  # Đếm số bài viết đã thu thập
         existing_data = {}
 
-        # Read existing data from the JSON file if available
+        # Đọc dữ liệu JSON hiện tại nếu có
         if os.path.exists(output_file):
             try:
                 with open(output_file, "r", encoding="utf-8") as json_file:
                     existing_data = json.load(json_file)
+                    post_data.update(existing_data)
             except Exception as json_err:
                 print(f"Error reading existing JSON file: {json_err}")
 
-        while len(post_data) < nums_post:
+        # Bắt đầu crawl bài viết
+        while collected_posts < nums_post:
             try:
-                while self.is_element_present_by_xpath(self.SKIP_LOGIN):
-                    self.click_element(self.SKIP_LOGIN)
-                    print("Clicked SKIP_LOGIN.")
-                    time.sleep(1)  # Optional: add a short delay to avoid repeated clicks in rapid succession
-                # Click SHARE_BUTTON and get video URL
+                # Mô phỏng cuộn qua bài viết
                 time.sleep(2)
                 self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
+                
+                # Lấy URL video
                 video_url = self.get_input_value(self.INPUT_URL)
                 print(f"video_url = {video_url}")
+                time.sleep(1)
 
-                # Continuously check for SKIP_LOGIN button and click if visible
-                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                # Đóng popup URL nếu xuất hiện
+                if self.is_element_present_by_xpath(self.CLOSE_POPUP_URL):
+                    self.click_element(self.CLOSE_POPUP_URL)
                 
-                current_post_index += 1
+                # Trích xuất ID video
+                video_id_match = re.search(r'/video/(\d+)', video_url)
+                video_id = video_id_match.group(1) if video_id_match else f"unknown_{current_post_index}"
+                
+                # Bỏ qua nếu đã xử lý
+                if video_id in post_data:
+                    print(f"Video {video_id} already processed, skipping...")
+                    current_post_index += 1
+                    continue
 
+                # Chờ và lấy tiêu đề
+                self.wait_for_element_present(self.TITLE_VIDEO_TIKTOK.replace("{index}", str(current_post_index)))
+                message_elements = self.wait_for_element_present(self.TITLE_VIDEO_TIKTOK.replace("{index}", str(current_post_index)))
+
+                # Kiểm tra và xử lý nội dung
+                if isinstance(message_elements, list) or hasattr(message_elements, '__iter__'):
+                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message.text) for message in message_elements]
+                else:
+                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)]
+
+                # Nếu không có nội dung, chuyển sang video tiếp theo
+                if not messages or all(not msg.strip() for msg in messages):
+                    print("No title found for this post, skipping...")
+                    current_post_index += 1
+                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    continue
+
+                # Tải video
+                try:
+                    downloaded_file = self.download_video_tiktok(video_url)
+                    if not downloaded_file:  # Nếu tải không thành công
+                        raise Exception("Video download failed.")
+                except Exception as e:
+                    print(f"Error downloading video {video_id}: {e}")
+                    print("Skipping this post...")
+                    current_post_index += 1
+                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    continue
+
+                # Lưu dữ liệu vào dictionary
+                post_data[video_id] = {
+                    "title": messages,
+                    "url": video_url,
+                    "file_path": downloaded_file
+                }
+
+                print(f"Processed video {video_id}: {messages}")
+                collected_posts += 1  # Tăng số lượng bài viết đã thu thập
+                current_post_index += 1  # Tăng chỉ số bài viết
+                
             except Exception as e:
-                time.sleep(200)
                 print(f"Error processing post {current_post_index}: {e}")
+                time.sleep(5)  # Tránh lỗi lặp lại
+
+        # Lưu dữ liệu vào JSON
+        try:
+            with open(output_file, "w", encoding="utf-8") as json_file:
+                json.dump(post_data, json_file, ensure_ascii=False, indent=4)
+            print(f"Data saved to {output_file}")
+        except Exception as json_err:
+            print(f"Error saving data to JSON: {json_err}")
+
+    def get_text_and_icon(self, element):
+        # Kiểm tra đầu vào phải là WebElement
+        if not isinstance(element, WebElement):
+            raise ValueError("Đầu vào phải là WebElement.")
+
+        # Lấy text từ chính element
+        raw_text = element.text.strip() if element.text else ""
+
+        # Lấy text từ các phần tử con (nếu có)
+        child_elements = element.find_elements(By.XPATH, ".//*")
+        icon_text = ''.join(
+            child.text.strip() if child.text else child.get_attribute("textContent").strip()
+            for child in child_elements
+        )
+
+        # Chuẩn hóa font về bình thường
+        normalized_text = unicodedata.normalize("NFKD", raw_text + icon_text)
+
+        return normalized_text.strip()
