@@ -181,13 +181,12 @@ class BasePage:
         element.click()
         element.clear()  # Xóa nội dung cũ
 
-        # Sử dụng ActionChains để gửi văn bản bao gồm icon/emoji
+        # Sử dụng ActionChains để gửi toàn bộ văn bản bao gồm icon/emoji
         action = ActionChains(self.driver)
-        
-        # Duyệt qua từng ký tự trong text và gửi trực tiếp đến trường
-        for char in text:
-            action.send_keys(char)
-        
+
+        # Gửi toàn bộ nội dung, bao gồm cả icon và văn bản
+        action.send_keys(text)
+
         # Thực thi hành động
         action.perform()
         
@@ -499,7 +498,7 @@ class BasePage:
                     raise ValueError("Tất cả phần tử trong message_elements phải là WebElement.")
 
                 # Lấy text từ tất cả các WebElement trong danh sách
-                messages = [self.get_text_and_icon(message) for message in message_elements]
+                messages = self.get_text_and_icon(".//div[contains(@data-ad-comet-preview, 'message')]")
 
                 # Kiểm tra nếu messages đã tồn tại trong dữ liệu cũ
                 if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
@@ -1200,32 +1199,29 @@ class BasePage:
         except Exception as json_err:
             print(f"Error saving data to JSON: {json_err}")
 
-    def get_text_and_icon(self, element):
-        # Kiểm tra đầu vào phải là WebElement
-        if not isinstance(element, WebElement):
-            raise ValueError("Đầu vào phải là WebElement.")
-
-        # Lấy text từ chính element
-        raw_text = element.text.strip() if element.text else ""
-
+    def get_text_and_icon(self, xpath):
+        # Tìm phần tử bằng XPath
+        elements = self.driver.find_elements(By.XPATH, xpath)
+        
         # Tạo danh sách để lưu các phần tử văn bản và icon
         all_parts = []
-
-        # Lấy tất cả các phần tử con (bao gồm cả văn bản và icon)
-        child_elements = element.find_elements(By.XPATH, ".//*")
         
-        for child in child_elements:
-            # Nếu phần tử là văn bản, thêm vào danh sách
-            if child.text.strip():
-                all_parts.append(child.text.strip())
-            # Nếu phần tử là hình ảnh (icon), lấy thuộc tính src hoặc alt và thêm vào danh sách
-            elif child.tag_name == "img":
-                icon_alt = child.get_attribute("alt") if child.get_attribute("alt") else child.get_attribute("src")
-                all_parts.append(f"{icon_alt}")  # Đánh dấu icon với một chuỗi đặc biệt
+        for element in elements:
+            # Lấy tất cả các phần tử con (bao gồm cả văn bản và icon)
+            child_elements = element.find_elements(By.XPATH, ".//*")
+            
+            for child in child_elements:
+                # Nếu phần tử là văn bản, thêm vào danh sách
+                if child.text.strip():
+                    all_parts.append(child.text.strip())
+                # Nếu phần tử là hình ảnh (icon), lấy thuộc tính alt hoặc src và thêm vào danh sách
+                elif child.tag_name == "img":
+                    icon_alt = child.get_attribute("alt") if child.get_attribute("alt") else child.get_attribute("src")
+                    all_parts.append(f"ICON:{icon_alt}")  # Đánh dấu icon với một chuỗi đặc biệt
 
         # Kết hợp tất cả văn bản và icon trong thứ tự xuất hiện
         combined_text = ''.join(all_parts)
-
+        
         # Chuẩn hóa font về bình thường
         normalized_text = unicodedata.normalize("NFKD", combined_text)
 
