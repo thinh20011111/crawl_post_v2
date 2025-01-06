@@ -180,7 +180,16 @@ class BasePage:
         # Xóa và nhập văn bản nhanh
         element.click()
         element.clear()  # Xóa nội dung cũ
-        element.send_keys(text)  # Nhập toàn bộ văn bản ngay lập tức
+
+        # Sử dụng ActionChains để gửi văn bản bao gồm icon/emoji
+        action = ActionChains(self.driver)
+        
+        # Duyệt qua từng ký tự trong text và gửi trực tiếp đến trường
+        for char in text:
+            action.send_keys(char)
+        
+        # Thực thi hành động
+        action.perform()
         
     def get_text_from_element(self, locator):
         text = self.driver.find_element(By.XPATH, locator).text
@@ -1199,14 +1208,25 @@ class BasePage:
         # Lấy text từ chính element
         raw_text = element.text.strip() if element.text else ""
 
-        # Lấy text từ các phần tử con (nếu có)
+        # Tạo danh sách để lưu các phần tử văn bản và icon
+        all_parts = []
+
+        # Lấy tất cả các phần tử con (bao gồm cả văn bản và icon)
         child_elements = element.find_elements(By.XPATH, ".//*")
-        icon_text = ''.join(
-            child.text.strip() if child.text else child.get_attribute("textContent").strip()
-            for child in child_elements
-        )
+        
+        for child in child_elements:
+            # Nếu phần tử là văn bản, thêm vào danh sách
+            if child.text.strip():
+                all_parts.append(child.text.strip())
+            # Nếu phần tử là hình ảnh (icon), lấy thuộc tính src hoặc alt và thêm vào danh sách
+            elif child.tag_name == "img":
+                icon_alt = child.get_attribute("alt") if child.get_attribute("alt") else child.get_attribute("src")
+                all_parts.append(f"{icon_alt}")  # Đánh dấu icon với một chuỗi đặc biệt
+
+        # Kết hợp tất cả văn bản và icon trong thứ tự xuất hiện
+        combined_text = ''.join(all_parts)
 
         # Chuẩn hóa font về bình thường
-        normalized_text = unicodedata.normalize("NFKD", raw_text + icon_text)
+        normalized_text = unicodedata.normalize("NFKD", combined_text)
 
         return normalized_text.strip()
