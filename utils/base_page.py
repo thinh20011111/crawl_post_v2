@@ -174,21 +174,20 @@ class BasePage:
         # Chờ phần tử có thể tương tác trong 1 giây
         WebDriverWait(self.driver, 1).until(EC.element_to_be_clickable((By.XPATH, xpath)))
 
-        # Lấy phần tử và nhập trực tiếp văn bản
+        # Lấy phần tử
         element = self.driver.find_element(By.XPATH, xpath)
 
-        # Xóa và nhập văn bản nhanh
+        # Xóa và nhập văn bản
         element.click()
         element.clear()  # Xóa nội dung cũ
 
-        # Sử dụng ActionChains để gửi toàn bộ văn bản bao gồm icon/emoji
+        # Sử dụng ActionChains để nhập văn bản
         action = ActionChains(self.driver)
-
-        # Gửi toàn bộ nội dung, bao gồm cả icon và văn bản
+        
+        # Nhắm đến phần tử cụ thể và gửi toàn bộ nội dung
+        action.click(element)  # Đảm bảo focus vào phần tử
         action.send_keys(text)
-
-        # Thực thi hành động
-        action.perform()
+        action.perform()  # Thực thi chuỗi hành động
         
     def get_text_from_element(self, locator):
         text = self.driver.find_element(By.XPATH, locator).text
@@ -498,17 +497,28 @@ class BasePage:
                     raise ValueError("Tất cả phần tử trong message_elements phải là WebElement.")
 
                 # Lấy text từ tất cả các WebElement trong danh sách
-                messages = self.get_text_and_icon(".//div[contains(@data-ad-comet-preview, 'message')]")
+                # Lấy nội dung chính (title) từ bài đăng
+                messages = self.get_text_and_icon(post_element)
+
+                # Kiểm tra nếu messages rỗng hoặc không hợp lệ
+                if not messages:
+                    print(f"Post {current_post_index} không có title hợp lệ, bỏ qua.")
+                    current_post_index += 1
+                    skip_count += 1
+                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                        print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
+                        break
+                    continue
 
                 # Kiểm tra nếu messages đã tồn tại trong dữ liệu cũ
                 if any(post.get("messages") == messages for post in existing_data.get(crawl_page, [])):
                     print(f"Post {current_post_index} với messages đã tồn tại, bỏ qua.")
                     current_post_index += 1
                     skip_count += 1
-                    if skip_count >= 20:  # Kiểm tra nếu đã bỏ qua quá 20 bài
+                    if skip_count >= 20:
                         print("Đã bỏ qua quá 20 bài, dừng quá trình.")
-                        break  # Dừng quá trình nếu bỏ qua quá nhiều bài
-                    continue  # Bỏ qua bài đăng này nếu messages đã tồn tại
+                        break
+                    continue
 
                 # Tìm các phần tử ảnh trong post
                 image_elements = post_element.find_elements(By.XPATH, ".//img")
@@ -566,8 +576,8 @@ class BasePage:
                 # Lưu dữ liệu bài viết hợp lệ vào danh sách
                 post_data.append({
                     "post_index": current_post_index,
-                    "messages": messages,
-                    "images": image_paths  # Lưu chỉ tên ảnh
+                    "messages": messages,  # Lưu nội dung chính (title)
+                    "images": image_paths  # Lưu các ảnh
                 })
 
                 print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
@@ -597,7 +607,7 @@ class BasePage:
                 for post in post_data:
                     try:
                         # Đăng bài với tiêu đề và hình ảnh
-                        self.create_post(post["messages"][0], post["images"])
+                        self.create_post(post["messages"], post["images"])
                         print(f"Đã đăng bài thành công cho post {post['post_index']}")
                         self.driver.refresh()  # Làm mới trang để chuẩn bị đăng bài tiếp theo
                     except Exception as post_err:
@@ -1199,30 +1209,60 @@ class BasePage:
         except Exception as json_err:
             print(f"Error saving data to JSON: {json_err}")
 
-    def get_text_and_icon(self, xpath):
-        # Tìm phần tử bằng XPath
-        elements = self.driver.find_elements(By.XPATH, xpath)
-        
-        # Tạo danh sách để lưu các phần tử văn bản và icon
-        all_parts = []
-        
-        for element in elements:
-            # Lấy tất cả các phần tử con (bao gồm cả văn bản và icon)
-            child_elements = element.find_elements(By.XPATH, ".//*")
-            
-            for child in child_elements:
-                # Nếu phần tử là văn bản, thêm vào danh sách
-                if child.text.strip():
-                    all_parts.append(child.text.strip())
-                # Nếu phần tử là hình ảnh (icon), lấy thuộc tính alt hoặc src và thêm vào danh sách
-                elif child.tag_name == "img":
-                    icon_alt = child.get_attribute("alt") if child.get_attribute("alt") else child.get_attribute("src")
-                    all_parts.append(f"ICON:{icon_alt}")  # Đánh dấu icon với một chuỗi đặc biệt
+    def get_text_and_icon(self, element):
+        # Kiểm tra đầu vào phải là WebElement
+        if not isinstance(element, WebElement):
+            raise ValueError("Đầu vào phải là WebElement.")
 
-        # Kết hợp tất cả văn bản và icon trong thứ tự xuất hiện
-        combined_text = ''.join(all_parts)
-        
-        # Chuẩn hóa font về bình thường
-        normalized_text = unicodedata.normalize("NFKD", combined_text)
+        try:
+            # Tìm phần tử con chứa nội dung chính của bài viết (title)
+            message_element = element.find_element(By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]")
+        except Exception as e:
+            print(f"Lỗi khi tìm phần tử message: {e}")
+            return ""  # Trả về chuỗi rỗng nếu không tìm thấy phần tử
 
-        return normalized_text.strip()
+        # Lấy nội dung HTML của message_element để xử lý
+        combined_content = message_element.get_attribute('innerHTML')
+
+        # Sử dụng BeautifulSoup để xử lý nội dung HTML
+        soup = BeautifulSoup(combined_content, 'html.parser')
+
+        # Biến để lưu lại kết quả văn bản và emoji
+        text_with_icons = []
+
+        # Lặp qua các phần tử trong soup, tách ra text và các icon (emoji)
+        for element in soup.descendants:
+            if isinstance(element, str):  # Nếu là văn bản
+                text_with_icons.append(element.strip())
+            elif element.name == 'img':  # Nếu là icon (emoji)
+                alt_text = element.get('alt', '')
+                if alt_text:  # Kiểm tra nếu có thuộc tính alt chứa emoji
+                    text_with_icons.append(alt_text)
+
+        # Kết hợp lại các phần tử văn bản và icon theo đúng thứ tự
+        combined_text = " ".join(text_with_icons).strip()
+
+        # Loại bỏ nội dung lặp
+        try:
+            # Chia nhỏ nội dung thành các đoạn và loại bỏ các đoạn trùng lặp
+            segments = combined_text.split(" ")
+            seen = set()
+            unique_segments = []
+            for segment in segments:
+                if segment not in seen:
+                    seen.add(segment)
+                    unique_segments.append(segment)
+            deduplicated_text = " ".join(unique_segments).strip()
+        except Exception as e:
+            print(f"Lỗi khi loại bỏ nội dung lặp: {e}")
+            deduplicated_text = combined_text
+
+        # Chuẩn hóa nội dung (xóa ký tự không hợp lệ, nếu có)
+        try:
+            normalized_text = unicodedata.normalize("NFKD", deduplicated_text).strip()
+        except Exception as e:
+            print(f"Lỗi khi chuẩn hóa văn bản: {e}")
+            normalized_text = deduplicated_text
+
+        return normalized_text
+
