@@ -1238,9 +1238,16 @@ class BasePage:
                 alt_text = element.get('alt', '')
                 if alt_text:  # Kiểm tra nếu có thuộc tính alt chứa emoji
                     text_with_icons.append(alt_text)
+            elif element.name == 'br':  # Xử lý ngắt dòng
+                text_with_icons.append("\n")
+            elif element.name == 'p':  # Xử lý đoạn văn
+                text_with_icons.append("\n")  # Thêm một dòng mới trước mỗi đoạn văn
+                # Lấy văn bản bên trong thẻ <p> và thêm vào
+                text_with_icons.append(element.get_text().strip())
+                text_with_icons.append("\n")  # Thêm một dòng mới sau mỗi đoạn văn
 
-        # Kết hợp lại các phần tử văn bản và icon theo đúng thứ tự
-        combined_text = " ".join(text_with_icons).strip()
+        # Kết hợp lại các phần tử văn bản và icon theo đúng thứ tự, giữ lại ngắt dòng
+        combined_text = "".join(text_with_icons).strip()
 
         # Loại bỏ nội dung lặp
         try:
