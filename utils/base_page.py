@@ -757,7 +757,7 @@ class BasePage:
                     skip_count += 1
                     continue
 
-                if video_duration_seconds <= 300:  # Video dưới 5 phút
+                if video_duration_seconds <= 300 and video_duration_seconds >= 120:  # Video dưới 5 phút
                     video_path = self.download_facebook_video(video_url)
                     time.sleep(5)
                     post_data.append({

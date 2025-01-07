@@ -15,7 +15,7 @@ def main():
     service = Service(config.CHROME_DRIVER_PATH)
     chrome_options = Options()
     chrome_options.add_argument("--disable-notifications")  # Chặn thông báo
-    # chrome_options.add_argument("--headless")  # Chế độ không giao diện
+    chrome_options.add_argument("--headless")  # Chế độ không giao diện
     chrome_options.add_argument("--disable-gpu")  # Vô hiệu hóa GPU khi chạy headless
     chrome_options.add_argument("--window-size=1920x1080")  # Thiết lập kích thước cửa sổ để tránh một số vấn đề hiển thị
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -67,7 +67,7 @@ def main():
                 )
 
                 print(f"Hoàn tất xử lý tài khoản: {account_key}")
-
+                base_page.clear_media_folder()
             except Exception as e:
                 print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
                 continue  # Tiếp tục với tài khoản tiếp theo nếu gặp lỗi
