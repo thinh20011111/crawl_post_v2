@@ -19,11 +19,11 @@ def main():
     chrome_options.add_argument("--disable-gpu")  # Vô hiệu hóa GPU khi chạy headless
     chrome_options.add_argument("--window-size=1920x1080")  # Thiết lập kích thước cửa sổ để tránh một số vấn đề hiển thị
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.maximize_window()
 
     # Mở trang web
     base_page = BasePage(driver)
-    accounts_filename = "data/account.json"  # Đọc dữ liệu tài khoản từ file account.json
+    accounts_filename = "data/data_crawl_post_user.json"  # Đọc dữ liệu tài khoản từ file account.json
+    output_file = "data/facebook_posts.json"
     data_filename = "data/data.json"
     
     # Đọc dữ liệu tài khoản từ account.json
@@ -33,6 +33,7 @@ def main():
     with open(data_filename, 'r') as data_file:
         data = json.load(data_file)
 
+    driver.maximize_window()
 
     try:
         # Đăng nhập vào Facebook một lần
@@ -57,12 +58,13 @@ def main():
 
                 # Crawl bài viết mới từ group_url
                 num_posts = 1
-                base_page.get_and_create_watch(
+                base_page.scroll_to_element_and_crawl(
                     username=emso_username,
                     password=emso_password,
                     nums_post=num_posts,
                     crawl_page=group_url,
-                    post_page=post_url
+                    post_page=post_url,
+                    page=False
                 )
 
                 print(f"Hoàn tất xử lý tài khoản: {account_key}")

@@ -57,13 +57,14 @@ def main():
                 post_url = account_data["url1"]  # URL để đăng bài
 
                 # Crawl bài viết mới từ group_url
-                num_posts = 3
+                num_posts = 1
                 base_page.scroll_to_element_and_crawl(
                     username=emso_username,
                     password=emso_password,
                     nums_post=num_posts,
                     crawl_page=group_url,
-                    post_page=post_url
+                    post_page=post_url,
+                    page=True
                 )
 
                 print(f"Hoàn tất xử lý tài khoản: {account_key}")

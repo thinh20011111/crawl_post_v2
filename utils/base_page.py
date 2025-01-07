@@ -439,14 +439,17 @@ class BasePage:
             print(f"Lỗi khi lấy giá trị từ input: {e}")
             return None
     # ====================================================================================================
-    def scroll_to_element_and_crawl(self, username, password, nums_post, crawl_page, post_page, index_start=1):
+    def scroll_to_element_and_crawl(self, username, password, nums_post, crawl_page, post_page, index_start=1, page = True):
         self.driver.get(crawl_page)
         post_data = []  # Danh sách để lưu dữ liệu của các bài post hợp lệ
         current_post_index = index_start  # Bắt đầu từ index_start
         skip_count = 0  # Biến đếm số bài bỏ qua
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
-        output_file = "data/post.json"
+        if page:
+            output_file = "data/post.json"
+        else:
+            output_file = "data/post_user.json"
         existing_data = {}
         if os.path.exists(output_file):
             try:
