@@ -5,6 +5,7 @@ from utils.config import Config
 from selenium.webdriver.chrome.options import Options
 import time
 import os
+from selenium_stealth import stealth
 import json
 
 def main():
@@ -19,7 +20,14 @@ def main():
     chrome_options.add_argument("--disable-gpu")  # Vô hiệu hóa GPU khi chạy headless
     chrome_options.add_argument("--window-size=1920x1080")  # Thiết lập kích thước cửa sổ để tránh một số vấn đề hiển thị
     driver = webdriver.Chrome(service=service, options=chrome_options)
-
+    stealth(driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+        )
     # Mở trang web
     base_page = BasePage(driver)
     accounts_filename = "data/account_create_moment.json"  # Đọc dữ liệu tài khoản từ file account.json
@@ -31,9 +39,7 @@ def main():
     driver.maximize_window()
     try:
         # Lặp qua tất cả các tài khoản và xử lý
-        driver.get("https://www.tiktok.com/foryou")
-        time.sleep(30)
-        num_posts_per_account = 3  # Số lượng bài viết cần crawl mỗi tài khoản
+        num_posts_per_account = 2  # Số lượng bài viết cần crawl mỗi tài khoản
 
         for account_key, account_data in accounts_data.items():
             try:

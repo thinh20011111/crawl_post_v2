@@ -112,6 +112,7 @@ class BasePage:
     SHOW_QA_CODE = "//div[@data-e2e='channel-item']//div[contains(text(), 'Use QR code')]"
     QA_CODE = "//div[@data-e2e='qr-code']/canvas"
     NEXT_VIDEO_TIKTOK = "/html/body/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/button"
+    FROFILE_TIKTOK = "//*[@id='header-more-menu-icon']"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -379,7 +380,7 @@ class BasePage:
             # Tải lên các ảnh (nếu có)
             if image_names:
                 for image_name in image_names:
-                    self.upload_image(self.INPUT_UPLOAD_MOMENT, image_name)  # Giả sử upload_image hỗ trợ tải ảnh
+                    self.upload_image(self.INPUT_UPLOAD_MOMENT, image_names)  # Giả sử upload_image hỗ trợ tải ảnh
 
             # Nhấn nút đăng bài
             self.click_element(self.BUTTON_CREATE_MOMENT)
@@ -644,15 +645,31 @@ class BasePage:
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         output_filename = f"media/facebook_video_{timestamp}.mp4"  # Tên file sẽ bao gồm timestamp
         video_name = f"facebook_video_{timestamp}.mp4"
-        
-        ydl_opts = {
+
+        ydl_opts_info = {
+            'quiet': True,  # Tắt log không cần thiết
+            'skip_download': True,  # Không tải video, chỉ lấy thông tin
+        }
+
+        # Lấy thông tin video
+        with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
+            info = ydl.extract_info(video_url, download=False)
+
+        # Kiểm tra thời lượng video
+        duration = info.get('duration', 0)  # Thời lượng video (giây)
+        if duration <= 5:
+            return "Video có thời lượng nhỏ hơn hoặc bằng 5 giây, không tải được."
+
+        # Tùy chọn tải video
+        ydl_opts_download = {
             'format': 'best',
             'outtmpl': output_filename,  # Đặt tên file đầu ra với timestamp
         }
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        # Tải video nếu đủ điều kiện
+        with yt_dlp.YoutubeDL(ydl_opts_download) as ydl:
             ydl.download([video_url])
-            return [video_name]
+            return video_name
     
     def remove_icons(text):
         return ''.join(ch for ch in text if ch.isalnum() or ch.isspace())
@@ -730,7 +747,7 @@ class BasePage:
 
                 # Check for duplicates in existing_data
                 if any(post["messages"] == messages and post["video"] == video_url for post in existing_data[crawl_page]):
-                    print(f"Post {current_post_index} with these messages already exists, skipping.")
+                    print(f"Post {current_post_index} with these messages already exists in existing data, skipping.")
                     current_post_index += 1
                     skip_count += 1
                     if skip_count >= 20:
@@ -744,7 +761,7 @@ class BasePage:
                     current_post_index += 1
                     skip_count += 1
                     continue
-
+                
                 # Create media directory if not exists
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
@@ -760,13 +777,15 @@ class BasePage:
                     skip_count += 1
                     continue
 
-                if video_duration_seconds <= 300 and video_duration_seconds >= 120:  # Video dưới 5 phút
+                if video_duration_seconds <= 900 and video_duration_seconds >= 120:  # Video dưới 5 phút
                     video_path = self.download_facebook_video(video_url)
                     time.sleep(5)
                     post_data.append({
                         "post_index": current_post_index,
                         "messages": messages,
-                        "video": video_path
+                        "video": [
+                            video_path
+                        ]
                     })
                     print(f"Downloaded video under 5 minutes for post {current_post_index}.")
                 else:  # Video dài hơn 5 phút
@@ -923,10 +942,10 @@ class BasePage:
 
                 # Get video duration
                 duration_seconds = self.get_video_duration(video_url)
-                if duration_seconds is None or duration_seconds > 300:
-                    current_post_index += 1
-                    print(f"Skipped video over 5 minutes for post {current_post_index}.")
+                if duration_seconds is None or duration_seconds <= 5:
+                    print(f"Skipped video under 5 seconds for post {current_post_index}.")
                     self.click_element(self.NEXT_REELS)  # Skip to the next video
+                    current_post_index += 1
                     continue
 
                 # Wait for elements to appear
@@ -942,6 +961,7 @@ class BasePage:
                 if not messages or all(not msg.strip() for msg in messages):
                     self.click_element(self.NEXT_REELS)
                     print("No messages found, clicked Next.")
+                    current_post_index += 1
                     continue
 
                 # Truncate each message to 150 characters
@@ -967,10 +987,11 @@ class BasePage:
                         "messages": shortened_messages,
                         "video": video_path
                     })
-                    print(f"Downloaded video under 5 minutes for post {current_post_index}.")
+                    print(f"Downloaded video over 5 seconds for post {current_post_index}.")
                 except Exception as download_err:
                     print(f"Error downloading video for post {current_post_index}: {download_err}")
                     self.click_element(self.NEXT_REELS)
+                    current_post_index += 1
                     continue
 
                 # Update existing data
@@ -1102,19 +1123,30 @@ class BasePage:
 
             # Tải video và lấy thông tin video
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info_dict = ydl.extract_info(video_url, download=True)
-                filename = ydl.prepare_filename(info_dict)  # Lấy tên file sau khi tải xong
+                info_dict = ydl.extract_info(video_url, download=False)
 
-            print(f"Video đã được tải xuống và lưu vào: {filename}")
-            return filename  # Trả về đường dẫn đầy đủ của file video
+                # Kiểm tra thời gian video (duration) trước khi tải
+                duration = info_dict.get('duration', 0)
+                if duration >= 300:  # Video dài hơn hoặc bằng 5 phút (300 giây)
+                    print("Video quá dài, không tải xuống.")
+                    return None
+
+                # Tải video
+                filename = ydl.prepare_filename(info_dict)  # Lấy tên file sau khi tải xong
+                ydl.download([video_url])
+
+            # Chỉ trả về tên tệp, không bao gồm đường dẫn
+            base_filename = os.path.basename(filename)
+            print(f"Video đã được tải xuống và lưu vào: {base_filename}")
+            return base_filename  # Trả về tên file mà không bao gồm đường dẫn
 
         except Exception as e:
             print(f"Lỗi khi tải video: {e}")
             return None
-        
+    
     def get_and_create_tiktok(self, username, password, nums_post):
-        time.sleep(2)
-        
+        self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
+        time.sleep()
         # Đóng hướng dẫn nếu có
         if self.is_element_present_by_xpath(self.CLOSE_GUIDE):
             self.click_element(self.CLOSE_GUIDE)
@@ -1159,6 +1191,20 @@ class BasePage:
                     print(f"Video {video_id} already processed, skipping...")
                     current_post_index += 1
                     continue
+                
+                # Kiểm tra thời gian video bằng yt-dlp
+                try:
+                    with yt_dlp.YoutubeDL() as ydl:
+                        info_dict = ydl.extract_info(video_url, download=False)
+                        duration = info_dict.get('duration', 0)
+                        if duration >= 300:  # Nếu video dài hơn 5 phút (300 giây)
+                            print(f"Video {video_id} is too long (> 5 minutes), skipping...")
+                            current_post_index += 1
+                            continue
+                except Exception as e:
+                    print(f"Error checking video duration for {video_id}: {e}")
+                    current_post_index += 1
+                    continue
 
                 # Chờ và lấy tiêu đề
                 self.wait_for_element_present(self.TITLE_VIDEO_TIKTOK.replace("{index}", str(current_post_index)))
@@ -1176,6 +1222,15 @@ class BasePage:
                     current_post_index += 1
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
                     continue
+                
+                # Truncate each message to 150 characters
+                shortened_messages = []
+                for msg in messages:
+                    if len(msg) > 150:
+                        msg = msg[:150]
+                        if len(msg.split()) > 1:
+                            msg = ' '.join(msg.split()[:-1])
+                    shortened_messages.append(msg)
 
                 # Tải video
                 try:
@@ -1191,9 +1246,11 @@ class BasePage:
 
                 # Lưu dữ liệu vào dictionary
                 post_data[video_id] = {
-                    "title": messages,
+                    "title": shortened_messages,
                     "url": video_url,
-                    "file_path": downloaded_file
+                    "file_path": [
+                        downloaded_file
+                    ]
                 }
 
                 print(f"Processed video {video_id}: {messages}")
@@ -1211,6 +1268,30 @@ class BasePage:
             print(f"Data saved to {output_file}")
         except Exception as json_err:
             print(f"Error saving data to JSON: {json_err}")
+        
+        if post_data:
+            try:
+                self.login_emso(username, password)
+                time.sleep(1)
+                WebDriverWait(self.driver, 120).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+
+                if not self.is_element_present_by_xpath(self.OPEN_FORM):
+                    self.driver.refresh()
+
+                # Iterate through all posts in post_data
+                for index, (video_id, post) in enumerate(post_data.items()):
+                    try:
+                        self.create_moment(post["title"][0], post["file_path"])
+                        print(f"Đã đăng bài thành công cho post {index + 1}")
+                    except Exception as post_err:
+                        print(f"Lỗi khi đăng bài {index + 1}: {post_err}")
+            except Exception as login_err:
+                print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+
+            finally:
+                self.logout()
+                print("Đã đăng xuất khỏi tài khoản.")
+
 
     def get_text_and_icon(self, element):
         # Kiểm tra đầu vào phải là WebElement
@@ -1275,4 +1356,5 @@ class BasePage:
             normalized_text = deduplicated_text
 
         return normalized_text
+    
 
