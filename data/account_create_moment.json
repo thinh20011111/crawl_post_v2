@@ -1,4 +1,8 @@
 {
+    "account_12": {
+        "username": "emsomanagerhd@gmail.com",
+        "password": "khongnhomatkhaucu"
+    },
     "account_1": {
         "username": "s1456a2@gmail.com",
         "password": "khongnhomatkhaucu"
@@ -7,96 +11,12 @@
         "username": "pnnh1311@gmail.com",
         "password": "khongnhomatkhaucu"
     },
-    "account_3": {
-        "username": "hungnguyensama1311@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_4": {
-        "username": "tranmanhhung20012002@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_5": {
-        "username": "emsotester3@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_6": {
-        "username": "testeremso8@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_7": {
-        "username": "testeremso11@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_8": {
-        "username": "testeremso12@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_9": {
-        "username": "testeremso03@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_10": {
-        "username": "sn5589154@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_11": {
-        "username": "tranhienthi147@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_12": {
-        "username": "emsomanagerhd@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
     "account_13": {
         "username": "hungnguyen10121311@gmail.com",
         "password": "khongnhomatkhaucu"
     },
-    "account_14": {
-        "username": "hungnguyen610a2@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_15": {
-        "username": "testeremso@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_16": {
-        "username": "testeremso2@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_17": {
-        "username": "testeremso3@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_18": {
-        "username": "testeremso4@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_19": {
-        "username": "testeremso05@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_20": {
-        "username": "testeremso6@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_21": {
-        "username": "hoanghonghak4@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_22": {
-        "username": "hoanghonganhk4@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_23": {
-        "username": "maitam202020@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_24": {
-        "username": "ngocanh12334556@gmail.com",
-        "password": "khongnhomatkhaucu"
-    },
-    "account_25": {
-        "username": "honganh97661477@gmail.com",
+    "account_8": {
+        "username": "testeremso12@gmail.com",
         "password": "khongnhomatkhaucu"
     }
 }
