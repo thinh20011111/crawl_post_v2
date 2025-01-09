@@ -552,7 +552,7 @@ class BasePage:
                 current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
 
             except Exception as e:
-                print(f"Lỗi khi xử lý phần tử tại index {current_post_index}: {e}")
+                print(f"Lỗi khi xử lý phần tử tại index {current_post_index}")
                 current_post_index += 1
                 skip_count += 1
                 continue
