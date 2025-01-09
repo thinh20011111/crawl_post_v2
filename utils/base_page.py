@@ -447,10 +447,7 @@ class BasePage:
         skip_count = 0  # Biến đếm số bài bỏ qua
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
-        if page:
-            output_file = "data/post.json"
-        else:
-            output_file = "data/post_user.json"
+        output_file = "data/post.json" if page else "data/post_user.json"
         existing_data = {}
         if os.path.exists(output_file):
             try:
@@ -465,8 +462,12 @@ class BasePage:
         # Dùng set để theo dõi các bài đã thu thập để tránh trùng lặp
         collected_messages = set(post["messages"] for post in existing_data.get(crawl_page, []))
 
-        while len(post_data) < nums_post:  # Tiếp tục đến khi đủ nums_post hợp lệ
+        while True:  # Vòng lặp không xác định trước, dừng bằng điều kiện bên trong
             try:
+                if len(post_data) >= nums_post:  # Kiểm tra nếu đã thu thập đủ bài
+                    print(f"Đã thu thập đủ {nums_post} bài hợp lệ. Dừng quá trình thu thập.")
+                    break
+
                 post_xpath = self.POST.replace("{index}", str(current_post_index))
                 WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
@@ -475,6 +476,7 @@ class BasePage:
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
                 self.wait_for_element_present(self.POST.replace("{index}", str(current_post_index + 1)))
 
+                # Kiểm tra tiêu đề
                 message_elements = post_element.find_elements(By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]")
                 if not message_elements or not message_elements[0].text.strip():
                     print(f"Post {current_post_index} không có title hợp lệ, bỏ qua.")
@@ -496,6 +498,7 @@ class BasePage:
                         break
                     continue
 
+                # Kiểm tra ảnh
                 image_elements = post_element.find_elements(By.XPATH, ".//img")
                 image_urls = [
                     img.get_attribute("src")
@@ -512,10 +515,10 @@ class BasePage:
                         break
                     continue
 
+                # Tải ảnh xuống
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
                 image_paths = []
-
                 for i, img_url in enumerate(image_urls):
                     try:
                         response = requests.get(img_url, stream=True)
@@ -538,15 +541,15 @@ class BasePage:
                         break
                     continue
 
+                # Thêm bài viết hợp lệ vào danh sách
                 post_data.append({
                     "post_index": current_post_index,
                     "messages": messages,
                     "images": image_paths
                 })
                 collected_messages.add(messages)
-
                 print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
-                current_post_index += 1  # Chỉ tăng index sau khi đã xử lý thành công bài
+                current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
 
             except Exception as e:
                 print(f"Lỗi khi xử lý phần tử tại index {current_post_index}: {e}")
@@ -554,44 +557,43 @@ class BasePage:
                 skip_count += 1
                 continue
 
-        if len(post_data) >= nums_post:
-            print(f"Thu thập đủ {nums_post} bài hợp lệ.")
+        # Đăng bài tuần tự sau khi thu thập đủ
+        print(f"Bắt đầu đăng bài...")
 
-            # Tiến hành đăng bài sau khi thu thập đủ dữ liệu
-            try:
-                self.login_emso(username, password)
-                self.driver.get(post_page)
-                WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+        try:
+            self.login_emso(username, password)
+            self.driver.get(post_page)
+            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
 
-                for post in post_data:
+            for post in post_data:
+                try:
+                    self.create_post(post["messages"], post["images"])
+                    print(f"Đã đăng bài thành công cho post {post['post_index']}")
+                    
+                    # Immediately save the successful post to the file
+                    if crawl_page in existing_data:
+                        existing_data[crawl_page].append(post)  # Append the successful post
+                    else:
+                        existing_data[crawl_page] = [post]  # Initialize with the first successful post
+
+                    # Save to file after every successful post
                     try:
-                        self.create_post(post["messages"], post["images"])
-                        print(f"Đã đăng bài thành công cho post {post['post_index']}")
-                        self.driver.refresh()
-                    except Exception as post_err:
-                        print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+                        with open(output_file, "w", encoding="utf-8") as json_file:
+                            json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+                        print(f"Dữ liệu đã được lưu vào {output_file} cho post {post['post_index']}")
+                    except Exception as json_err:
+                        print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+                        
+                    self.driver.refresh()
+                except Exception as post_err:
+                    print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
 
-            except Exception as login_err:
-                print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+        except Exception as login_err:
+            print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
 
-            finally:
-                self.logout()
-                print("Đã đăng xuất khỏi tài khoản.")
-
-            if crawl_page in existing_data:
-                existing_data[crawl_page].extend(post_data)
-            else:
-                existing_data[crawl_page] = post_data
-
-            try:
-                with open(output_file, "w", encoding="utf-8") as json_file:
-                    json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-                print(f"Dữ liệu đã được lưu vào {output_file}")
-            except Exception as json_err:
-                print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
-        else:
-            print(f"Không đủ bài đăng hợp lệ để tiếp tục.")
-
+        finally:
+            self.logout()
+            print("Đã đăng xuất khỏi tài khoản.")
                 
     def download_facebook_video(self, video_url):
         # Lấy thời gian hiện tại để đảm bảo tên file là duy nhất
