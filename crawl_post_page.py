@@ -58,7 +58,7 @@ def main():
                 post_url = account_data["url1"]  # URL để đăng bài
 
                 # Crawl bài viết mới từ group_url
-                num_posts = 10
+                num_posts = 1
                 base_page.scroll_to_element_and_crawl(
                     username=emso_username,
                     password=emso_password,

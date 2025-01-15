@@ -555,6 +555,16 @@ class BasePage:
                 print(f"Lỗi khi xử lý phần tử tại index {current_post_index}")
                 current_post_index += 1
                 skip_count += 1
+                
+                # ////////////////////////////
+                post_xpath = self.POST.replace("{index}", str(current_post_index))
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
+                post_element = self.driver.find_element(By.XPATH, post_xpath)
+
+                # Cuộn đến vị trí của phần tử chính
+                self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
+                # ////////////////////////////
+                
                 continue
 
         # Đăng bài tuần tự sau khi thu thập đủ
@@ -1249,66 +1259,38 @@ class BasePage:
 
 
     def get_text_and_icon(self, element):
-        # Kiểm tra đầu vào phải là WebElement
         if not isinstance(element, WebElement):
             raise ValueError("Đầu vào phải là WebElement.")
 
         try:
-            # Tìm phần tử con chứa nội dung chính của bài viết (title)
+            # Tìm phần tử chứa nội dung
             message_element = element.find_element(By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]")
         except Exception as e:
             print(f"Lỗi khi tìm phần tử message: {e}")
-            return ""  # Trả về chuỗi rỗng nếu không tìm thấy phần tử
+            return ""
 
-        # Lấy nội dung HTML của message_element để xử lý
+        # Lấy nội dung HTML và xử lý
         combined_content = message_element.get_attribute('innerHTML')
-
-        # Sử dụng BeautifulSoup để xử lý nội dung HTML
         soup = BeautifulSoup(combined_content, 'html.parser')
 
-        # Biến để lưu lại kết quả văn bản và emoji
         text_with_icons = []
-
-        # Lặp qua các phần tử trong soup, tách ra text và các icon (emoji)
         for element in soup.descendants:
-            if isinstance(element, str):  # Nếu là văn bản
+            if isinstance(element, str):  # Văn bản
                 text_with_icons.append(element.strip())
-            elif element.name == 'img':  # Nếu là icon (emoji)
+            elif element.name == 'img':  # Emoji
                 alt_text = element.get('alt', '')
-                if alt_text:  # Kiểm tra nếu có thuộc tính alt chứa emoji
+                if alt_text:
                     text_with_icons.append(alt_text)
-            elif element.name == 'br':  # Xử lý ngắt dòng
+            elif element.name in ['br', 'p']:  # Ngắt dòng
                 text_with_icons.append("\n")
-            elif element.name == 'p':  # Xử lý đoạn văn
-                text_with_icons.append("\n")  # Thêm một dòng mới trước mỗi đoạn văn
-                # Lấy văn bản bên trong thẻ <p> và thêm vào
-                text_with_icons.append(element.get_text().strip())
-                text_with_icons.append("\n")  # Thêm một dòng mới sau mỗi đoạn văn
 
-        # Kết hợp lại các phần tử văn bản và icon theo đúng thứ tự, giữ lại ngắt dòng
+        # Kết hợp và chuẩn hóa
         combined_text = "".join(text_with_icons).strip()
-
-        # Loại bỏ nội dung lặp
         try:
-            # Chia nhỏ nội dung thành các đoạn và loại bỏ các đoạn trùng lặp
-            segments = combined_text.split(" ")
-            seen = set()
-            unique_segments = []
-            for segment in segments:
-                if segment not in seen:
-                    seen.add(segment)
-                    unique_segments.append(segment)
-            deduplicated_text = " ".join(unique_segments).strip()
-        except Exception as e:
-            print(f"Lỗi khi loại bỏ nội dung lặp: {e}")
-            deduplicated_text = combined_text
-
-        # Chuẩn hóa nội dung (xóa ký tự không hợp lệ, nếu có)
-        try:
-            normalized_text = unicodedata.normalize("NFKD", deduplicated_text).strip()
+            normalized_text = unicodedata.normalize("NFKD", combined_text).strip()
         except Exception as e:
             print(f"Lỗi khi chuẩn hóa văn bản: {e}")
-            normalized_text = deduplicated_text
+            normalized_text = combined_text
 
         return normalized_text
     
