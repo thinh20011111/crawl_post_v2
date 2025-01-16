@@ -39,7 +39,7 @@ def main():
     driver.maximize_window()
     try:
         # Lặp qua tất cả các tài khoản và xử lý
-        num_posts_per_account = 2  # Số lượng bài viết cần crawl mỗi tài khoản
+        num_posts_per_account = 1  # Số lượng bài viết cần crawl mỗi tài khoản
 
         for account_key, account_data in accounts_data.items():
             try:

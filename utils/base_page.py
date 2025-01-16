@@ -964,7 +964,6 @@ class BasePage:
                     existing_data[f"moment_{current_post_index}"] = []
 
                 existing_data[f"moment_{current_post_index}"].append({
-                    "post_index": current_post_index,
                     "messages": shortened_messages,
                     "video": video_path
                 })
@@ -1111,33 +1110,28 @@ class BasePage:
     
     def get_and_create_tiktok(self, username, password, nums_post):
         self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
-        time.sleep()
-        # Đóng hướng dẫn nếu có
-        if self.is_element_present_by_xpath(self.CLOSE_GUIDE):
-            self.click_element(self.CLOSE_GUIDE)
-        
-        post_data = {}  # Dictionary để lưu dữ liệu bài viết
+        time.sleep(20)
         output_file = "data/tiktok.json"
-        current_post_index = 1  # Bắt đầu từ bài viết đầu tiên
-        collected_posts = 0  # Đếm số bài viết đã thu thập
-        existing_data = {}
-
+        post_data = {}  # Dictionary lưu dữ liệu bài viết đã đăng
+        
         # Đọc dữ liệu JSON hiện tại nếu có
         if os.path.exists(output_file):
             try:
                 with open(output_file, "r", encoding="utf-8") as json_file:
-                    existing_data = json.load(json_file)
-                    post_data.update(existing_data)
+                    post_data = json.load(json_file)
             except Exception as json_err:
                 print(f"Error reading existing JSON file: {json_err}")
+        
+        # Crawl video
+        collected_posts = 0
+        current_post_index = 1  # Bắt đầu từ bài viết đầu tiên
+        video_queue = []  # Hàng đợi video để đăng
 
-        # Bắt đầu crawl bài viết
         while collected_posts < nums_post:
             try:
-                # Mô phỏng cuộn qua bài viết
                 time.sleep(2)
                 self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
-                
+
                 # Lấy URL video
                 video_url = self.get_input_value(self.INPUT_URL)
                 print(f"video_url = {video_url}")
@@ -1146,17 +1140,17 @@ class BasePage:
                 # Đóng popup URL nếu xuất hiện
                 if self.is_element_present_by_xpath(self.CLOSE_POPUP_URL):
                     self.click_element(self.CLOSE_POPUP_URL)
-                
+
                 # Trích xuất ID video
                 video_id_match = re.search(r'/video/(\d+)', video_url)
                 video_id = video_id_match.group(1) if video_id_match else f"unknown_{current_post_index}"
-                
+
                 # Bỏ qua nếu đã xử lý
                 if video_id in post_data:
                     print(f"Video {video_id} already processed, skipping...")
                     current_post_index += 1
                     continue
-                
+
                 # Kiểm tra thời gian video bằng yt-dlp
                 try:
                     with yt_dlp.YoutubeDL() as ydl:
@@ -1171,24 +1165,22 @@ class BasePage:
                     current_post_index += 1
                     continue
 
-                # Chờ và lấy tiêu đề
+                # Lấy tiêu đề video
                 self.wait_for_element_present(self.TITLE_VIDEO_TIKTOK.replace("{index}", str(current_post_index)))
                 message_elements = self.wait_for_element_present(self.TITLE_VIDEO_TIKTOK.replace("{index}", str(current_post_index)))
 
-                # Kiểm tra và xử lý nội dung
                 if isinstance(message_elements, list) or hasattr(message_elements, '__iter__'):
                     messages = [re.sub(r'[^\w\s,.\'\"#]', '', message.text) for message in message_elements]
                 else:
                     messages = [re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)]
 
-                # Nếu không có nội dung, chuyển sang video tiếp theo
                 if not messages or all(not msg.strip() for msg in messages):
                     print("No title found for this post, skipping...")
                     current_post_index += 1
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
                     continue
-                
-                # Truncate each message to 150 characters
+
+                # Truncate messages
                 shortened_messages = []
                 for msg in messages:
                     if len(msg) > 150:
@@ -1200,62 +1192,58 @@ class BasePage:
                 # Tải video
                 try:
                     downloaded_file = self.download_video_tiktok(video_url)
-                    if not downloaded_file:  # Nếu tải không thành công
+                    if not downloaded_file:
                         raise Exception("Video download failed.")
                 except Exception as e:
                     print(f"Error downloading video {video_id}: {e}")
-                    print("Skipping this post...")
                     current_post_index += 1
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
                     continue
 
-                # Lưu dữ liệu vào dictionary
-                post_data[video_id] = {
+                # Đưa video vào hàng đợi đăng bài
+                video_queue.append({
+                    "id": video_id,
                     "title": shortened_messages,
                     "url": video_url,
-                    "file_path": [
-                        downloaded_file
-                    ]
-                }
+                    "file_path": downloaded_file,
+                })
+                collected_posts += 1
+                current_post_index += 1
 
-                print(f"Processed video {video_id}: {messages}")
-                collected_posts += 1  # Tăng số lượng bài viết đã thu thập
-                current_post_index += 1  # Tăng chỉ số bài viết
-                
             except Exception as e:
                 print(f"Error processing post {current_post_index}: {e}")
-                time.sleep(5)  # Tránh lỗi lặp lại
+                time.sleep(5)
 
-        # Lưu dữ liệu vào JSON
+        # Đăng bài sau khi crawl xong
         try:
-            with open(output_file, "w", encoding="utf-8") as json_file:
-                json.dump(post_data, json_file, ensure_ascii=False, indent=4)
-            print(f"Data saved to {output_file}")
-        except Exception as json_err:
-            print(f"Error saving data to JSON: {json_err}")
-        
-        if post_data:
-            try:
-                self.login_emso(username, password)
-                time.sleep(1)
-                WebDriverWait(self.driver, 120).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
+            self.login_emso(username, password)
+            time.sleep(5)
 
-                if not self.is_element_present_by_xpath(self.OPEN_FORM):
-                    self.driver.refresh()
+            for video in video_queue:
+                try:
+                    self.create_moment(video["title"][0], [video["file_path"]])
+                    print(f"Successfully posted video {video['id']}")
 
-                # Iterate through all posts in post_data
-                for index, (video_id, post) in enumerate(post_data.items()):
-                    try:
-                        self.create_moment(post["title"][0], post["file_path"])
-                        print(f"Đã đăng bài thành công cho post {index + 1}")
-                    except Exception as post_err:
-                        print(f"Lỗi khi đăng bài {index + 1}: {post_err}")
-            except Exception as login_err:
-                print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
+                    # Chỉ lưu vào JSON nếu đăng thành công
+                    post_data[video["id"]] = {
+                        "title": video["title"],
+                        "url": video["url"],
+                        "file_path": [video["file_path"]],
+                    }
 
-            finally:
-                self.logout()
-                print("Đã đăng xuất khỏi tài khoản.")
+                    # Ghi ngay vào file JSON
+                    with open(output_file, "w", encoding="utf-8") as json_file:
+                        json.dump(post_data, json_file, ensure_ascii=False, indent=4)
+
+                except Exception as post_err:
+                    print(f"Error posting video {video['id']}: {post_err}")
+
+        except Exception as login_err:
+            print(f"Error logging in: {login_err}")
+
+        finally:
+            self.logout()
+            print("Logged out.")
 
 
     def get_text_and_icon(self, element):
