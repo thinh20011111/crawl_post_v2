@@ -6,6 +6,7 @@ import re
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
+import ctypes
 from selenium.webdriver.remote.webelement import WebElement
 import os
 import logging
@@ -391,7 +392,7 @@ class BasePage:
     
     def clear_media_folder(self):
         try:
-            # Lấy đường dẫn thư mục gốc của dự án (C:\Users\Thinh\OneDrive\Máy tính\crawl_post_v2)
+            # Lấy đường dẫn thư mục gốc của dự án
             current_dir = os.path.dirname(os.path.abspath(__file__))  # Lấy đường dẫn của file hiện tại (utils)
             project_root = os.path.abspath(os.path.join(current_dir, '..'))  # Lùi hai cấp để tới thư mục gốc
 
@@ -406,13 +407,28 @@ class BasePage:
             for file_name in os.listdir(media_folder_path):
                 file_path = os.path.join(media_folder_path, file_name)
                 if os.path.isfile(file_path):
-                    send2trash(file_path)  # Di chuyển tệp vào thùng rác
+                    send2trash(file_path)  # Đúng cách gọi send2trash
                     print(f"Đã di chuyển tệp {file_name} vào thùng rác.")
 
             print(f"Đã xóa tất cả các tệp trong thư mục: {media_folder_path} và đưa vào thùng rác.")
-            
+
+            # Đợi một lúc để đảm bảo tệp đã vào thùng rác
+            time.sleep(2)  # Đợi 2 giây (có thể thay đổi tùy theo yêu cầu)
+
+            # Gọi hàm Windows để xóa tất cả tệp trong thùng rác
+            self.empty_trash()
+
+            print("Đã xóa các tệp trong thùng rác.")
+
         except Exception as e:
             print(f"Lỗi khi xóa các tệp trong thư mục media: {e}")
+
+    def empty_trash(self):
+        try:
+            # Gọi API Windows để xóa các tệp trong thùng rác
+            ctypes.windll.shell32.EmptyRecycleBinW(None, None, 0)
+        except Exception as e:
+            print(f"Error clearing the recycle bin: {e}")
     
     def wait_for_element_not_present(self, locator, timeout=120):
         try:
@@ -648,6 +664,7 @@ class BasePage:
         post_data = []  # List to store valid post data
         current_post_index = index_start  # Start from index_start
         skip_count = 0  # Counter for skipped posts
+        MAX_SKIP = 50  # Maximum number of posts to skip before switching accounts
 
         output_file = "data/watch.json"
         existing_data = {}
@@ -663,7 +680,7 @@ class BasePage:
         # Check if the first post exists
         if not self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", '1')):
             print(f"No items found on the page {crawl_page}, proceeding to create posts.")
-            return self.create_posts(post_data, username, password, post_page, output_file)
+            return
 
         while len(post_data) < nums_post:
             try:
@@ -675,10 +692,14 @@ class BasePage:
                 # Check if the post item is found
                 if not self.is_element_present_by_xpath(post_xpath):
                     print("No more items found, proceeding to collect posts and create new ones.")
-                    return self.create_posts(post_data, username, password, post_page, output_file)
+                    break
 
                 # Find the post element using XPath
                 post_element = self.driver.find_element(By.XPATH, post_xpath)
+                
+                if not post_element:
+                    print("No more post, next account")
+                    break
 
                 # Scroll to the element
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
@@ -687,111 +708,85 @@ class BasePage:
                 time.sleep(2)
 
                 # Find <a> containing the video URL
-                video_link_element = post_element.find_element(By.XPATH, post_xpath)  # Find the <a> tag with href
-
-                video_url = video_link_element.get_attribute("href")  # Get video URL from href attribute
+                video_link_element = post_element.find_element(By.XPATH, post_xpath)
+                video_url = video_link_element.get_attribute("href")
 
                 # Find message elements and process them
                 message_elements = post_element.find_elements(By.XPATH, self.TITLE_VIDEO_WATCH.replace("{index}", str(current_post_index)))
 
                 if not message_elements or not message_elements[0].text.strip():
                     print(f"Post {current_post_index} has no valid title, skipping.")
-                    current_post_index += 1
                     skip_count += 1
-                    if skip_count >= 20:
-                        print(f"Skipped over 20 posts for page {crawl_page}. Switching to next account.")
-                        break  # Exit the loop to switch to the next account
+                    current_post_index += 1
+
+                    if skip_count >= MAX_SKIP:
+                        print(f"Skipped over {MAX_SKIP} posts for page {crawl_page}. Switching accounts.")
+                        break
                     continue
 
                 # Remove non-alphanumeric characters from title
                 messages = [''.join(ch for ch in message.text if ch.isalnum() or ch.isspace()) for message in message_elements]
 
-                # Check if post already exists in existing_data
-                if crawl_page not in existing_data:
-                    existing_data[crawl_page] = []
+                # Check if title exists in JSON data
+                if crawl_page in existing_data:
+                    if any(post["messages"] == messages for post in existing_data[crawl_page]):
+                        print(f"Post {current_post_index} with these messages already exists in JSON data, skipping.")
+                        skip_count += 1
+                        current_post_index += 1
 
-                # Check for duplicates in existing_data
-                if any(post["messages"] == messages and post["video"] == video_url for post in existing_data[crawl_page]):
-                    print(f"Post {current_post_index} with these messages already exists in existing data, skipping.")
-                    current_post_index += 1
-                    skip_count += 1
-                    if skip_count >= 20:
-                        print("Skipped over 20 posts, stopping process.")
-                        break
-                    continue
+                        if skip_count >= MAX_SKIP:
+                            print(f"Skipped over {MAX_SKIP} posts for page {crawl_page}. Switching accounts.")
+                            break
+                        continue
 
-                # Check for duplicates in post_data
-                if any(post['post_index'] == current_post_index and post['messages'] == messages for post in post_data):
-                    print(f"Duplicate post {current_post_index} with these messages, skipping.")
-                    current_post_index += 1
-                    skip_count += 1
-                    continue
-                
-                # Create media directory if not exists
-                media_dir = "media"
-                os.makedirs(media_dir, exist_ok=True)
-
-                # Check if video duration is under 5 minutes
+                # Check if video duration is valid
                 time_video = self.get_text_from_element(self.TIME_VIDEO_WATCH.replace("{index}", str(current_post_index)))
 
                 try:
                     video_duration_seconds = self.time_to_seconds(time_video)
                 except ValueError as e:
                     print(f"Error parsing time for post {current_post_index}: {e}")
-                    current_post_index += 1
                     skip_count += 1
+                    current_post_index += 1
+                    if skip_count >= MAX_SKIP:
+                            print(f"Skipped over {MAX_SKIP} posts for page {crawl_page}. Switching accounts.")
+                            break
                     continue
 
-                if video_duration_seconds <= 900 and video_duration_seconds >= 120:  # Video dưới 5 phút
+                if 120 <= video_duration_seconds <= 420:  # Video duration between 2 and 15 minutes
                     video_path = self.download_facebook_video(video_url)
                     time.sleep(5)
                     post_data.append({
                         "post_index": current_post_index,
                         "messages": messages,
-                        "video": [
-                            video_path
-                        ]
+                        "video": [video_path]
                     })
-                    print(f"Downloaded video under 5 minutes for post {current_post_index}.")
-                else:  # Video dài hơn 5 phút
-                    print(f"Skipped video over 5 minutes for post {current_post_index}.")
-                    current_post_index += 1
+                    print(f"Downloaded video for post {current_post_index}.")
+                else:
+                    print(f"Skipped video outside duration limits for post {current_post_index}.")
                     skip_count += 1
+                    current_post_index += 1
+                    if skip_count >= MAX_SKIP:
+                            print(f"Skipped over {MAX_SKIP} posts for page {crawl_page}. Switching accounts.")
+                            break
                     continue
-
-                # Add post to existing_data if not already present
-                existing_data[crawl_page].append({
-                    "post_index": current_post_index,
-                    "messages": messages,
-                    "video": video_path
-                })
-
-                print(f"Processed post {current_post_index}. Text: {messages}, Valid video: {len(video_path)}")
 
             except Exception as e:
                 print(f"Error processing element at index {current_post_index}: {e}")
+                skip_count += 1  # Increase skip count for errors
+                current_post_index += 1
+                if skip_count >= MAX_SKIP:
+                    print(f"Skipped over {MAX_SKIP} posts for page {crawl_page}. Switching accounts.")
+                    break
+                break
+                
 
-            current_post_index += 1
-
-            # If no more items found, break the loop and proceed to posting
-            if not self.is_element_present_by_xpath(self.ITEM_VIDEO_WATCH.replace("{index}", str(current_post_index))):
-                print("No more items found. Proceeding to create posts.")
+            # If skip count exceeds MAX_SKIP, break to switch accounts
+            if skip_count >= MAX_SKIP:
+                print(f"Reached maximum skip count of {MAX_SKIP}. Switching accounts.")
                 break
 
-        # If no items were found or processed, directly call create_posts
-        if not post_data:
-            print(f"No valid posts collected. Proceeding to create posts.")
-            return self.create_posts(post_data, username, password, post_page, output_file)
-
-        # Save data to JSON file after collection
-        try:
-            with open(output_file, "w", encoding="utf-8") as json_file:
-                json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-            print(f"Data successfully saved to {output_file}")
-        except Exception as json_err:
-            print(f"Error writing to JSON file: {json_err}")
-
-        # Login and create posts on the post_page
+        # Login and create posts
         if post_data:
             try:
                 self.login_emso(username, password)
@@ -802,6 +797,20 @@ class BasePage:
                     try:
                         self.create_post(post["messages"][0], post["video"])
                         print(f"Successfully posted for post {post['post_index']}")
+
+                        # Add post to JSON only if posted successfully
+                        if crawl_page not in existing_data:
+                            existing_data[crawl_page] = []
+                        existing_data[crawl_page].append({
+                            "post_index": post["post_index"],
+                            "messages": post["messages"],
+                            "video": post["video"]
+                        })
+
+                        # Save to JSON file
+                        with open(output_file, "w", encoding="utf-8") as json_file:
+                            json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+
                     except Exception as post_err:
                         print(f"Error creating post {post['post_index']}: {post_err}")
 
@@ -812,13 +821,6 @@ class BasePage:
                 self.logout()
                 print("Logged out from account.")
 
-            # Update and save the data again into the JSON file
-            try:
-                with open(output_file, "w", encoding="utf-8") as json_file:
-                    json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-                print(f"Data successfully saved to {output_file}")
-            except Exception as json_err:
-                print(f"Error writing to JSON file: {json_err}")
 
     def create_posts(self, post_data, username, password, post_page, output_file):
         """Helper method to create posts if no items were found"""

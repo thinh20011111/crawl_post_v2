@@ -28,6 +28,8 @@ def main():
     # Đọc dữ liệu tài khoản từ account.json
     with open(accounts_filename, 'r') as file:
         accounts_data = json.load(file)
+    HOME_PAGE_TAB = "//button[contains(text(),'Trang chủ')]"
+
 
     driver.maximize_window()
     try:
@@ -40,13 +42,14 @@ def main():
 
                 # Truy cập URL
                 driver.get(url)
+                base_page.wait_for_element_present(HOME_PAGE_TAB)
                 try:
                     # Lấy text từ element chỉ định
                     base_page.wait_for_element_present("/html/body/div/div/div/main/div/div[2]/div/div/div/div[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[1]/p")
                     text = base_page.get_text_from_element("/html/body/div/div/div/main/div/div[2]/div/div/div/div[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[1]/p")
 
                     # Ghi dữ liệu vào file ngay sau khi lấy dữ liệu thành công
-                    output_file.write(f"{account_key}: {text}\n")
+                    output_file.write(f"{text}\n")
                     output_file.flush()
                 except Exception as e:
                     print(f"Không thể lấy dữ liệu từ {url}: {e}")

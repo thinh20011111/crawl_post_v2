@@ -30,7 +30,7 @@ def main():
         )
     # Mở trang web
     base_page = BasePage(driver)
-    accounts_filename = "data/account_create_moment_lab.json"  # Đọc dữ liệu tài khoản từ file account.json
+    accounts_filename = "data/account_create_moment.json"  # Đọc dữ liệu tài khoản từ file account.json
     
     # Đọc dữ liệu tài khoản từ account.json
     with open(accounts_filename, 'r') as file:
@@ -41,7 +41,7 @@ def main():
         driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
         time.sleep(30)
         
-        nums_post = 5  # Tổng số lượng bài viết cần crawl
+        nums_post = 273  # Tổng số lượng bài viết cần crawl
 
         # Biến đếm tổng số bài viết đã xử lý
         total_processed_posts = 0
