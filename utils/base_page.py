@@ -73,7 +73,7 @@ class BasePage:
     NEXT_REELS = "//div[@aria-label='Thẻ tiếp theo' and contains(@class, 'x1i10hfl')]"
     OPEN_FORM_MOMENT = "//button[contains(@class, 'MuiButton-root') and .//p[text()='Khoảnh khắc']]"
     INPUT_UPLOAD_MOMENT = "//input[@id='files' and @name='files']"
-    BUTTON_CREATE_MOMENT = "//button[@class='MuiLoadingButton-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root css-n5x2z']"
+    BUTTON_CREATE_MOMENT = "//div[@role='presentation']//button[2]"
     INPUT_TITLE_MOMENT = "//textarea[@id='textInputCreateMoment']"
     TITLE_REELS = "//div[@class='xyamay9 x1pi30zi x1swvt13 xjkvuk6']"
     CLOSE_BAN_ACCOUNT = "//button[@type='button' and .//i[contains(@class, 'fa-xmark')]]"
@@ -379,10 +379,10 @@ class BasePage:
 
             # Tải lên các ảnh (nếu có)
             if image_names:
-                for image_name in image_names:
-                    self.upload_image(self.INPUT_UPLOAD_MOMENT, image_names)  # Giả sử upload_image hỗ trợ tải ảnh
+                    self.upload_video(image_names, self.INPUT_UPLOAD_MOMENT)  # Giả sử upload_image hỗ trợ tải ảnh
 
             # Nhấn nút đăng bài
+            self.wait_for_element_present(self.BUTTON_CREATE_MOMENT)
             self.click_element(self.BUTTON_CREATE_MOMENT)
             self.wait_for_element_not_present(self.BUTTON_CREATE_MOMENT)
 
@@ -1107,7 +1107,7 @@ class BasePage:
         except Exception as e:
             print(f"Lỗi khi tải video: {e}")
             return None
-    
+
     def get_and_create_tiktok(self, username, password, nums_post):
         self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
         time.sleep(20)
@@ -1125,11 +1125,11 @@ class BasePage:
         # Crawl video
         collected_posts = 0
         current_post_index = 1  # Bắt đầu từ bài viết đầu tiên
-        video_queue = []  # Hàng đợi video để đăng
+        video_queue = []  # Hàng đợi video để đăng sau khi crawl xong
 
         while collected_posts < nums_post:
             try:
-                time.sleep(2)
+                self.wait_for_element_present(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
                 self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
 
                 # Lấy URL video
@@ -1200,12 +1200,15 @@ class BasePage:
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
                     continue
 
+                # Lấy tên tệp của video
+                video_filename = os.path.basename(downloaded_file)  # Lấy tên tệp từ đường dẫn
+
                 # Đưa video vào hàng đợi đăng bài
                 video_queue.append({
                     "id": video_id,
                     "title": shortened_messages,
                     "url": video_url,
-                    "file_path": downloaded_file,
+                    "file_path": video_filename,  # Lưu chỉ tên tệp thay vì đường dẫn đầy đủ
                 })
                 collected_posts += 1
                 current_post_index += 1
@@ -1221,6 +1224,7 @@ class BasePage:
 
             for video in video_queue:
                 try:
+                    # Đăng video lên trang
                     self.create_moment(video["title"][0], [video["file_path"]])
                     print(f"Successfully posted video {video['id']}")
 
@@ -1231,7 +1235,7 @@ class BasePage:
                         "file_path": [video["file_path"]],
                     }
 
-                    # Ghi ngay vào file JSON
+                    # Ghi ngay vào file JSON sau khi đăng thành công
                     with open(output_file, "w", encoding="utf-8") as json_file:
                         json.dump(post_data, json_file, ensure_ascii=False, indent=4)
 
@@ -1244,6 +1248,7 @@ class BasePage:
         finally:
             self.logout()
             print("Logged out.")
+
 
 
     def get_text_and_icon(self, element):
@@ -1282,4 +1287,29 @@ class BasePage:
 
         return normalized_text
     
+    def upload_video(self, file_name, input_xpath):
+        try:
+            # Nếu file_name là một danh sách, lấy tệp đầu tiên hoặc lặp qua từng tệp
+            if isinstance(file_name, list):
+                for single_file in file_name:
+                    self._upload_single_video(single_file, input_xpath)
+            else:
+                self._upload_single_video(file_name, input_xpath)
+        except Exception as e:
+            print(f"Error uploading video: {e}")
+
+    def _upload_single_video(self, file_name, input_xpath):
+        try:
+            # Đường dẫn tương đối tới tệp video
+            relative_path = os.path.join("media", file_name)
+            absolute_path = os.path.abspath(relative_path)  # Lấy đường dẫn tuyệt đối từ đường dẫn tương đối
+
+            # Tìm phần tử input file và tải lên video
+            file_input = self.driver.find_element(By.XPATH, input_xpath)
+            file_input.send_keys(absolute_path)
+            print(f"Video đã được tải lên từ: {absolute_path}")
+        except Exception as e:
+            print(f"Error uploading single video {file_name}: {e}")
+
+
 
