@@ -30,7 +30,7 @@ def main():
         )
     # Mở trang web
     base_page = BasePage(driver)
-    accounts_filename = "data/account_create_moment.json"  # Đọc dữ liệu tài khoản từ file account.json
+    accounts_filename = "data/account_create_moment_lab.json"  # Đọc dữ liệu tài khoản từ file account.json
     
     # Đọc dữ liệu tài khoản từ account.json
     with open(accounts_filename, 'r') as file:
@@ -38,33 +38,56 @@ def main():
 
     driver.maximize_window()
     try:
-        # Lặp qua tất cả các tài khoản và xử lý
-        num_posts_per_account = 1  # Số lượng bài viết cần crawl mỗi tài khoản
+        driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
+        time.sleep(30)
+        
+        nums_post = 5  # Tổng số lượng bài viết cần crawl
 
-        for account_key, account_data in accounts_data.items():
-            try:
-                print(f"\nĐang xử lý tài khoản: {account_key}")
+        # Biến đếm tổng số bài viết đã xử lý
+        total_processed_posts = 0
 
-                # Lấy thông tin từ tài khoản
-                emso_username = account_data["username"]
-                emso_password = account_data["password"]
+        # Lặp qua các tài khoản
+        while total_processed_posts < nums_post:
+            for account_key, account_data in accounts_data.items():
+                try:
+                    print(f"\nĐang xử lý tài khoản: {account_key}")
 
-                # Crawl bài viết mới từ TikTok
-                base_page.get_and_create_tiktok(
-                    username=emso_username,
-                    password=emso_password,
-                    nums_post=num_posts_per_account,
-                )
+                    # Lấy thông tin từ tài khoản
+                    emso_username = account_data["username"]
+                    emso_password = account_data["password"]
 
-                print(f"Hoàn tất xử lý tài khoản: {account_key}")
-                base_page.clear_media_folder()
-                driver.refresh()
-            except Exception as e:
-                print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
-                continue  # Tiếp tục với tài khoản tiếp theo nếu gặp lỗi
+                    # Tính số bài viết cần xử lý còn lại
+                    remaining_posts = nums_post - total_processed_posts
+                    print(f"Số bài viết cần crawl còn lại: {remaining_posts}")
 
-        print("Đã hoàn tất xử lý tất cả các tài khoản.")
+                    # Gọi hàm get_and_create_tiktok để thu thập bài viết
+                    base_page.get_and_create_tiktok(
+                        username=emso_username,
+                        password=emso_password,
+                    )
 
+                    # Cập nhật số lượng bài viết đã xử lý sau mỗi lần đăng tải
+                    total_processed_posts += 1
+                    print(f"Đã xử lý {total_processed_posts}/{nums_post} bài viết")
+
+                    # Kiểm tra nếu đã đủ số lượng bài viết thì dừng
+                    if total_processed_posts >= nums_post:
+                        print("Đã hoàn tất xử lý đủ số lượng bài viết")
+                        break  # Thoát khỏi vòng lặp `for` và kết thúc quá trình
+
+                    # Xóa thư mục media và làm mới trình duyệt
+                    base_page.clear_media_folder()
+                    driver.refresh()
+
+                except Exception as e:
+                    print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
+                    continue  # Tiếp tục với tài khoản tiếp theo nếu gặp lỗi
+
+            # Kiểm tra nếu đủ số lượng bài viết, dừng vòng lặp ngoài
+            if total_processed_posts >= nums_post:
+                break
+
+                
     finally:
         driver.quit()
 

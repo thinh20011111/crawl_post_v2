@@ -1108,9 +1108,9 @@ class BasePage:
             print(f"Lỗi khi tải video: {e}")
             return None
 
-    def get_and_create_tiktok(self, username, password, nums_post):
+    def get_and_create_tiktok(self, username, password):
         self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
-        time.sleep(20)
+        self.driver.refresh()
         output_file = "data/tiktok.json"
         post_data = {}  # Dictionary lưu dữ liệu bài viết đã đăng
         
@@ -1121,13 +1121,12 @@ class BasePage:
                     post_data = json.load(json_file)
             except Exception as json_err:
                 print(f"Error reading existing JSON file: {json_err}")
-        
-        # Crawl video
-        collected_posts = 0
-        current_post_index = 1  # Bắt đầu từ bài viết đầu tiên
-        video_queue = []  # Hàng đợi video để đăng sau khi crawl xong
 
-        while collected_posts < nums_post:
+        collected_post = None  # Biến lưu trữ video hợp lệ duy nhất cần lấy
+        
+        current_post_index = 1 
+        while not collected_post:
+             # Bắt đầu từ bài viết đầu tiên
             try:
                 self.wait_for_element_present(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
                 self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
@@ -1138,8 +1137,7 @@ class BasePage:
                 time.sleep(1)
 
                 # Đóng popup URL nếu xuất hiện
-                if self.is_element_present_by_xpath(self.CLOSE_POPUP_URL):
-                    self.click_element(self.CLOSE_POPUP_URL)
+                self.click_element(self.CLOSE_POPUP_URL)
 
                 # Trích xuất ID video
                 video_id_match = re.search(r'/video/(\d+)', video_url)
@@ -1149,6 +1147,8 @@ class BasePage:
                 if video_id in post_data:
                     print(f"Video {video_id} already processed, skipping...")
                     current_post_index += 1
+                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    time.sleep(1)
                     continue
 
                 # Kiểm tra thời gian video bằng yt-dlp
@@ -1159,10 +1159,14 @@ class BasePage:
                         if duration >= 300:  # Nếu video dài hơn 5 phút (300 giây)
                             print(f"Video {video_id} is too long (> 5 minutes), skipping...")
                             current_post_index += 1
+                            self.click_element(self.NEXT_VIDEO_TIKTOK)
+                            time.sleep(1)
                             continue
                 except Exception as e:
                     print(f"Error checking video duration for {video_id}: {e}")
                     current_post_index += 1
+                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    time.sleep(1)
                     continue
 
                 # Lấy tiêu đề video
@@ -1178,6 +1182,7 @@ class BasePage:
                     print("No title found for this post, skipping...")
                     current_post_index += 1
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    time.sleep(1)
                     continue
 
                 # Truncate messages
@@ -1189,58 +1194,69 @@ class BasePage:
                             msg = ' '.join(msg.split()[:-1])
                     shortened_messages.append(msg)
 
+                # Kiểm tra xem video ID đã tồn tại trong post_data chưa
+                if video_id in post_data:
+                    print(f"Video with ID {video_id} already exists, skipping...")
+                    current_post_index += 1
+                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    time.sleep(1)
+                    continue
+
                 # Tải video
                 try:
                     downloaded_file = self.download_video_tiktok(video_url)
                     if not downloaded_file:
                         raise Exception("Video download failed.")
+                    video_filename = os.path.basename(downloaded_file)  # Lấy tên tệp từ đường dẫn
+
                 except Exception as e:
                     print(f"Error downloading video {video_id}: {e}")
                     current_post_index += 1
                     self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    time.sleep(1)
                     continue
 
-                # Lấy tên tệp của video
-                video_filename = os.path.basename(downloaded_file)  # Lấy tên tệp từ đường dẫn
-
                 # Đưa video vào hàng đợi đăng bài
-                video_queue.append({
+                collected_post = {
                     "id": video_id,
                     "title": shortened_messages,
                     "url": video_url,
                     "file_path": video_filename,  # Lưu chỉ tên tệp thay vì đường dẫn đầy đủ
-                })
-                collected_posts += 1
-                current_post_index += 1
+                }
+                break  # Đã tìm được video hợp lệ, thoát khỏi vòng lặp
 
             except Exception as e:
                 print(f"Error processing post {current_post_index}: {e}")
                 time.sleep(5)
 
+        # Kiểm tra nếu có video hợp lệ để đăng
+        if not collected_post:
+            print("No valid video found to post. Skipping login and post creation.")
+            return
+
         # Đăng bài sau khi crawl xong
         try:
             self.login_emso(username, password)
-            time.sleep(5)
+            self.wait_for_element_present(self.OPEN_FORM_MOMENT)
+            
+            try:
+                # Đăng video lên trang
+                self.create_moment(collected_post["title"][0], [collected_post["file_path"]])
+                print(f"Successfully posted video {collected_post['id']}")
 
-            for video in video_queue:
-                try:
-                    # Đăng video lên trang
-                    self.create_moment(video["title"][0], [video["file_path"]])
-                    print(f"Successfully posted video {video['id']}")
+                # Chỉ lưu vào JSON nếu đăng thành công
+                post_data[collected_post["id"]] = {
+                    "title": collected_post["title"],
+                    "url": collected_post["url"],
+                    "file_path": [collected_post["file_path"]],
+                }
 
-                    # Chỉ lưu vào JSON nếu đăng thành công
-                    post_data[video["id"]] = {
-                        "title": video["title"],
-                        "url": video["url"],
-                        "file_path": [video["file_path"]],
-                    }
+                # Ghi ngay vào file JSON sau khi đăng thành công
+                with open(output_file, "w", encoding="utf-8") as json_file:
+                    json.dump(post_data, json_file, ensure_ascii=False, indent=4)
 
-                    # Ghi ngay vào file JSON sau khi đăng thành công
-                    with open(output_file, "w", encoding="utf-8") as json_file:
-                        json.dump(post_data, json_file, ensure_ascii=False, indent=4)
-
-                except Exception as post_err:
-                    print(f"Error posting video {video['id']}: {post_err}")
+            except Exception as post_err:
+                print(f"Error posting video {collected_post['id']}: {post_err}")
 
         except Exception as login_err:
             print(f"Error logging in: {login_err}")
