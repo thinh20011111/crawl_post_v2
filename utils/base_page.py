@@ -15,6 +15,7 @@ from io import BytesIO
 import csv
 import pandas as pd
 import base64
+from ctypes import wintypes
 import requests
 from utils.config import Config
 import json
@@ -407,15 +408,15 @@ class BasePage:
             for file_name in os.listdir(media_folder_path):
                 file_path = os.path.join(media_folder_path, file_name)
                 if os.path.isfile(file_path):
-                    send2trash(file_path)  # Đúng cách gọi send2trash
+                    send2trash(file_path)  # Đưa tệp vào thùng rác
                     print(f"Đã di chuyển tệp {file_name} vào thùng rác.")
 
             print(f"Đã xóa tất cả các tệp trong thư mục: {media_folder_path} và đưa vào thùng rác.")
 
             # Đợi một lúc để đảm bảo tệp đã vào thùng rác
-            time.sleep(2)  # Đợi 2 giây (có thể thay đổi tùy theo yêu cầu)
+            time.sleep(2)
 
-            # Gọi hàm Windows để xóa tất cả tệp trong thùng rác
+            # Gọi hàm Windows để xóa thùng rác
             self.empty_trash()
 
             print("Đã xóa các tệp trong thùng rác.")
@@ -425,10 +426,27 @@ class BasePage:
 
     def empty_trash(self):
         try:
-            # Gọi API Windows để xóa các tệp trong thùng rác
-            ctypes.windll.shell32.EmptyRecycleBinW(None, None, 0)
+            # Định nghĩa HRESULT nếu không có sẵn
+            HRESULT = ctypes.c_long  # HRESULT là kiểu số nguyên 32-bit có dấu
+
+            # Cờ để bỏ qua xác nhận và âm thanh
+            SHERB_NOCONFIRMATION = 0x00000001
+            SHERB_NOPROGRESSUI = 0x00000002
+            SHERB_NOSOUND = 0x00000004
+
+            flags = SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND
+
+            # Sử dụng API Windows để xóa thùng rác
+            SHEmptyRecycleBin = ctypes.windll.shell32.SHEmptyRecycleBinW
+            SHEmptyRecycleBin.argtypes = [wintypes.HWND, wintypes.LPCWSTR, wintypes.UINT]
+            SHEmptyRecycleBin.restype = HRESULT
+
+            # Gọi hàm xóa thùng rác
+            result = SHEmptyRecycleBin(None, None, flags)
+            if result != 0:
+                raise OSError(f"Xóa thùng rác thất bại, mã lỗi: {result}")
         except Exception as e:
-            print(f"Error clearing the recycle bin: {e}")
+            print(f"Lỗi khi xóa thùng rác: {e}")
     
     def wait_for_element_not_present(self, locator, timeout=120):
         try:
