@@ -325,7 +325,7 @@ class BasePage:
         except Exception as e:
             print(f"Error uploading image: {e}")
         
-    def wait_for_element_present(self, locator, timeout=15):
+    def wait_for_element_present(self, locator, timeout=30):
         WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located((By.XPATH, locator)))
         return self.find_element_by_locator(locator)
 
