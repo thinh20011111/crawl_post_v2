@@ -116,6 +116,14 @@ class BasePage:
     NEXT_VIDEO_TIKTOK = "/html/body/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/button"
     FROFILE_TIKTOK = "//*[@id='header-more-menu-icon']"
     
+    PROFILE_AVATAR = "//main/div/div[1]/div[2]/div[1]/nav/a[1]"
+    OPEN_FORM_AVATAR = "//button[@aria-label='camera']//i[@class='fas fa-camera-alt']"
+    UPLOAD_AVT_TAB = "//p[contains(text(),'Tải ảnh lên')]"
+    INPUT_UPLOAD_AVT = "//input[@type='file' and @accept='image/jpeg,image/png' and @multiple]"
+    SAVE_IMAGE_AVT = "//button[div[contains(text(), 'Lưu')]]"
+    IMG_AVATAR = "/html/body/div[1]/div/div/main/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div[1]/div[1]/div/img"
+    DIALOG_UPDATE = "//div[@role='dialog' and @aria-labelledby='customized-dialog-title']" 
+    
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
     
@@ -1346,6 +1354,45 @@ class BasePage:
             print(f"Video đã được tải lên từ: {absolute_path}")
         except Exception as e:
             print(f"Error uploading single video {file_name}: {e}")
+    
+    def go_to_profile(self):
+        self.click_element(self.PROFILE_AVATAR)
+        self.wait_for_element_present(self.IMG_AVATAR)
+        time.sleep(2)
+
+    def update_avatar_user(self):
+        # Bước 1: Lấy đường dẫn tương đối đến thư mục "avatar"
+        avatar_folder = os.path.join(os.getcwd(), "avatar")
+
+        # Bước 2: Lọc ra danh sách các tệp trong thư mục
+        files = [f for f in os.listdir(avatar_folder) if os.path.isfile(os.path.join(avatar_folder, f))]
+        
+        if not files:
+            raise FileNotFoundError("No files found in the avatar folder.")
+        
+        # Bước 3: Chọn ngẫu nhiên một tệp từ danh sách
+        file_name = os.path.join(avatar_folder, random.choice(files))
+        
+        try:
+            # Bước 4: Thực hiện các bước tải ảnh
+            self.go_to_profile()
+            self.click_element(self.OPEN_FORM_AVATAR)
+            self.click_element(self.UPLOAD_AVT_TAB)
+            self.upload_image(self.INPUT_UPLOAD_AVT, file_name)  # Upload ảnh đã chọn
+            self.click_element(self.SAVE_IMAGE_AVT)
+            
+            self.wait_for_element_not_present(self.DIALOG_UPDATE)
+            time.sleep(4)
+            
+            
+            # Bước 5: Kiểm tra xem avatar đã được cập nhật thành công
+            if self.wait_for_element_present(self.IMG_AVATAR, timeout=10) :
+                return True  # Cập nhật thành công
+            else:
+                return False  # Không tìm thấy ảnh sau khi cập nhật
+        except Exception as e:
+            return False  # Trả về False nếu có lỗi xảy ra
+
 
 
 
