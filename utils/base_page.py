@@ -123,6 +123,7 @@ class BasePage:
     SAVE_IMAGE_AVT = "//button[div[contains(text(), 'Lưu')]]"
     IMG_AVATAR = "/html/body/div[1]/div/div/main/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div[1]/div[1]/div/img"
     DIALOG_UPDATE = "//div[@role='dialog' and @aria-labelledby='customized-dialog-title']" 
+    FORYOU_BUTTON = "//button[contains(@class, 'TUXButton') and .//div[contains(text(), 'Dành cho bạn')]]"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -1138,7 +1139,7 @@ class BasePage:
 
     def get_and_create_tiktok(self, username, password):
         self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
-        self.driver.refresh()
+        self.click_element(self.FORYOU_BUTTON)
         output_file = "data/tiktok.json"
         post_data = {}  # Dictionary lưu dữ liệu bài viết đã đăng
         
@@ -1156,8 +1157,13 @@ class BasePage:
         while not collected_post:
              # Bắt đầu từ bài viết đầu tiên
             try:
+                time.sleep(1)
                 self.wait_for_element_present(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
-                self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
+                # self.click_element(self.SHARE_BUTTON.replace("{index}", str(current_post_index)))
+
+                element = self.driver.find_element(By.XPATH, f"(//span[@data-e2e='share-icon'])[{current_post_index}]")
+                ActionChains(self.driver).move_to_element(element).click().perform()
+
 
                 # Lấy URL video
                 video_url = self.get_input_value(self.INPUT_URL)
@@ -1175,7 +1181,8 @@ class BasePage:
                 if video_id in post_data:
                     print(f"Video {video_id} already processed, skipping...")
                     current_post_index += 1
-                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    # self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                     time.sleep(1)
                     continue
 
@@ -1187,7 +1194,8 @@ class BasePage:
                         if duration >= 300:  # Nếu video dài hơn 5 phút (300 giây)
                             print(f"Video {video_id} is too long (> 5 minutes), skipping...")
                             current_post_index += 1
-                            self.click_element(self.NEXT_VIDEO_TIKTOK)
+                            # self.click_element(self.NEXT_VIDEO_TIKTOK)
+                            ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                             time.sleep(1)
                             continue
                 except Exception as e:
@@ -1209,7 +1217,8 @@ class BasePage:
                 if not messages or all(not msg.strip() for msg in messages):
                     print("No title found for this post, skipping...")
                     current_post_index += 1
-                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    # self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                     time.sleep(1)
                     continue
 
@@ -1226,7 +1235,7 @@ class BasePage:
                 if video_id in post_data:
                     print(f"Video with ID {video_id} already exists, skipping...")
                     current_post_index += 1
-                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                     time.sleep(1)
                     continue
 
@@ -1240,7 +1249,7 @@ class BasePage:
                 except Exception as e:
                     print(f"Error downloading video {video_id}: {e}")
                     current_post_index += 1
-                    self.click_element(self.NEXT_VIDEO_TIKTOK)
+                    ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                     time.sleep(1)
                     continue
 
@@ -1255,7 +1264,8 @@ class BasePage:
 
             except Exception as e:
                 print(f"Error processing post {current_post_index}: {e}")
-                time.sleep(5)
+                ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
+                time.sleep(3)
 
         # Kiểm tra nếu có video hợp lệ để đăng
         if not collected_post:
