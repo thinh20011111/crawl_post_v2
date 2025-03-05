@@ -1139,7 +1139,8 @@ class BasePage:
 
     def get_and_create_tiktok(self, username, password):
         self.driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
-        self.click_element(self.FORYOU_BUTTON)
+        # self.click_element(self.FORYOU_BUTTON)
+        # print("Quay trở về đầu feed")
         output_file = "data/tiktok.json"
         post_data = {}  # Dictionary lưu dữ liệu bài viết đã đăng
         
@@ -1247,7 +1248,7 @@ class BasePage:
                     video_filename = os.path.basename(downloaded_file)  # Lấy tên tệp từ đường dẫn
 
                 except Exception as e:
-                    print(f"Error downloading video {video_id}: {e}")
+                    print(f"Error downloading video {video_id}")
                     current_post_index += 1
                     ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                     time.sleep(1)
@@ -1263,7 +1264,7 @@ class BasePage:
                 break  # Đã tìm được video hợp lệ, thoát khỏi vòng lặp
 
             except Exception as e:
-                print(f"Error processing post {current_post_index}: {e}")
+                print(f"Error processing post {current_post_index}")
                 ActionChains(self.driver).move_to_element(self.NEXT_VIDEO_TIKTOK).click().perform()
                 time.sleep(3)
 
