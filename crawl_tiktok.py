@@ -42,7 +42,7 @@ def main():
         driver.get("https://www.tiktok.com/foryou?lang=vi-VN")
         time.sleep(30)
         
-        nums_post = 100 # Tổng số lượng bài viết cần crawl
+        nums_post = 310 # Tổng số lượng bài viết cần crawl
 
         # Biến đếm tổng số bài viết đã xử lý
         total_processed_posts = 0
