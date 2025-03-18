@@ -639,6 +639,9 @@ class BasePage:
         # Đăng bài tuần tự sau khi thu thập đủ
         print(f"Bắt đầu đăng bài...")
 
+        success_count_file = "data/success_count.json"
+        success_count = 0
+        
         try:
             self.login_emso(username, password)
             self.driver.get(post_page)
@@ -651,22 +654,33 @@ class BasePage:
                     self.post_comments(in_reply_to_id=id_post)
                     self.clear_comment_file()
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
-                    
-                    # Immediately save the successful post to the file
-                    if crawl_page in existing_data:
-                        existing_data[crawl_page].append(post)  # Append the successful post
-                    else:
-                        existing_data[crawl_page] = [post]  # Initialize with the first successful post
 
-                    # Save to file after every successful post
+                    # Cập nhật số lượng post thành công
+                    success_count += 1
+
+                    # Lưu số lượng post thành công vào file
+                    try:
+                        with open(success_count_file, "w", encoding="utf-8") as count_file:
+                            json.dump({"success_count": success_count}, count_file, ensure_ascii=False, indent=4)
+                        print(f"Cập nhật số lượng post thành công: {success_count}")
+                    except Exception as count_err:
+                        print(f"Lỗi khi lưu số lượng post thành công: {count_err}")
+
+                    # Lưu dữ liệu bài đăng thành công vào file JSON
+                    if crawl_page in existing_data:
+                        existing_data[crawl_page].append(post)
+                    else:
+                        existing_data[crawl_page] = [post]
+
                     try:
                         with open(output_file, "w", encoding="utf-8") as json_file:
                             json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
                         print(f"Dữ liệu đã được lưu vào {output_file} cho post {post['post_index']}")
                     except Exception as json_err:
                         print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
-                        
+
                     self.driver.refresh()
+
                 except Exception as post_err:
                     print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
 
