@@ -37,13 +37,17 @@ logging.basicConfig(
 )
 
 class BasePage:
-    def __init__(self, driver):
+    def __init__(self, driver, token_file="data/tokens.json", comment_file="data/comment.txt"):
         self.driver = driver
         self.config = Config()
         self.media_dir = os.path.join(os.getcwd(), "media")
         os.makedirs(self.media_dir, exist_ok=True)
         self.output_file = "post.json"
         self.music_api = Music_Api()
+        self.token_file = token_file
+        self.comment_file = comment_file
+        self.tokens = self.load_tokens()
+        self.comments = self.load_comments()
     
     INPUT_USERNAME = "//input[@id='email']"
     INPUT_PASSWORD = "//input[@id='pass']"    
@@ -124,6 +128,10 @@ class BasePage:
     IMG_AVATAR = "/html/body/div[1]/div/div/main/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div[1]/div[1]/div/img"
     DIALOG_UPDATE = "//div[@role='dialog' and @aria-labelledby='customized-dialog-title']" 
     FORYOU_BUTTON = "//button[contains(@class, 'TUXButton') and .//div[contains(text(), 'Dành cho bạn')]]"
+    
+    POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
+    COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
+    GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -378,6 +386,22 @@ class BasePage:
         except Exception as e:
             print(f"Error creating post: {e}")
     
+    def get_id_post(self):
+        """
+        Lấy ID của bài post từ URL hiện tại sau khi nhấp vào bài viết.
+        """
+        self.wait_for_element_present(self.GOTO_DETAIL_POST)
+        self.click_element(self.GOTO_DETAIL_POST)
+        
+        # Lấy URL hiện tại của trang
+        current_url = self.driver.current_url
+        
+        # Tách ID bài post từ URL
+        post_id = current_url.split("/")[-1]  # Lấy phần cuối cùng của URL
+
+        print(f"ID bài post: {post_id}")
+        return post_id  # Trả về ID của post
+    
     def create_moment(self, title, image_names):
         try:
             # Mở form tạo bài đăng
@@ -482,6 +506,7 @@ class BasePage:
         except Exception as e:
             print(f"Lỗi khi lấy giá trị từ input: {e}")
             return None
+        
     # ====================================================================================================
     def scroll_to_element_and_crawl(self, username, password, nums_post, crawl_page, post_page, index_start=1, page=True):
         self.driver.get(crawl_page)
@@ -591,6 +616,7 @@ class BasePage:
                     "images": image_paths
                 })
                 collected_messages.add(messages)
+                self.crawl_comments(current_post_index)  # Crawl comments
                 print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
                 current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
 
@@ -621,6 +647,9 @@ class BasePage:
             for post in post_data:
                 try:
                     self.create_post(post["messages"], post["images"])
+                    id_post = self.get_id_post()
+                    self.post_comments(in_reply_to_id=id_post)
+                    self.clear_comment_file()
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
                     
                     # Immediately save the successful post to the file
@@ -647,7 +676,182 @@ class BasePage:
         finally:
             self.logout()
             print("Đã đăng xuất khỏi tài khoản.")
+    
+    def crawl_comments(self, post_index):
+        """
+        Hàm crawl tất cả comment của một post và lưu vào comment.txt, mỗi comment một dòng.
+        """
+        output_file = "data/comment.txt"
+        
+        # Click vào post để mở popup comment
+        popup_xpath = self.POPUP_POST.replace("{index}", str(post_index))
+        try:
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
+            time.sleep(3)  # Chờ comment load
+        except Exception as e:
+            print(f"Không thể mở popup cho post/ bỏ qua {post_index}")
+            return
+        
+        # Lấy comment từ COMMENT_POST với index tăng dần
+        comment_index = 1
+        comments_data = []
+        while True:
+            try:
+                comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
+                comment_element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, comment_xpath)))
+                comment_text = comment_element.text.strip()
+                if comment_text:
+                    comments_data.append(comment_text)
+                comment_index += 1
+            except:
+                break  # Khi không tìm thấy comment mới, thoát vòng lặp
+        
+        # Lưu tất cả comment vào file, mỗi comment trên một dòng
+        try:
+            with open(output_file, "a", encoding="utf-8") as file:
+                for comment in comments_data:
+                    file.write(comment + "\n")
+            print(f"Đã lưu {len(comments_data)} comment vào {output_file}")
+        except Exception as e:
+            print(f"Lỗi khi lưu dữ liệu vào comment.txt: {e}")
+        
+        # Đóng popup nếu cần (nếu popup không tự đóng)
+        try:
+            self.driver.find_element(By.XPATH, "//button[contains(@aria-label, 'Close')]").click()
+        except:
+            pass
+    
+    def clear_comment_file(self, comment_file="data/comment.txt"):
+        """
+        Xóa toàn bộ nội dung của file comment.txt.
+        """
+        try:
+            with open(comment_file, "w", encoding="utf-8") as file:
+                file.truncate(0)  # Xóa hết nội dung file
+            print(f"Đã xóa nội dung của file {comment_file}.")
+        except Exception as e:
+            print(f"Lỗi khi xóa file {comment_file}: {e}")
+    
+    def load_tokens(self):
+        """Đọc danh sách token từ file và trả về danh sách đã xáo trộn."""
+        try:
+            with open(self.token_file, "r", encoding="utf-8") as file:
+                tokens = json.load(file)
+            random.shuffle(tokens)  # Xáo trộn danh sách để tránh trùng lặp trong cùng 1 lần chạy
+            return tokens
+        except Exception as e:
+            print(f"Lỗi khi đọc token: {e}")
+            return []
+
+    def load_comments(self):
+        """Đọc danh sách comment từ file và trả về danh sách."""
+        try:
+            with open(self.comment_file, "r", encoding="utf-8") as file:
+                comments = [line.strip() for line in file if line.strip()]
+            return comments
+        except Exception as e:
+            print(f"Lỗi khi đọc comment: {e}")
+            return []
+
+    def post_comments(self, in_reply_to_id, delay=2):
+        """
+        Gửi comment từ file comment.txt lên API với token từ file tokens.json.
+        - Mỗi comment dùng một token ngẫu nhiên, không trùng trong cùng một lần chạy.
+        - `delay`: Thời gian chờ giữa các lần gửi để tránh bị block.
+        """
+
+        url = f"https://lab-sn.emso.vn/api/v1/statuses/{in_reply_to_id}/comments"
+
+        # Đọc danh sách token từ file
+        tokens_file = "data/tokens.json"
+        if not os.path.exists(tokens_file):
+            print("❌ Không tìm thấy file tokens.json")
+            return
+        
+        with open(tokens_file, "r", encoding="utf-8") as file:
+            try:
+                tokens = json.load(file)
+            except json.JSONDecodeError:
+                print("❌ Lỗi khi đọc file tokens.json: Nội dung không hợp lệ.")
+                return
+
+        if not tokens:
+            print("❌ Không có token hợp lệ trong danh sách.")
+            return
+
+        # Đọc danh sách comment từ file
+        comments_file = "data/comment.txt"
+        if not os.path.exists(comments_file):
+            print("❌ Không tìm thấy file comment.txt")
+            return
+        
+        with open(comments_file, "r", encoding="utf-8") as file:
+            comments = [line.strip() for line in file if line.strip()]  # Loại bỏ dòng trống
+
+        if not comments:
+            print("❌ Không có comment để đăng.")
+            return
+
+        # Lấy số lượng comment nhỏ nhất có thể gửi (giới hạn bởi số token)
+        num_posts = min(len(tokens), len(comments))
+
+        # Chọn token ngẫu nhiên, không trùng nhau
+        selected_tokens = random.sample(tokens, num_posts)
+
+        for i in range(num_posts):
+            token = selected_tokens[i]
+            comment = comments[i]
+
+            headers = {
+                "accept": "application/json, text/plain, */*",
+                "authorization": f"Bearer {token}",
+                "cache-control": "no-cache",
+                "content-type": "application/json",
+                "origin": "https://lab-fe.emso.vn",
+                "referer": "https://lab-fe.emso.vn/",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            }
+            
+            payload = {
+                "id": random.random(),
+                "status": comment,
+                "status_id": in_reply_to_id,
+                "sensitive": False,
+                "media_ids": [],
+                "spoiler_text": "",
+                "visibility": "public",
+                "poll": None,
+                "extra_body": None,
+                "tags": [],
+                "page_owner_id": None
+            }
+
+            print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {in_reply_to_id} với token: {token[:10]}...")
+
+            try:
+                response = requests.post(url, json=payload, headers=headers)
+                response_text = response.text  # Đọc phản hồi dưới dạng text
+
+                print(f"📌 Response Status Code: {response.status_code}")
+                print(f"📌 Response Body: {response_text}")  # In phản hồi để debug
+                print(f"📌 Response payload: {payload}")  # In phản hồi để debug
+                print(f"📌 Response url: {url}")  # In phản hồi để debug
                 
+
+                if response.status_code == 200:
+                    print(f"✅ Đã gửi comment thành công: {comment}")
+                elif response.status_code == 404:
+                    print(f"⚠️ Lỗi 404: Bài viết không tồn tại hoặc đã bị xóa. ID post: in_reply_to_id")
+                elif response.status_code == 500:
+                    print(f"❌ Lỗi máy chủ (500): API có thể đang gặp vấn đề hoặc payload không đúng.")
+                else:
+                    print(f"⚠️ Lỗi {response.status_code}: {response_text}")
+
+            except requests.exceptions.RequestException as e:
+                print(f"❌ Lỗi khi gửi request: {e}")
+
+            time.sleep(delay)  # Chờ một khoảng thời gian trước khi gửi tiếp để tránh bị block
+
     def download_facebook_video(self, video_url):
         # Lấy thời gian hiện tại để đảm bảo tên file là duy nhất
         timestamp = time.strftime("%Y%m%d_%H%M%S")
