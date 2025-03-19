@@ -129,7 +129,7 @@ class BasePage:
     DIALOG_UPDATE = "//div[@role='dialog' and @aria-labelledby='customized-dialog-title']" 
     FORYOU_BUTTON = "//button[contains(@class, 'TUXButton') and .//div[contains(text(), 'Dành cho bạn')]]"
     
-    POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
+    POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[1]/div/div[2]/div[2]"
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     
@@ -618,6 +618,7 @@ class BasePage:
                 collected_messages.add(messages)
                 self.crawl_comments(current_post_index)  # Crawl comments
                 print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
+                # time.sleep(600)
                 current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
 
             except Exception as e:
@@ -641,7 +642,18 @@ class BasePage:
 
         success_count_file = "data/success_count.json"
         success_count = 0
-        
+
+        # Đọc số lượng post thành công từ file nếu file tồn tại
+        try:
+            with open(success_count_file, "r", encoding="utf-8") as count_file:
+                data = json.load(count_file)
+                success_count = data.get("success_count", 0)  # Lấy giá trị success_count, mặc định là 0 nếu không có
+            print(f"Số lượng post thành công hiện tại: {success_count}")
+        except FileNotFoundError:
+            print("File success_count.json không tồn tại, khởi tạo với giá trị 0.")
+        except Exception as e:
+            print(f"Lỗi khi đọc file success_count.json: {e}")
+
         try:
             self.login_emso(username, password)
             self.driver.get(post_page)
@@ -650,9 +662,7 @@ class BasePage:
             for post in post_data:
                 try:
                     self.create_post(post["messages"], post["images"])
-                    id_post = self.get_id_post()
-                    self.post_comments(in_reply_to_id=id_post)
-                    self.clear_comment_file()
+                    
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
 
                     # Cập nhật số lượng post thành công
@@ -680,6 +690,11 @@ class BasePage:
                         print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
 
                     self.driver.refresh()
+                    
+                    #Đăng comment
+                    id_post = self.get_id_post()
+                    self.post_comments(in_reply_to_id=id_post)
+                    self.clear_comment_file()
 
                 except Exception as post_err:
                     print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
@@ -774,7 +789,7 @@ class BasePage:
         - `delay`: Thời gian chờ giữa các lần gửi để tránh bị block.
         """
 
-        url = f"https://lab-sn.emso.vn/api/v1/statuses/{in_reply_to_id}/comments"
+        url = "https://prod-sn.emso.vn/api/v1/statuses"
 
         # Đọc danh sách token từ file
         tokens_file = "data/tokens.json"
@@ -817,19 +832,14 @@ class BasePage:
             comment = comments[i]
 
             headers = {
-                "accept": "application/json, text/plain, */*",
-                "authorization": f"Bearer {token}",
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "origin": "https://lab-fe.emso.vn",
-                "referer": "https://lab-fe.emso.vn/",
-                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+                'accept': 'application/json, text/plain, */*',
+                'authorization': f'Bearer {token}',
+                'content-type': 'application/json',
             }
             
-            payload = {
-                "id": random.random(),
+            payload = json.dumps({
                 "status": comment,
-                "status_id": in_reply_to_id,
+                "in_reply_to_id": in_reply_to_id,
                 "sensitive": False,
                 "media_ids": [],
                 "spoiler_text": "",
@@ -837,19 +847,19 @@ class BasePage:
                 "poll": None,
                 "extra_body": None,
                 "tags": [],
-                "page_owner_id": None
-            }
+                "page_owner_id": None,
+            })
 
             print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {in_reply_to_id} với token: {token[:10]}...")
 
             try:
-                response = requests.post(url, json=payload, headers=headers)
+                response = requests.post(url, data=payload, headers=headers)
                 response_text = response.text  # Đọc phản hồi dưới dạng text
 
-                print(f"📌 Response Status Code: {response.status_code}")
-                print(f"📌 Response Body: {response_text}")  # In phản hồi để debug
-                print(f"📌 Response payload: {payload}")  # In phản hồi để debug
-                print(f"📌 Response url: {url}")  # In phản hồi để debug
+                # print(f"📌 Response Status Code: {response.status_code}")
+                # print(f"📌 Response Body: {response_text}")  # In phản hồi để debug
+                # print(f"📌 Response payload: {payload}")  # In phản hồi để debug
+                # print(f"📌 Response url: {url}")  # In phản hồi để debug
                 
 
                 if response.status_code == 200:
