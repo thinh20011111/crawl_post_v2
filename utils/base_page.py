@@ -130,6 +130,7 @@ class BasePage:
     FORYOU_BUTTON = "//button[contains(@class, 'TUXButton') and .//div[contains(text(), 'Dành cho bạn')]]"
     
     POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[1]/div/div[2]/div[2]"
+    POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     
@@ -712,13 +713,25 @@ class BasePage:
         """
         output_file = "data/comment.txt"
         
-        # Click vào post để mở popup comment
-        popup_xpath = self.POPUP_POST.replace("{index}", str(post_index))
-        try:
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
-            time.sleep(3)  # Chờ comment load
-        except Exception as e:
-            print(f"Không thể mở popup cho post/ bỏ qua {post_index}")
+        # Danh sách các XPath khả thi
+        popup_xpaths = [
+            self.POPUP_POST.replace("{index}", str(post_index)),
+            self.POPUP_POST_ALT.replace("{index}", str(post_index))  # Thay thế bằng XPath thứ 2
+        ]
+        
+        # Thử mở popup với cả hai XPath
+        popup_opened = False
+        for popup_xpath in popup_xpaths:
+            try:
+                WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
+                time.sleep(3)  # Chờ comment load
+                popup_opened = True
+                break  # Nếu mở được popup thì thoát vòng lặp
+            except Exception:
+                continue  # Thử XPath tiếp theo nếu thất bại
+        
+        if not popup_opened:
+            print(f"Không thể mở popup cho post {post_index}, bỏ qua.")
             return
         
         # Lấy comment từ COMMENT_POST với index tăng dần
