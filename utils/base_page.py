@@ -133,7 +133,7 @@ class BasePage:
     POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div"
+    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/div/span"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -612,14 +612,15 @@ class BasePage:
                     continue
 
                 # Thêm bài viết hợp lệ vào danh sách
+                content = self.crawl_comments(current_post_index)  # Crawl comments
+                print(f"======Đây là content======: {content}")
                 post_data.append({
                     "post_index": current_post_index,
-                    "messages": messages,
+                    "messages": content,
                     "images": image_paths
                 })
-                collected_messages.add(messages)
-                self.crawl_comments(current_post_index)  # Crawl comments
-                print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
+                collected_messages.add(content)
+                # print(f"Đã xử lý post {current_post_index}. Text: {messages}, Ảnh hợp lệ: {len(image_paths)}")
                 # time.sleep(600)
                 current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
 
@@ -711,6 +712,7 @@ class BasePage:
     def crawl_comments(self, post_index):
         """
         Hàm crawl tất cả comment của một post và lưu vào comment.txt, mỗi comment một dòng.
+        Đồng thời, trả về content của bài viết sau khi mở được popup.
         """
         output_file = "data/comment.txt"
         
@@ -722,18 +724,33 @@ class BasePage:
         
         # Thử mở popup với cả hai XPath
         popup_opened = False
+        content = ""  # Biến lưu content của bài viết
         for popup_xpath in popup_xpaths:
             try:
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
                 time.sleep(3)  # Chờ comment load
                 popup_opened = True
+                
+                # Lấy nội dung bài viết bao gồm cả icon
+                content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
+                content_parts = []
+                for element in content_elements:
+                    content_parts.append(element.text.strip())
+                    # Lấy thêm các emoji/icon nếu có
+                    icons = element.find_elements(By.TAG_NAME, "img")
+                    for icon in icons:
+                        alt_text = icon.get_attribute("alt")
+                        if alt_text:
+                            content_parts.append(alt_text)
+                
+                content = " ".join([part for part in content_parts if part])
                 break  # Nếu mở được popup thì thoát vòng lặp
             except Exception:
                 continue  # Thử XPath tiếp theo nếu thất bại
         
         if not popup_opened:
             print(f"Không thể mở popup cho post {post_index}, bỏ qua.")
-            return
+            return None
         
         # Lấy comment từ COMMENT_POST với index tăng dần
         comment_index = 1
@@ -763,7 +780,9 @@ class BasePage:
             self.driver.find_element(By.XPATH, "//button[contains(@aria-label, 'Close')]").click()
         except:
             pass
-    
+        
+        return content
+
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
         Xóa toàn bộ nội dung của file comment.txt.
