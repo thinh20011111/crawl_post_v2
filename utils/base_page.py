@@ -616,7 +616,8 @@ class BasePage:
                 print(f"======Đây là content======: {content}")
                 post_data.append({
                     "post_index": current_post_index,
-                    "messages": content,
+                    "content": content,
+                    "messages": messages,
                     "images": image_paths
                 })
                 collected_messages.add(content)
@@ -664,7 +665,7 @@ class BasePage:
 
             for post in post_data:
                 try:
-                    self.create_post(post["messages"], post["images"])
+                    self.create_post(post["content"], post["images"])
                     
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
 
@@ -679,11 +680,19 @@ class BasePage:
                     except Exception as count_err:
                         print(f"Lỗi khi lưu số lượng post thành công: {count_err}")
 
-                    # Lưu dữ liệu bài đăng thành công vào file JSON
+                    # Lưu dữ liệu bài đăng thành công vào file JSON với 'messages' thay vì 'content'
                     if crawl_page in existing_data:
-                        existing_data[crawl_page].append(post)
+                        existing_data[crawl_page].append({
+                            "post_index": post["post_index"],
+                            "messages": post["messages"],
+                            "images": post["images"]
+                        })
                     else:
-                        existing_data[crawl_page] = [post]
+                        existing_data[crawl_page] = [{
+                            "post_index": post["post_index"],
+                            "messages": post["messages"],
+                            "images": post["images"]
+                        }]
 
                     try:
                         with open(output_file, "w", encoding="utf-8") as json_file:
@@ -694,7 +703,7 @@ class BasePage:
 
                     self.driver.refresh()
                     
-                    #Đăng comment
+                    # Đăng comment
                     id_post = self.get_id_post()
                     self.post_comments(in_reply_to_id=id_post)
                     self.clear_comment_file()
@@ -708,50 +717,66 @@ class BasePage:
         finally:
             self.logout()
             print("Đã đăng xuất khỏi tài khoản.")
+
     
     def crawl_comments(self, post_index):
-        """
-        Hàm crawl tất cả comment của một post và lưu vào comment.txt, mỗi comment một dòng.
-        Đồng thời, trả về content của bài viết sau khi mở được popup.
-        """
         output_file = "data/comment.txt"
-        
+
         # Danh sách các XPath khả thi
         popup_xpaths = [
             self.POPUP_POST.replace("{index}", str(post_index)),
             self.POPUP_POST_ALT.replace("{index}", str(post_index))  # Thay thế bằng XPath thứ 2
         ]
-        
+
         # Thử mở popup với cả hai XPath
         popup_opened = False
-        content = ""  # Biến lưu content của bài viết
+        content_text = ""  # Biến lưu content của bài viết
         for popup_xpath in popup_xpaths:
             try:
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
                 time.sleep(3)  # Chờ comment load
-                popup_opened = True
                 
-                # Lấy nội dung bài viết bao gồm cả icon
+                # Kiểm tra xem popup có mở thực sự không bằng cách tìm phần tử trong popup
+                if self.driver.find_elements(By.XPATH, self.CONTENT_POST):
+                    popup_opened = True
+                    print("Popup đã mở thành công.")
+                else:
+                    print("Popup không hiển thị sau khi click.")
+                    continue
+
+                # --- LẤY NỘI DUNG BÀI VIẾT GIỮ ĐÚNG CẤU TRÚC VÀ ICON ---
                 content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
                 content_parts = []
+
                 for element in content_elements:
-                    content_parts.append(element.text.strip())
-                    # Lấy thêm các emoji/icon nếu có
-                    icons = element.find_elements(By.TAG_NAME, "img")
-                    for icon in icons:
-                        alt_text = icon.get_attribute("alt")
-                        if alt_text:
-                            content_parts.append(alt_text)
-                
-                content = " ".join([part for part in content_parts if part])
+                    self.driver.execute_script("arguments[0].scrollIntoView();", element)  # Cuộn vào element
+                    time.sleep(1)  # Đợi load
+                    
+                    # Lấy nội dung với định dạng HTML để đảm bảo giữ nguyên cấu trúc
+                    content_html = element.get_attribute("innerHTML")
+                    
+                    # Xử lý để thay thế các icon (emoji) bằng alt text
+                    soup = BeautifulSoup(content_html, "html.parser")
+                    for img in soup.find_all("img"):
+                        alt_text = img.get("alt", "")
+                        img.replace_with(alt_text)
+                    
+                    cleaned_text = soup.get_text(" ", strip=True)
+                    
+                    if cleaned_text:
+                        content_parts.append(cleaned_text)
+
+                # Ghép các phần nội dung lại thành một bài viết hoàn chỉnh
+                content_text = "\n".join(content_parts)
                 break  # Nếu mở được popup thì thoát vòng lặp
-            except Exception:
+            except Exception as e:
+                print(f"Lỗi mở popup với XPath {popup_xpath}")
                 continue  # Thử XPath tiếp theo nếu thất bại
-        
+
         if not popup_opened:
             print(f"Không thể mở popup cho post {post_index}, bỏ qua.")
             return None
-        
+
         # Lấy comment từ COMMENT_POST với index tăng dần
         comment_index = 1
         comments_data = []
@@ -759,13 +784,25 @@ class BasePage:
             try:
                 comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                 comment_element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, comment_xpath)))
-                comment_text = comment_element.text.strip()
-                if comment_text:
-                    comments_data.append(comment_text)
+                
+                # Lấy nội dung comment với cấu trúc HTML
+                comment_html = comment_element.get_attribute("innerHTML")
+                
+                # Xử lý HTML để giữ nguyên icon và xuống dòng
+                soup = BeautifulSoup(comment_html, "html.parser")
+                for img in soup.find_all("img"):
+                    alt_text = img.get("alt", "")
+                    img.replace_with(alt_text)
+                
+                cleaned_comment = soup.get_text(" ", strip=True)
+                
+                if cleaned_comment:
+                    comments_data.append(cleaned_comment)
+                
                 comment_index += 1
             except:
                 break  # Khi không tìm thấy comment mới, thoát vòng lặp
-        
+            
         # Lưu tất cả comment vào file, mỗi comment trên một dòng
         try:
             with open(output_file, "a", encoding="utf-8") as file:
@@ -774,14 +811,14 @@ class BasePage:
             print(f"Đã lưu {len(comments_data)} comment vào {output_file}")
         except Exception as e:
             print(f"Lỗi khi lưu dữ liệu vào comment.txt: {e}")
-        
+            
         # Đóng popup nếu cần (nếu popup không tự đóng)
         try:
             self.driver.find_element(By.XPATH, "//button[contains(@aria-label, 'Close')]").click()
         except:
             pass
-        
-        return content
+            
+        return content_text
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
