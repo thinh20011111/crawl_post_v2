@@ -73,9 +73,9 @@ class BasePage:
     MORE_OPTION = "(//div[@aria-haspopup='menu' and contains(@class, 'x1i10hfl') and contains(@aria-label, 'Hành động với bài viết này')])[{index}]"
     SKIP_BANNER = "//div[contains(text(), 'Tiếp tục')]"
     ITEMS_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div/div/div/div/div/div/div/a"
-    ITEM_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a"
-    TIME_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div/a/div/div/div/div[2]/span"
-    TITLE_VIDEO_WATCH = "(//div[@class='x1qjc9v5 x1lq5wgf xgqcy7u x30kzoy x9jhf4c x78zum5 xdt5ytf x1l90r2v xyamay9 xjl7jj']//div[.//span[text()='Video']])[1]/div/div/div/div[{index}]/div/div/div/div/div/div[2]/span/div/a"
+    ITEM_VIDEO_WATCH = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div/div/div/div/div/div[2]/div/div/div[{index}]/div/div/div/div/div/div[1]/a"
+    TIME_VIDEO_WATCH = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div/div/div/div/div/div[2]/div/div/div[{index}]/div/div/div/div/div/div[1]/a/div/div/div/div[2]/span"
+    TITLE_VIDEO_WATCH = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div/div/div/div/div/div[2]/div/div/div[{index}]/div/div/div/div/div/div[2]/span[1]/div[1]/a/span/span"
     NEXT_REELS = "//div[@aria-label='Thẻ tiếp theo' and contains(@class, 'x1i10hfl')]"
     OPEN_FORM_MOMENT = "//button[contains(@class, 'MuiButton-root') and .//p[text()='Khoảnh khắc']]"
     INPUT_UPLOAD_MOMENT = "//input[@id='files' and @name='files']"
@@ -710,6 +710,7 @@ class BasePage:
 
                 except Exception as post_err:
                     print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+                    self.clear_comment_file()
 
         except Exception as login_err:
             print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
@@ -985,6 +986,8 @@ class BasePage:
         page_name = self.extract_username_from_url(crawl_page)
         print(f"page_username = {page_name}")
         self.driver.get(f"https://www.facebook.com/{page_name}/videos")
+        
+        # time.sleep(500)
 
         post_data = []  # List to store valid post data
         current_post_index = index_start  # Start from index_start
@@ -1145,7 +1148,6 @@ class BasePage:
             finally:
                 self.logout()
                 print("Logged out from account.")
-
 
     def create_posts(self, post_data, username, password, post_page, output_file):
         """Helper method to create posts if no items were found"""
