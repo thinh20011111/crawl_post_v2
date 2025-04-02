@@ -665,7 +665,7 @@ class BasePage:
 
             for post in post_data:
                 try:
-                    self.create_post(post["content"], post["images"])
+                    self.create_post(post["content"] if post["content"] is not None else post["messages"], post["images"])
                     
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
 
