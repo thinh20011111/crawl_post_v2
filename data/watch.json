@@ -1,892 +1,12 @@
 {
-<<<<<<< HEAD
-    "https://www.facebook.com/baomangvnn": [
-        {
-            "post_index": 9,
-            "messages": [
-                "THỨC QUÀ ĂN SÁNG GÓI GỌN CẢ MÙA THU"
-            ],
-            "video": [
-                "facebook_video_20250327_111508.mp4"
-            ]
-        },
-        {
-            "post_index": 19,
-            "messages": [
-                "Nhiều công nhân và máy móc đang tất bật thi công các hạng mục tại công trường cầu Rạch Đỉa"
-            ],
-            "video": [
-                "facebook_video_20250328_090815.mp4"
-            ]
-        },
-        {
-            "post_index": 23,
-            "messages": [
-                "Sau thời gian tái khởi động vào tháng 102023 dự án cầu Tăng Long đường Lã Xuân Oai TP Thủ Đức TPHCM bắt đầu nhộn nhịp thi công trở lại"
-            ],
-            "video": [
-                "facebook_video_20250328_095137.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/yangdexinn": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Đặc điểm của người có nội tâm mạnh yangdexin YangdexinTeam Hoctiengtrung luciest"
-            ],
-            "video": [
-                "facebook_video_20250327_111557.mp4"
-            ]
-        },
-        {
-            "post_index": 17,
-            "messages": [
-                "cái giá phải trả quá đắt khi luôn ép mình phải giống đám đông"
-            ],
-            "video": [
-                "facebook_video_20250328_090922.mp4"
-            ]
-        },
-        {
-            "post_index": 23,
-            "messages": [
-                "Từng lời ba mẹ nói đều sẽ gây ảnh hưởng nhất định đến con cái tổn thương hay hạnh phúc đều từ đó mà ra yangdexin hoctiengtrung"
-            ],
-            "video": [
-                "facebook_video_20250328_095300.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/namtusgvn": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Nếu không có bữa tất niên đó thì"
-            ],
-            "video": [
-                "facebook_video_20250327_111645.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/carobooks.vn": [
-        {
-            "post_index": 3,
-            "messages": [
-                "Vì sao người Do Thái là dân tộc thông minh nhất thế giới carobooks sachhaymoingay moingaymottrangsach DoThai nguoiDoThai"
-            ],
-            "video": [
-                "facebook_video_20250327_111816.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/500broslienminh": [
-        {
-            "post_index": 7,
-            "messages": [
-                "Video của 500Bros Liên Minh"
-            ],
-            "video": [
-                "facebook_video_20250327_112303.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/VatVoStudio69": [
-        {
-            "post_index": 10,
-            "messages": [
-                "Nhanh thật mới đó mà đã gần 1 tuần kể từ ngày diễn ra giải đấu PUBG MOBILE rùi  Rất cảm ơn sự nhiệt tình tham gia của anh em OFans nói riêng và cộng đồng game thủ PUBG Mobile nói chung  Sắp tới tổ chức thêm giải game gì được anh em nhỉ cmt bên dưới để ad nghiên cứu nhé"
-            ],
-            "video": [
-                "facebook_video_20250327_112400.mp4"
-            ]
-        },
-        {
-            "post_index": 1,
-            "messages": [
-                "Một buổi đi chơi cùng Vật Vờ Studio sẽ như thế nào "
-            ],
-            "video": [
-                "facebook_video_20250328_091809.mp4"
-            ]
-        },
-        {
-            "post_index": 31,
-            "messages": [
-                "AI sắp thống trị thế giới "
-            ],
-            "video": [
-                "facebook_video_20250328_100256.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/chuiphimreview1.3": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Xem lại phần hành động của Zack Snyder để rửa mắt chứ coi Shazam nhưc cc "
-            ],
-            "video": [
-                "facebook_video_20250327_112457.mp4"
-            ]
-        },
-        {
-            "post_index": 3,
-            "messages": [
-                "Nàng Tiên Cá thời đại mới tung Trailer chính thức"
-            ],
-            "video": [
-                "facebook_video_20250328_091909.mp4"
-            ]
-        },
-        {
-            "post_index": 7,
-            "messages": [
-                "The Flash tung Trailer chính thức"
-            ],
-            "video": [
-                "facebook_video_20250328_100342.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/PhongBuiOfficial": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Dạo quanh ẩm thực đường phố Ấn Độ"
-            ],
-            "video": [
-                "facebook_video_20250327_112536.mp4"
-            ]
-        },
-        {
-            "post_index": 1,
-            "messages": [
-                "Trải nghiệm đặc sản thức ăn có ruồi ở biên giới Ấn Độ  Nepal"
-            ],
-            "video": [
-                "facebook_video_20250328_091942.mp4"
-            ]
-        },
-        {
-            "post_index": 2,
-            "messages": [
-                "Trải nghiệm tục ăn bốc bằng tay Ấn Độ và lý do bất ngờ"
-            ],
-            "video": [
-                "facebook_video_20250328_100415.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/bhdsupersoi": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Shipper mất dạy dám ném đồ của khách khi không liên lạc được"
-            ],
-            "video": [
-                "facebook_video_20250327_112621.mp4"
-            ]
-        },
-        {
-            "post_index": 1,
-            "messages": [
-                "Không có gì khó chị sợ lòng không bền"
-            ],
-            "video": [
-                "facebook_video_20250328_092020.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "Sự thật phía sau video gia đình thờ ơ trước cơn đau của mẹ"
-            ],
-            "video": [
-                "facebook_video_20250328_100458.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/cucaitrongtrang": [
-        {
-            "post_index": 4,
-            "messages": [
-                "Làm xong không biết tăng thêm mấy độ cận nhưng cũng muốn thử 1 lần  oluoitv DIY"
-            ],
-            "video": [
-                "facebook_video_20250327_112704.mp4"
-            ]
-        },
-        {
-            "post_index": 10,
-            "messages": [
-                "Nhà có nuôi 1 cái máy nói nói từ trên trời xuống dưới đất từ trong nhà ra tận ngoài cửa  giaitri oluoitv"
-            ],
-            "video": [
-                "facebook_video_20250328_092115.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/bimatdongtien79": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Video của Bí Mật Dòng Tiền"
-            ],
-            "video": [
-                "facebook_video_20250327_112745.mp4"
-            ]
-        },
-        {
-            "post_index": 3,
-            "messages": [
-                "Nhân sinh lưu nhớ"
-            ],
-            "video": [
-                "facebook_video_20250328_092151.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "TỰ TIN TOẢ SÁNG"
-            ],
-            "video": [
-                "facebook_video_20250328_100736.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/cumeothongthai02": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Những thiết kế kỳ lạ nhất bạn có thể chưa biết"
-            ],
-            "video": [
-                "facebook_video_20250327_112823.mp4"
-            ]
-        },
-        {
-            "post_index": 1,
-            "messages": [
-                "Những tình huống bất ngờ được camera ghi lại  Phần 124"
-            ],
-            "video": [
-                "facebook_video_20250328_092223.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "Những tình huống bất ngờ được camera ghi lại  Phần 123"
-            ],
-            "video": [
-                "facebook_video_20250328_100815.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/hethonggiaoducnqh": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Học Ngay 3 Kỹ Năng Thoát Hiểm Khi Đuối Nước Để Sống Sót Đuối nước không chỉ là một tai nạn đáng tiếc mà còn là một lời cảnh tỉnh về tầm quan trọng của kỹ năng sinh tồn trong môi trường nước Chính vì thế Thầy Cô NQH SKILL đã mang đến chuyên đề Phòng chống đuối nước cho các em học sinh trường THPT Lê Minh Xuân những kiến thức thiết thực và giá trị  Tự tin và bản lĩnh  Khi được trang bị kỹ năng thả nổi trẻ không còn sợ nước mà biết cách tự bảo vệ mình  Phản xạ nhanh  Được huấn luyện giúp trẻ bình tĩnh giữ hơi tìm điểm nổi và kêu cứu đúng cách  Kỹ năng sống thiết yếu  Phòng chống đuối nước giúp trẻ rèn thể chất chủ động và tự tin trước nguy hiểm Trung tâm Kỹ năng sống NQH luôn tâm huyết tạo ra các buổi chuyên đề hữu ích và mang tính thực tế về những kỹ năng sống cần thiết dành cho các em học sinh tại các trường Tiểu học THCS THPT tại TPHCM Hy vọng qua các buổi chuyên đề các em sẽ tiếp cận hiệu quả những kiến thức và kỹ năng thiết thực áp dụng trong cuộc sống Từ đó các em có thể tự tin bảo vệ bản thân và những người thân yêu xung quanh hethonggiaoducnqh"
-            ],
-            "video": [
-                "facebook_video_20250327_112900.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "RECAP TIỆC TRI ÂN 2011 NGƯỜI THẦY CŨNG CÓ MỘT NGƯỜI THẦY Vậy là đã tròn 1 tuần kể từ sự kiện cực lớn của Hệ thống giáo dục NQH  Tiệc Tri Ân 2011 được diễn ra chào đón ngày Nhà Giáo Việt Nam Đây là dịp cho hơn 500 thành viên được quy tụ đông đủ Đã có những cảm xúc giấu kín được bày tỏ Đã có những cái ôm ấm áp tình anh em gắn bó Đã có những sẻ chia kết nối Tất cả đều tạo ra những khoảnh khắc tuyệt vời trọn vẹn cho ngày tri ân để cùng nhìn lại chặng hành trình dài theo đuổi sứ mệnh trao gửi tri thức Hãy cùng điểm qua những khoảnh khắc nổi bật tại sự kiện 2011 vừa qua cùng nhà NQH nhé hethonggiaoducnqh"
-            ],
-            "video": [
-                "facebook_video_20250328_092302.mp4"
-            ]
-        },
-        {
-            "post_index": 5,
-            "messages": [
-                "VINH DANH 2024  THỦ KHOA 2k6 và 2k9 NÓI GÌ VỀ HÀNH TRÌNH TUYỆT VỜI TẠI NQH"
-            ],
-            "video": [
-                "facebook_video_20250328_100857.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/nhatoiyenbai": [
-        {
-            "post_index": 21,
-            "messages": [
-                "Thích nhất cái không khí nhộn nhịp của chợ quê ngày Tết "
-            ],
-            "video": [
-                "facebook_video_20250327_113029.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/anninhhomnaytv": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Ông giấu vàng giỏi quá"
-            ],
-            "video": [
-                "facebook_video_20250327_113105.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "Sáng nay 203 mưa lớn gió lớn ở bến phà Tân Bình Đồng Tháp Người dân đang cầu nguyện Trời Phật để vượt qua nguy hiểm khi một chiếc phà khó cặp bến do gió lớnnước sông dao động mạnh"
-            ],
-            "video": [
-                "facebook_video_20250328_092543.mp4"
-            ]
-        },
-        {
-            "post_index": 15,
-            "messages": [
-                "Tổng bí thư Nguyễn Phú Trọng chúc tết đồng bào"
-            ],
-            "video": [
-                "facebook_video_20250328_101150.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/bancong.com.vn": [
-        {
-            "post_index": 11,
-            "messages": [
-                "Chiến tranh đã lùi xa nhưng với nhiều người dân Hà Nội ký ức về thời khắc huy hoàng của dân tộc ngày thống nhất đất nước 3041975 vẫn vẹn nguyên và in đậm với rất nhiều cảm xúc"
-            ],
-            "video": [
-                "facebook_video_20250327_113210.mp4"
-            ]
-        },
-        {
-            "post_index": 14,
-            "messages": [
-                "Bà là ánh dương sáng của lòng tôi"
-            ],
-            "video": [
-                "facebook_video_20250328_092645.mp4"
-            ]
-        },
-        {
-            "post_index": 21,
-            "messages": [
-                "HƯỚNG DẪN ĐEO KHẨU TRANG Y TẾ ĐÚNG CÁCH  NGĂN CHẶN VIRUS CORONA"
-            ],
-            "video": [
-                "facebook_video_20250328_101305.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/Mamamama.suzu": [
-        {
-            "post_index": 1,
-            "messages": [
-                "VIỆT NAM WOMENS RUN 2024 I RUN FOR YOU MV OFFICAL"
-            ],
-            "video": [
-                "facebook_video_20250327_113247.mp4"
-            ]
-        },
-        {
-            "post_index": 6,
-            "messages": [
-                "Má dù sao cũng chỉ là cô con gái bé bỏng của Ngoại"
-            ],
-            "video": [
-                "facebook_video_20250328_101349.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/vitommangg": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Quay show xong khỏi về nhà"
-            ],
-            "video": [
-                "facebook_video_20250327_113326.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/THUONGTRUONG.EK": [
-        {
-            "post_index": 4,
-            "messages": [
-                "KHI TẦM NHÌN TRỞ THÀNH KỲ TÍCH "
-            ],
-            "video": [
-                "facebook_video_20250327_113406.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/khaunghiepfp": [
-        {
-            "post_index": 5,
-            "messages": [
-                "PHÂN CẢNH BỊ CẮT CỦA ĐÈN ÂM HỒN KHÔNG CÓ Ở RẠP Đây là cái kết nhưng cũng không kết lắm có vẻ như drama vẫn còn phần 2 sẽ còn nữaaaa ĐÈN ÂM HỒN  phim Việt về tâm linh gia đình hành động dành cho mọi nhà chính thức khởi chiếu tại tất cả các rạp trên toàn quốc từ 07022025 mùng 10 Tết Ất Tỵ DenAmHon PhimDenAmHon ChuyenNguoiConGaiNamXuong VanHocVietNam HoangNam ChallengeMe PhimViet PhimTet xemphimsoiphim ngaycuoinam Tet2025 CoLieuCauHuong"
-            ],
-            "video": [
-                "facebook_video_20250327_113459.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/Bebobuongbinhh": [
-        {
-            "post_index": 18,
-            "messages": [
-                "Bỏ ngay cái nết phông bạt"
-            ],
-            "video": [
-                "facebook_video_20250327_113628.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/hocsinhtinhtuongpage": [
-        {
-            "post_index": 10,
-            "messages": [
-                "Yes chắc chắn là ai cũng từng làm qua hocsinhtinhtuong"
-            ],
-            "video": [
-                "facebook_video_20250327_113722.mp4"
-            ]
-        },
-        {
-            "post_index": 2,
-            "messages": [
-                "Thật sự  cười mỏi mồm hocsinhtinhtuong"
-            ],
-            "video": [
-                "facebook_video_20250328_093350.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/KySuLienMinh": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Chính thức ra mắt video âm nhạc Ma Meilleure Ennemie được thực hiện bởi nhà sản xuất Fortiche   Đừng quên đăng ký kênh của Ký Sự Liên Minh tại đây httpsbitlychannelKSLM  Tik Tok của Ký Sự Liên Minh tại đây httpsbitlyKSLMofficial  và tham gia group yêu cốt truyện LMHT  KSLM tại đây nữa httpsbitlyKySuLienMinh"
-            ],
-            "video": [
-                "facebook_video_20250327_113757.mp4"
-            ]
-        },
-        {
-            "post_index": 2,
-            "messages": [
-                "Preview về vị tướng LeBlanc và các trang phục sau khi được cập nhật lại ngoại hình  Thứ tự các trang phục lần lượt là Độc Ác Ảo Thuật Tầm Gửi Nàng Quạ Đen Thần Rừng Siêu Máy Tính IG Tiên Hắc Ám Chung Kết Thế Giới 2020 Tiên Hắc Ám  Hàng Hiệu Thanh Lịch Phù Thủy và Huyền Thoại Trỗi Dậy   Đừng quên tham gia group yêu cốt truyện LMHT  KSLM tại đây httpsbitlyKySuLienMinh  Tik Tok của Ký Sự Liên Minh tại đây httpsbitlyKSLMofficial  và cả kênh của Ký Sự Liên Minh tại đây nữa httpsbitlychannelKSLM"
-            ],
-            "video": [
-                "facebook_video_20250328_093456.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/afamilyvccorp": [
-        {
-            "post_index": 9,
-            "messages": [
-                "Nhà xe chạy tuyến Thanh Hóa  Hà Nội nhanh trí cứu cháu bé qua cơn nguy kịch Trên chuyến xe ngày 2432025 một cháu bé bất ngờ có dấu hiệu tím tái cần được hỗ trợ y tế khẩn cấp Nhờ được phụ xe kịp thời sơ cứu và nhanh chóng đưa bé đến chỗ lực lượng CSGT các đồng chí CSGT đã lập tức hỗ trợ đưa cháu đến bệnh viện cấp cứu May mắn thay mọi thứ diễn ra kịp thời cháu bé đã được cứu sống Video  Nhà xe Đoàn Thuý aFamilyVideo TT"
-            ],
-            "video": [
-                "facebook_video_20250327_113920.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/pubg.battlegrounds.vietnam": [
-        {
-            "post_index": 4,
-            "messages": [
-                " Highlight Vòng Loại PGS Kịch bản hoàn hảo giúp Việt Nam có thêm 1 đại diện vào Chung Kết Tổng"
-            ],
-            "video": [
-                "facebook_video_20250327_114020.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/QTSAM0": [
-        {
-            "post_index": 4,
-            "messages": [
-                "Nhớ tưởi thơ"
-            ],
-            "video": [
-                "facebook_video_20250327_114105.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/Rarapxemgi": [
-        {
-            "post_index": 1,
-            "messages": [
-                "TRAILER QUẢ PHIM KINH DỊ BÁNH CUỐN  BẮT XE VỀ KHUYA TÀI XẾ CHỞ THẲNG RA CHỖ MA Coi trailer này hết dám đi làm hay đi chơi về trễ luôn quá CUỐC XE KINH HOÀNG ra mắt tuần này 28032025 rarapxemgi"
-            ],
-            "video": [
-                "facebook_video_20250327_114140.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/ilovedn": [
-        {
-            "post_index": 42,
-            "messages": [
-                " Lời khai của bị can sathai vợ rồi némxuốngbiển ở Quảng Nam  Nghe mà rợn người "
-            ],
-            "video": [
-                "facebook_video_20250327_114359.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/pnlpdcnttan": [
-        {
-            "post_index": 9,
-            "messages": [
-                "Mèo trắng kiểu bộ anh mệt mỏi vì lấy tui lắm hã "
-            ],
-            "video": [
-                "facebook_video_20250327_114656.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/bichdiep.hnn": [
-        {
-            "post_index": 9,
-            "messages": [
-                "MV Ở Đâu Có Điểm Tựa Ở Đó Có Tết  Bùi Công Nam x Generali Vietnam"
-            ],
-            "video": [
-                "facebook_video_20250327_114750.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/dungmin.page": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Những pha nghịch nguuu"
-            ],
-            "video": [
-                "facebook_video_20250327_114832.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/hanoiso1": [
-        {
-            "post_index": 10,
-            "messages": [
-                " Mọi người tuyệt đối cảnh giác nhé"
-            ],
-            "video": [
-                "facebook_video_20250327_114933.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/thanganhconem": [
-        {
-            "post_index": 16,
-            "messages": [
-                "MV Ở Đâu Có Điểm Tựa Ở Đó Có Tết  Bùi Công Nam x Generali Vietnam"
-            ],
-            "video": [
-                "facebook_video_20250327_115046.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/gamingxcybercafe": [
-        {
-            "post_index": 14,
-            "messages": [
-                "Review quán net có đồ ăn ngon nhất Hà Nội GamingX   Gaming X 123  ĐC 123 Nguyễn Ngọc Vũ  Trung Hòa Hotline 02432222728  Gaming X Thái Thịnh  ĐC 909294 Thái Thịnh  Đống Đa Hotline 02438235686  Gaming X 139 Cầu Giấy  ĐC tầng 3B  CTM  139 Cầu Giấy Hotline 02433863939  Gaming X Trần Đại Nghĩa  ĐC 5 Trần Đại Nghĩa  Hai Bà Trưng Hotline 02432020285"
-            ],
-            "video": [
-                "facebook_video_20250327_115508.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/chuyenmucsaigon": [
-        {
-            "post_index": 1,
-            "messages": [
-                "HOT MOM THANH TRẦN ĐÃ CÓ NHỮNG CẢM NHẬN GÌ SAU 1 NGÀY LÀM YAKULT LADY  Trải nghiệm thực tế mới thấy công việc không chỉ đơn giản là giao Yakult Sau một ngày theo chân các Yakult Lady Thanh Trần đã nhận ra được 3 điều thú vị  Yakult Lady là công việc không yêu cầu kinh nghiệm chỉ cần tinh thần học hỏi chị em sẽ được hướng dẫn từ AZ  Đồng nghiệp thân thiết như chị em  Luôn hỗ trợ nhau hết mình tạo nên môi trường làm việc vui vẻ gắn kết  Thời gian linh hoạt thu nhập ổn định  Giúp chị em cân bằng giữa gia đình và sự nghiệp Vừa vui vừa ý nghĩa lại giúp lan tỏa thông điệp sức khỏe đến cộng đồng  bảo sao chị em Yakult Lady lại gắn bó dài lâu như vậy  Xem ngay video để hiểu rõ hơn về một ngày làm việc nhé  YakultLady YakultLadyVietNam Dungngaithusuc"
-            ],
-            "video": [
-                "facebook_video_20250327_115547.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/EASportsFCOnlineVN": [
-        {
-            "post_index": 4,
-            "messages": [
-                " TOP 5 TRICK TẤN CÔNG THÚ VỊ NHẤT HỌC ĐƯỢC TỪ FVPL SPRING 2025 ft Pressing Time ibrobot45"
-            ],
-            "video": [
-                "facebook_video_20250327_115646.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/90phutmeme": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Khi bạn hỏi thế nào là bóng bịp "
-            ],
-            "video": [
-                "facebook_video_20250327_115939.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/toikhonge.toichondocthan": [
-        {
-            "post_index": 2,
-            "messages": [
-                "MÙA HÈ ĐẸP NHẤT"
-            ],
-            "video": [
-                "facebook_video_20250327_120023.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/michael.angle.969865": [
-        {
-            "post_index": 5,
-            "messages": [
-                "đang cọc thì nghe nhạc buồn "
-            ],
-            "video": [
-                "facebook_video_20250327_120108.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/evavietnam": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Người phụ nữ trúng vé số"
-            ],
-            "video": [
-                "facebook_video_20250327_120307.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/vutrudienanhz": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Cười sái quai hàm với PHIÊN BẢN LỒNG TIẾNG rất Thu Diễm của 404 CHẠY NGAY ĐI "
-            ],
-            "video": [
-                "facebook_video_20250327_120344.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/vebay69": [
-        {
-            "post_index": 40,
-            "messages": [
-                "Xem hết clip đi mới thấy điều bất cmn ngờ  Licknbite Combo 7 vị kem Matcha giá chỉ 99k"
-            ],
-            "video": [
-                "facebook_video_20250327_120546.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/Daodoi.page": [
-        {
-            "post_index": 7,
-            "messages": [
-                "Nhìn con làm việc nhà mà nhói lòng Thương con quá "
-            ],
-            "video": [
-                "facebook_video_20250327_120643.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/haynhucnhoi": [
-        {
-            "post_index": 10,
-            "messages": [
-                "Mưa bão nước còn lớn các gia đình nhớ để mắt đến con cái nhé Trên đường về mình vô tình gặp 1 bé bị lạc chân em bị lún xuống đất khi đang đi tìm người thân Video  Tung Teng"
-            ],
-            "video": [
-                "facebook_video_20250327_120744.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/Sandaucatu": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Một đại minh tinh từng phải hôn 12 người đàn ông lạ nay ở đỉnh cao sự nghiệp"
-            ],
-            "video": [
-                "facebook_video_20250327_120845.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/colinkkhong": [
-        {
-            "post_index": 13,
-            "messages": [
-                "Chỉ Riêng Mình Ta của các bạn học sinh tại Lễ Bế Giảng THPT Kiến An Hải Phòng 3005 vừa rồi  Đoàn Trường THPT Kiến An"
-            ],
-            "video": [
-                "facebook_video_20250327_120952.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/tcsbvn": [
-        {
-            "post_index": 20,
-            "messages": [
-                "8WONDER WINTER 2024 AFTER MOVIE  SỐNG LẠI NHỮNG THĂNG HOA CẢM XÚC  3 ngày lễ hội bùng nổ 5 giờ đồng hồ biểu diễn đỉnh cao của lineup với IMAGINE DRAGONS và dàn sao VPop đình đám thật khó để gói gọn trong vài phút Cùng Tám nhìn lại hành trình rực rỡ này qua những thước film từ OGN Media nhé  8WONDER xin gửi lời cảm ơn chân thành nhất đến các kim chủ NHÀ TÀI TRỢ KIM CƯƠNG Bia Saigon Special NHÀ TÀI TRỢ VÀNG Techcombank  Xanh SM NHÀ TÀI TRỢ DI CHUYỂN CAO CẤP FGF NHÀ TÀI TRỢ BẠC Suntory Pepsico NHÀ BẢO TRỢ TRUYỀN THÔNG Kenh14 vn BEAT Network Đài Phát Thanh và AdSponsor"
-            ],
-            "video": [
-                "facebook_video_20250327_121122.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/khuphobaton": [
-        {
-            "post_index": 14,
-            "messages": [
-                "Tin viruss thà tin kera có chất xơ Nghe ngứa thật sự"
-            ],
-            "video": [
-                "facebook_video_20250327_121305.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/hanoideus": [
-        {
-            "post_index": 11,
-            "messages": [
-                "Mẹ bé bắp và những câu chuyện tiền tỷ"
-            ],
-            "video": [
-                "facebook_video_20250327_121405.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/internetexplorerbeta": [
-        {
-            "post_index": 3,
-            "messages": [
-                "TÔI ĐÃ KHÓC RẤT NHIỀU SAU KHI XEM XONG ĐOẠN PHIM NÀY Nhưng không phải vì cười mà là vì nhớ lại tuổi thơ đầy khốn khó của chính mình Cứ có phụ huynh châu Á thì xưa đi học ít nhiều cũng vài lần bị phụ huynh áp lực chuyện thành tích Những lần như thế chỉ toàn biết bầu bạn với tiệm nét GTA Gunny chứ làm sao dám bật nhị vị thân mẫu phụ mẫu Nay xem được cái phim ngắn này chiếu ở Toạ đàm Để trẻ em Việt lớn lên không áp lực của Viện giáo dục gì đó lại rưng rưng hai hàng nước mắt lòng thầm nghĩ sau này có con tôi không cần nó phải giỏi Toán hay biết bơi chỉ cần giành được giải Nobel lúc 3 tuổi là tôi mừng lắm rồi "
-            ],
-            "video": [
-                "facebook_video_20250327_121442.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/shitlandktt": [
-        {
-            "post_index": 33,
-            "messages": [
-                ""
-            ],
-            "video": [
-                "facebook_video_20250327_121639.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/MotChutCute": [
-        {
-            "post_index": 12,
-            "messages": [
-                "Lượm được mấy đứa má phính cưng ghê  Nguồn Douyin SimpleBoy Uyn suutam"
-            ],
-            "video": [
-                "facebook_video_20250327_121752.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/CamChamChii": [
-        {
-            "post_index": 37,
-            "messages": [
-                "Comeout đời đầu "
-            ],
-            "video": [
-                "facebook_video_20250327_121946.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/hoctruongdoremon": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Tòng Phu AMV Doraemon"
-            ],
-            "video": [
-                "facebook_video_20250327_122019.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/doihiepsisg": [
-        {
-            "post_index": 2,
-            "messages": [
-                "Tầm này khó bảo "
-            ],
-            "video": [
-                "facebook_video_20250327_122059.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/TheVnLand": [
-        {
-            "post_index": 3,
-            "messages": [
-                "VINFAST  TỪ CON SỐ 0 ĐẾN BIỂU TƯỢNG NIỀM TIN VIỆT"
-            ],
-            "video": [
-                "facebook_video_20250327_122137.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/doisongvnn": [
-        {
-            "post_index": 1,
-            "messages": [
-                "ĐƯỜNG DÀNH RIÊNG CHO XE ĐẠP Ở HÀ NỘI VẮNG NGẮT NGƯỜI THỦ ĐÔ KÊU MÙI  Sau hơn một năm đi vào hoạt động tuyến đường đầu tiên dành riêng cho xe đạp và người đi bộ tại Hà Nội chưa thu hút người dân do mùi sông Tô Lịch Đờisống Video NL"
-            ],
-            "video": [
-                "facebook_video_20250327_122421.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/tuyetkytieulam2024": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Cha chồng tưởng có con dâu giỏi nhưng đâu biết con trai đã giở trò"
-            ],
-            "video": [
-                "facebook_video_20250327_122506.mp4"
-=======
     "https://www.facebook.com/vuanem.vn": [
         {
-            "post_index": 4,
+            "post_index": 5,
             "messages": [
                 " Điều gì khiến nệm lò xo tại Vua Nệm được coi là kiệt tác Cùng khám phá quy trình công nghệ tiên tiến và sự tỉ mỉ vượt trội trong từng công đoạn sản xuất ngay trong video này  Vua Nệm  Hệ thống lớn giá cực êm  Website httpssdvuanemcomhomepage  Gọi mua hàng 1800 2092 Miễn phí cước  Hệ thống cửa hàng trên toàn quốc httpssdvuanemcomstores  Săn deal hời giá tốt tại httpssdvuanemcomvnsdgroup"
             ],
             "video": [
-                "facebook_video_20250331_090831.mp4"
-            ]
-        },
-        {
-            "post_index": 11,
-            "messages": [
-                "83 YÊU THƯƠNG  VUA NỆM TẶNG ĐAI CHƯỜM SỨC KHỎE"
-            ],
-            "video": [
-                "facebook_video_20250401_094256.mp4"
+                "facebook_video_20250403_093519.mp4"
             ]
         }
     ],
@@ -894,59 +14,43 @@
         {
             "post_index": 1,
             "messages": [
-                "Kèo căng rank Hàn  BRO Morgan Ambessa vs Jayce"
+                "DNF bất lực trước con Ashe thần trong tay Teddy"
             ],
             "video": [
-                "facebook_video_20250331_090939.mp4"
-            ]
-        },
-        {
-            "post_index": 4,
-            "messages": [
-                "Kèo căng rank Hàn  Zeus Ambessa vs Cassiopeia"
-            ],
-            "video": [
-                "facebook_video_20250401_094337.mp4"
-            ]
-        },
-        {
-            "post_index": 5,
-            "messages": [
-                "Kèo căng rank Hàn  DNF DuDu Jayve vs Ambessa DK Jaehyuk"
-            ],
-            "video": [
-                "facebook_video_20250401_110828.mp4"
+                "facebook_video_20250403_093609.mp4"
             ]
         }
     ],
     "https://www.facebook.com/topcomments.vn": [
         {
-            "post_index": 12,
+            "post_index": 2,
             "messages": [
-                "Tiến không được lùi không xong mập mờ là dị đó"
+                "Phần 2 câu chuyện anh chàng đào lửa trúng tiếng sét ái tình  Video Nhật Hà"
             ],
             "video": [
-                "facebook_video_20250331_091106.mp4"
+                "facebook_video_20250403_093700.mp4"
+            ]
+        }
+    ],
+    "https://www.facebook.com/beatvn.network": [
+        {
+            "post_index": 5,
+            "messages": [
+                " Một phụ nữ Myanmar muốn trả hộ tiền mua rau cho đội cứu nạn Việt Nam  Tại một sạp hàng rau quả khi các quân nhân đang lựa chọn mua rau xanh và cà chua thì bất ngờ một phụ nữ Myanmar đã tiến tới và đề nghị được trả tiền mua tất cả cả các thực phẩm mà Tổ hậu cần đang mua tại chợ Thượng tá Trần Mạnh Hùng thành viên Tổ hậu cần thuật lại người phụ nữ trung niên nói trong nước mắt Những ngày qua bà rất cảm động khi chứng kiến những nỗ lực không biết mệt mỏi của bộ đội tìm kiếm cứu nạn Việt Nam sang cứu giúp người dân Myanmar bị thảm họa động đất Khi gặp bộ đội Việt Nam đi chợ bà muốn bày tỏ lòng cảm ơn bằng cách đề nghị được trả tiền cho toàn bộ thực phẩm mà Tổ hậu cần đang lựa chọn mua Thành viên Tổ hậu cần đã rất xúc động trước hành động của người phụ nữ Myanmar bày tỏ cảm ơn thiện tình và giải thích cho người phụ nữ rằng kinh phí bảo đảm hậu cần cho lực lượng tìm kiếm cứu nạn của quân đội Việt Nam đã được nhà nước Việt Nam bảo đảm đầy đủ Tổ cũng mong người dân Myanmar sớm vượt qua thảm họa thiên tai và ổn định cuộc sống Vietnam  Myanmar were family were best friends  thành viên Tổ hậu cần nói với người phụ nữ Myanmar   Tổ hậu cần Quân độiPLO beatvn News"
+            ],
+            "video": [
+                "facebook_video_20250403_093746.mp4"
             ]
         }
     ],
     "https://www.facebook.com/ocu.vn": [
         {
-            "post_index": 38,
+            "post_index": 40,
             "messages": [
                 "Thợ săn tiền tỷ"
             ],
             "video": [
-                "facebook_video_20250331_091506.mp4"
-            ]
-        },
-        {
-            "post_index": 42,
-            "messages": [
-                "Chú trốn kỹ quá anh chẳng biết gì cả"
-            ],
-            "video": [
-                "facebook_video_20250401_111423.mp4"
+                "facebook_video_20250403_094011.mp4"
             ]
         }
     ],
@@ -957,79 +61,51 @@
                 "Chuyện gì đến rồi cũng phải đến"
             ],
             "video": [
-                "facebook_video_20250331_091606.mp4"
-            ]
-        },
-        {
-            "post_index": 9,
-            "messages": [
-                "Én bay trong đêm pháo hoa"
-            ],
-            "video": [
-                "facebook_video_20250401_094618.mp4"
+                "facebook_video_20250403_094053.mp4"
             ]
         }
     ],
     "https://www.facebook.com/trollgamecom": [
         {
-            "post_index": 4,
+            "post_index": 8,
             "messages": [
                 "Hay quá luôn mọi người ơi lần đầu tiên tớ nghe nhạc mà buồn muốn khóc luôn "
             ],
             "video": [
-                "facebook_video_20250331_091734.mp4"
+                "facebook_video_20250403_094153.mp4"
             ]
         }
     ],
     "https://www.facebook.com/tintucvtv24": [
         {
-            "post_index": 2,
-            "messages": [
-                "Những chiếc áo chất lừ lấy cảm hứng từ vẻ đẹp truyền thống Huế"
-            ],
-            "video": [
-                "facebook_video_20250331_091817.mp4"
->>>>>>> 26bb7316028574c327da8747404408266aae3114
-            ]
-        },
-        {
             "post_index": 1,
             "messages": [
-                "Bệnh nhân hát karaoke chỉ sau 1 tháng phẫu thuật tuyến giáp bằng phương pháp ứng dụng máy dò thần kinh"
+                "Điện chia buồn nguyên Chủ tịch Đảng nguyên Chủ tịch nước CHDCND Lào Khamtai Siphandone từ trần"
             ],
             "video": [
-                "facebook_video_20250401_094726.mp4"
-            ]
-        },
-        {
-            "post_index": 2,
-            "messages": [
-                "Đội cứu hộ Việt Nam xuyên đêm tìm kiếm các nạn nhân trong vụ động đất tại Myanmar"
-            ],
-            "video": [
-                "facebook_video_20250401_111547.mp4"
+                "facebook_video_20250403_094243.mp4"
             ]
         }
     ],
     "https://www.facebook.com/weibovietnam": [
         {
-            "post_index": 36,
+            "post_index": 38,
             "messages": [
                 "TIẾT MỤC MÚA XUÂN VÃN 2025 CỦA DƯƠNG LỆ BÌNH MỪNG NĂM MỚI MANG TÊN XÀ LAI VẬN CHUYỂN RẮN ĐẾN MANG THEO MAY MẮN "
             ],
             "video": [
-                "facebook_video_20250401_111733.mp4"
+                "facebook_video_20250403_094445.mp4"
             ]
         }
     ],
     "https://www.facebook.com/TramPhatSong.MS": [
         {
-            "post_index": 8,
+            "post_index": 11,
             "messages": [
-                "Chẳng Gì Đẹp Đẽ Trên Đời Mãi  Khang Việt"
+                "Có Không Giữ Mất Đừng Tìm  Cảnh Minh"
             ],
             "video": [
-                "facebook_video_20250401_111824.mp4"
+                "facebook_video_20250403_094609.mp4"
             ]
         }
     ],
@@ -1040,117 +116,117 @@
                 "Văn nghệ quân sự"
             ],
             "video": [
-                "facebook_video_20250401_111917.mp4"
+                "facebook_video_20250403_094703.mp4"
             ]
         }
     ],
     "https://www.facebook.com/lostbird.vn": [
         {
-            "post_index": 1,
+            "post_index": 2,
             "messages": [
                 "LỄ CÔNG BỐ HÀNG VIỆT NAM CHẤT LƯỢNG CAO NĂM 2025 DOANH NGHIỆP VIỆT NAM CHẤT LƯỢNG CAO  HÀNH TRÌNH PHÁT TRIỂN BỀN VỮNG"
             ],
             "video": [
-                "facebook_video_20250401_112301.mp4"
+                "facebook_video_20250403_095058.mp4"
             ]
         }
     ],
     "https://www.facebook.com/idollive28": [
         {
-            "post_index": 4,
+            "post_index": 3,
             "messages": [
-                "Đã Minh Tuyết lại còn Ôn Vĩnh Quang"
+                "KINH NGHIỆM LÀM NGHỀ TỪ NĂM LỚP 2 CÓ KHÁC "
             ],
             "video": [
-                "facebook_video_20250401_112348.mp4"
+                "facebook_video_20250403_095145.mp4"
             ]
         }
     ],
     "https://www.facebook.com/anhdadenchuanmen": [
         {
-            "post_index": 2,
+            "post_index": 3,
             "messages": [
-                "Vui vẻ thôi"
+                "Muá nữa đi"
             ],
             "video": [
-                "facebook_video_20250401_112427.mp4"
+                "facebook_video_20250403_095225.mp4"
             ]
         }
     ],
     "https://www.facebook.com/Theanh28": [
         {
-            "post_index": 13,
+            "post_index": 17,
             "messages": [
                 "Ngọc Kem"
             ],
             "video": [
-                "facebook_video_20250401_112525.mp4"
+                "facebook_video_20250403_095332.mp4"
             ]
         }
     ],
     "https://www.facebook.com/ghienbongdaofficial": [
         {
-            "post_index": 7,
+            "post_index": 8,
             "messages": [
                 "TRỔ TÀI ĐỊNH GIÁ CẦU THỦ CÙNG CÁC BÁO THỦ NHÀ GHIỀN BÓNG ĐÁ"
             ],
             "video": [
-                "facebook_video_20250401_112610.mp4"
+                "facebook_video_20250403_095420.mp4"
             ]
         }
     ],
     "https://www.facebook.com/welaxproduction": [
         {
-            "post_index": 10,
+            "post_index": 1,
             "messages": [
-                "Chỉ nghe thôi đừng phán xét"
+                "Không nói chuyện được quá 5 phút"
             ],
             "video": [
-                "facebook_video_20250401_113052.mp4"
+                "facebook_video_20250403_095850.mp4"
             ]
         }
     ],
     "https://www.facebook.com/lacongaphaixinh2019": [
         {
-            "post_index": 10,
+            "post_index": 13,
             "messages": [
                 "Nhạc này vừa đẹp vừa hay lun ạ  lacongaiphaixinh"
             ],
             "video": [
-                "facebook_video_20250401_113146.mp4"
+                "facebook_video_20250403_095951.mp4"
             ]
         }
     ],
     "https://www.facebook.com/bannhacnaychillphet": [
         {
-            "post_index": 6,
+            "post_index": 7,
             "messages": [
-                "Cô Đơn Sẽ Tốt Hơn Lương Gia Hùng"
+                "Người Thương Đâu  Trúc Anh Babe  Đối với họ em chẳng là gì cả một chút cũng không"
             ],
             "video": [
-                "facebook_video_20250401_113236.mp4"
+                "facebook_video_20250403_100035.mp4"
             ]
         }
     ],
     "https://www.facebook.com/Skybooks.vn": [
         {
-            "post_index": 8,
+            "post_index": 10,
             "messages": [
                 "TALKSHOW SKY HÔM NAY CÓ AI SỐ TÁC GIẢ QINSEOUL LÀM CÁCH NÀO ĐỂ XÂY DỰNG MỘT MỐI QUAN HỆ HIỆU QUẢ VỚI BẠN BÈ"
             ],
             "video": [
-                "facebook_video_20250401_113325.mp4"
+                "facebook_video_20250403_100128.mp4"
             ]
         }
     ],
     "https://www.facebook.com/vnkilala": [
         {
-            "post_index": 3,
+            "post_index": 1,
             "messages": [
-                "Di sản văn hóa phi vật thể Furyu Odori  nền tảng tinh thần của xứ sở Phù Tang"
+                "Những bài hát chủ đề đặc trưng của các nhà ga Nhật Bản"
             ],
             "video": [
-                "facebook_video_20250401_113407.mp4"
+                "facebook_video_20250403_100158.mp4"
             ]
         }
     ],
@@ -1161,7 +237,7 @@
                 "2 nàng thơ trổ tài nấu ăn "
             ],
             "video": [
-                "facebook_video_20250401_113446.mp4"
+                "facebook_video_20250403_100234.mp4"
             ]
         }
     ],
@@ -1172,18 +248,18 @@
                 "Sáng tạo không có giới hạn nhất là khi nó được nuôi dưỡng từ những giá trị văn hóa thân quen Địa điểm đầu tiên mình đến khi đặt chân lên Hà Nội dự thi năng khiếu cùng bố là Văn Miếu  Quốc Tử Giám với mong muốn cầu may mắn và tìm thêm niềm tin động lực cho kỳ thi Chính vì vậy mình muốn khép lại đồ án bằng hình ảnh đặc biệt và đầy kỷ niệm này Chính sự thân thuộc và cảm xúc thiêng liêng khi tới di tích lịch sử của thủ đô đã nhen nhóm trong lòng chàng trai sinh viên Kiến Trúc một khát khao khoác lên những giá trị văn hóa một tấm áo mới Một nét vẽ một chuyển động cũng có thể kể một câu chuyện làm sống dậy những hình ảnh kiến trúc đã đi cùng dòng chảy thời gian Có thể khẳng định chắc chắn là càng muốn vươn cao bay xa thì càng phải bám chặt vào văn hoá bản sắc dân tộc Điều đó không chỉ là sự kế thừa mà còn là lời khẳng định văn hóa luôn có thể được làm mới miễn là ta còn cảm hứng để sáng tạo"
             ],
             "video": [
-                "facebook_video_20250401_113527.mp4"
+                "facebook_video_20250403_100315.mp4"
             ]
         }
     ],
     "https://www.facebook.com/BartenderVietNam": [
         {
-            "post_index": 4,
+            "post_index": 7,
             "messages": [
                 "Còn đây là POV của thợ pha cồn v"
             ],
             "video": [
-                "facebook_video_20250401_113808.mp4"
+                "facebook_video_20250403_100608.mp4"
             ]
         }
     ],
@@ -1194,7 +270,7 @@
                 "TẾT XƯA LUÔN LÀ NHỮNG CÁI TẾT ĐÁNG NHỚ VÀ ĐẦY KỈ NIỆM  TRẮNG TINH 33"
             ],
             "video": [
-                "facebook_video_20250401_113850.mp4"
+                "facebook_video_20250403_100647.mp4"
             ]
         }
     ],
@@ -1205,7 +281,7 @@
                 "Coi video xong xỉu ngang  Bẫy Ngọt Ngào có suât chiêu sơm tư 18h ngay 102 đó mấy má ơiiii"
             ],
             "video": [
-                "facebook_video_20250401_114011.mp4"
+                "facebook_video_20250403_100808.mp4"
             ]
         }
     ],
@@ -1216,7 +292,7 @@
                 "Ông Năm hiển thánh  Thỏ Bảy Màu và Mắt Đo Phước Nghiệp"
             ],
             "video": [
-                "facebook_video_20250401_114042.mp4"
+                "facebook_video_20250403_100847.mp4"
             ]
         }
     ],
@@ -1227,29 +303,29 @@
                 "Tặng các bạn "
             ],
             "video": [
-                "facebook_video_20250401_114120.mp4"
+                "facebook_video_20250403_100929.mp4"
             ]
         }
     ],
     "https://www.facebook.com/pagechuithue": [
         {
-            "post_index": 41,
+            "post_index": 6,
             "messages": [
-                "Xôn xao clip một lái xe giường nằm vừa lái xe vừa chơi cobac online Người quay lại sự việc chia sẻ Chuyến hành trình về quê gần 400km không lúc nào là tôi không lo sợ Video Tiến Ti CT"
+                "Đào lửa mà trúng tiếng  ái tình  Video Nhật Hà"
             ],
             "video": [
-                "facebook_video_20250401_114314.mp4"
+                "facebook_video_20250403_101011.mp4"
             ]
         }
     ],
     "https://www.facebook.com/upsocltichcuc": [
         {
-            "post_index": 2,
+            "post_index": 14,
             "messages": [
-                "Khi yêu xa nhưng lại yêu nhầm"
+                "Nó đã từ bỏ cuộc sống nhưng trạm cứu hộ thì không"
             ],
             "video": [
-                "facebook_video_20250401_114354.mp4"
+                "facebook_video_20250403_101113.mp4"
             ]
         }
     ],
@@ -1260,18 +336,18 @@
                 " QUAY SỐ KẾT QUẢ MINIGAME TẶNG 1 CẶP BLINDBOX OFFICIAL HI TOY NOMMI INTERESTING FRUIT VERSION 3 MỪNG NGÀY QUỐC TẾ HẠNH PHÚC "
             ],
             "video": [
-                "facebook_video_20250401_114423.mp4"
+                "facebook_video_20250403_101155.mp4"
             ]
         }
     ],
     "https://www.facebook.com/DiaDiemAnUong": [
         {
-            "post_index": 6,
+            "post_index": 9,
             "messages": [
                 "Mukbang hết menu MÌ CAY HASEYO chi nhánh mới ngay Hậu Giang Quận 6 tung deal siêu hời"
             ],
             "video": [
-                "facebook_video_20250401_114504.mp4"
+                "facebook_video_20250403_101251.mp4"
             ]
         }
     ],
@@ -1282,18 +358,7 @@
                 "Hệ thống camera xử lý vi phạm ATGT nét căng  Mọi người nhớ tuân thủ luật giao thông nhaa"
             ],
             "video": [
-                "facebook_video_20250401_114636.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/thodanhoangtuong": [
-        {
-            "post_index": 1,
-            "messages": [
-                "Lời Cảm Ơn Chân Thành Từ Vsmart"
-            ],
-            "video": [
-                "facebook_video_20250401_114859.mp4"
+                "facebook_video_20250403_101426.mp4"
             ]
         }
     ],
@@ -1304,7 +369,7 @@
                 "khó lói  Siin và Sói utube full HD dưới cmt siin aboxofsiin khongthenoi 2022"
             ],
             "video": [
-                "facebook_video_20250401_114934.mp4"
+                "facebook_video_20250403_101753.mp4"
             ]
         }
     ],
@@ -1315,7 +380,7 @@
                 "CỨ ĐỂ CHỒNG CẦM TIỀN CHI TIÊU ĐI RỒI BIẾT"
             ],
             "video": [
-                "facebook_video_20250401_115053.mp4"
+                "facebook_video_20250403_101916.mp4"
             ]
         }
     ],
@@ -1323,21 +388,21 @@
         {
             "post_index": 1,
             "messages": [
-                "Vy Phạm buồn hiu hắt với tình cảnh mắc nợ netizen thấu cảm sông có khúc người look này look kia "
+                "Thanh Hằng tung điệu múa nhức đầu khi làm vedette hiếm hoi để 1 mỹ nhân kề vai bá cổ chẳng nói tiếng nào danh tính là ai đây "
             ],
             "video": [
-                "facebook_video_20250401_115126.mp4"
+                "facebook_video_20250403_101954.mp4"
             ]
         }
     ],
     "https://www.facebook.com/QuynhAka": [
         {
-            "post_index": 4,
+            "post_index": 1,
             "messages": [
-                "Cô đơn gặp ngày cô hồn"
+                "Em dễ lắm ík "
             ],
             "video": [
-                "facebook_video_20250401_115211.mp4"
+                "facebook_video_20250403_102044.mp4"
             ]
         }
     ],
@@ -1348,18 +413,18 @@
                 "Lộ clip 4p của tác giả Gia đình Ngộ đêêêê  Để duy trì sức sáng tạo của bản thân mình luôn cần cân bằng giữa công việc và giải trí Chính vì vậy mà mình luôn tìm một thiết bị đáp ứng được về ngoại hình mỏng nhẹ màn hình chuẩn màu cho công việc và cấu hình mạnh để giúp mình giải trí chơi game ở bất kỳ đâu Chính vì vậy mình đã chọn ROG Zephyrus M16 Một sự cân bằng hoàn hảo ROG TheRiseOfGamers IntelGaming 12thGen"
             ],
             "video": [
-                "facebook_video_20250401_115243.mp4"
+                "facebook_video_20250403_102119.mp4"
             ]
         }
     ],
     "https://www.facebook.com/chiIIwith.me": [
         {
-            "post_index": 26,
+            "post_index": 33,
             "messages": [
                 "Phải mất đi thứ gì đấy thì con người ta mới bắt đầu suy nghĩ lại những việc mình đã làm"
             ],
             "video": [
-                "facebook_video_20250401_115418.mp4"
+                "facebook_video_20250403_102318.mp4"
             ]
         }
     ],
@@ -1367,10 +432,10 @@
         {
             "post_index": 7,
             "messages": [
-                "Tự nhiên nó đi đâu mất tiêu "
+                "Đào lửa mà trúng tiếng sét ái tình "
             ],
             "video": [
-                "facebook_video_20250401_120044.mp4"
+                "facebook_video_20250403_102949.mp4"
             ]
         }
     ],
@@ -1381,18 +446,7 @@
                 "Cưới nhau lẹ đi  Fieren FPTPlaycoAnime Animehay"
             ],
             "video": [
-                "facebook_video_20250401_120120.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/kidsplaza.com.vn": [
-        {
-            "post_index": 4,
-            "messages": [
-                "Cùng nhìn lại Hội thảo tiền sản KidsPlaza ngày 223 tại Minh Dương Palace  Hà Nội"
-            ],
-            "video": [
-                "facebook_video_20250401_120400.mp4"
+                "facebook_video_20250403_103020.mp4"
             ]
         }
     ],
@@ -1403,7 +457,7 @@
                 "Student Showcase Phim hoạt hình 2D Soulmate  đồ án tốt nghiệp của Nguyễn Thị Hồng Hoa  Tác phẩm phim hoạt hình 2D Soulmate là đồ án tốt nghiệp ngành Thiết kế Mỹ thuật số của Nguyễn Thị Hồng Hoa  sinh viên Đại học Văn Lang Phim mở ra một chuyến phiêu lưu kỳ diệu chạm đến trái tim nơi tình bạn và sự sẻ chính là phép màu của cuộc sống Giáo viên hướng dẫn Trần Xuân Thảo Thể loại Hoạt hình Giả tưởng  Tâm lý  Cảm xúc Cốt truyện Sau sự ra đi đột ngột của người bạn thân An chìm trong nỗi đau và sự mất mát Một đêm nọ trong giấc mơ cô bước vào một thế giới huyền ảo  nơi người bạn thân của cô giờ đây đã là một linh hồn đang chờ đợi Tại đây cả hai cùng nhau trải qua một chuyến phiêu lưu kỳ diệu tái hiện những khoảnh khắc vui vẻ mà họ từng có Dù chỉ là trong mơ nhưng đó là khoảng thời gian giúp An dần buông bỏ nỗi đau Ở cuối hành trình người bạn nhẹ nhàng tiếp thêm sức mạnh cho An giúp cô học cách chấp nhận mạnh mẽ bước tiếp và trân trọng những kỷ niệm đẹp Thông điệp Mất mát là điều không thể tránh khỏi nhưng tình bạn thực sự không bao giờ mất đi mà luôn tồn tại trong ký ức và trái tim Học cách chấp nhận và trân trọng quá khứ sẽ giúp ta bước tiếp trên hành trình của chính mình  Digital Art  Design Van Lang   Nhập hội Sáng tạo facebookcomgroupsvietnamcreative RGB Creative CreativeVibes Showcase StudentShowcase Art artist animation"
             ],
             "video": [
-                "facebook_video_20250401_120437.mp4"
+                "facebook_video_20250403_103303.mp4"
             ]
         }
     ],
@@ -1414,29 +468,29 @@
                 "Thu Ngọc và Hạnh Sino là hai chị đẹp đầu tiên dừng chân tại hành trình Đạp Gió 2024 "
             ],
             "video": [
-                "facebook_video_20250401_120700.mp4"
+                "facebook_video_20250403_103531.mp4"
             ]
         }
     ],
-    "https://www.facebook.com/MCV.BeYeu": [
+    "https://www.facebook.com/VuaMuoiPhimHan": [
         {
-            "post_index": 1,
+            "post_index": 16,
             "messages": [
-                "Cao Triết bắt đầu yêu Đại Dũng bạn trai cũ xin quay lại nhưng bít cửa"
+                "Anh chồng này tội nhất phim "
             ],
             "video": [
-                "facebook_video_20250401_120743.mp4"
+                "facebook_video_20250403_103752.mp4"
             ]
         }
     ],
     "https://www.facebook.com/CbizTraSua": [
         {
-            "post_index": 21,
+            "post_index": 22,
             "messages": [
                 "TRIỆU LỆ DĨNH CHÍNH THỨC TRỞ THÀNH THỊ HẬU KIM ƯNG LẦN 32 Triệu Lệ Dĩnh đã giành được giải thưởng Nữ Chính Xuất Sắc Nhất với vai diễn Hứa Bán Hạ trong tác phẩm Gió Thổi Bán Hạ Đây cũng là lần thứ 2 Triệu Lệ Dĩnh trở thành Thị Hậu Kim Ưng Đây chắc chắn là 1 năm thành công rực rỡ của Triệu Lệ Dĩnh chúc mừng Triệu Lệ Dĩnh và fan"
             ],
             "video": [
-                "facebook_video_20250401_121003.mp4"
+                "facebook_video_20250403_103907.mp4"
             ]
         }
     ],
@@ -1447,29 +501,29 @@
                 "MÍA CHƯNG HOA BƯỞI TINH HOA ẨM THỰC HÀ THÀNH"
             ],
             "video": [
-                "facebook_video_20250401_121041.mp4"
+                "facebook_video_20250403_103944.mp4"
             ]
         }
     ],
     "https://www.facebook.com/agencylife": [
         {
-            "post_index": 7,
+            "post_index": 8,
             "messages": [
                 "Kẻ tổn thương lại muốn tổn thương người khác Quảng cáo hài hước của nền tảng quản lý dự án chia sẻ bí kíp để trở thành một Client thực thụ"
             ],
             "video": [
-                "facebook_video_20250401_121125.mp4"
+                "facebook_video_20250403_104034.mp4"
             ]
         }
     ],
     "https://www.facebook.com/BHDGiaiTriHanQuoc": [
         {
-            "post_index": 1,
+            "post_index": 2,
             "messages": [
-                "Phu nhân bất lực tưởng kế hoạch thất bại ai dè thành công ngoài mong đợi"
+                "Vợ không cho đụng nên chán cơm thèm phở"
             ],
             "video": [
-                "facebook_video_20250401_121159.mp4"
+                "facebook_video_20250403_104110.mp4"
             ]
         }
     ],
@@ -1480,7 +534,7 @@
                 "Uớc Chi tôi có một cái ô tô Dư lầy"
             ],
             "video": [
-                "facebook_video_20250401_121343.mp4"
+                "facebook_video_20250403_104258.mp4"
             ]
         }
     ],
@@ -1491,7 +545,7 @@
                 "Kimetsu no Yaiba Vô hạn thành sắp sửa lên sóng"
             ],
             "video": [
-                "facebook_video_20250401_121625.mp4"
+                "facebook_video_20250403_104538.mp4"
             ]
         }
     ],
@@ -1502,7 +556,7 @@
                 "REVIEW MUFASA"
             ],
             "video": [
-                "facebook_video_20250401_121708.mp4"
+                "facebook_video_20250403_104621.mp4"
             ]
         }
     ],
@@ -1513,7 +567,7 @@
                 "Mukbang dâu Mộc Châu ngon quên lối về  hnag schannel"
             ],
             "video": [
-                "facebook_video_20250401_121913.mp4"
+                "facebook_video_20250403_104829.mp4"
             ]
         }
     ],
@@ -1521,10 +575,10 @@
         {
             "post_index": 1,
             "messages": [
-                "Lâu lắm mới tìm được gánh xôi bắp hầm nát kiểu ngày xưa"
+                "Lê Nam và Tân Chề chưa bao giờ khóc nức nở trên sóng như này"
             ],
             "video": [
-                "facebook_video_20250401_122000.mp4"
+                "facebook_video_20250403_104920.mp4"
             ]
         }
     ],
@@ -1535,7 +589,7 @@
                 "Cảm lạnh chuyện tìm bố là ai"
             ],
             "video": [
-                "facebook_video_20250401_122207.mp4"
+                "facebook_video_20250403_105147.mp4"
             ]
         }
     ],
@@ -1546,7 +600,7 @@
                 "Lilo and Stich liveaction  Official Trailer"
             ],
             "video": [
-                "facebook_video_20250401_122233.mp4"
+                "facebook_video_20250403_105214.mp4"
             ]
         }
     ],
@@ -1557,7 +611,7 @@
                 "Thích ăn hải sản thì ăn ghẹ còn thích làm mẹ thì ăn anh"
             ],
             "video": [
-                "facebook_video_20250401_122307.mp4"
+                "facebook_video_20250403_105248.mp4"
             ]
         }
     ],
@@ -1568,7 +622,7 @@
                 "Mời các bạn cùng xem lại thước phim ghi lại những khoảnh khắc đáng nhớ của Nhã Nam trong chuyến thiện nguyện vừa qua tại Hà Giang"
             ],
             "video": [
-                "facebook_video_20250401_122355.mp4"
+                "facebook_video_20250403_105338.mp4"
             ]
         }
     ],
@@ -1579,7 +633,7 @@
                 "Một chút vitamin xua tan nắng nóng"
             ],
             "video": [
-                "facebook_video_20250401_122547.mp4"
+                "facebook_video_20250403_105528.mp4"
             ]
         }
     ],
@@ -1590,29 +644,18 @@
                 "Game này lú"
             ],
             "video": [
-                "facebook_video_20250401_122627.mp4"
-            ]
-        }
-    ],
-    "https://www.facebook.com/trollbongrovn": [
-        {
-            "post_index": 1,
-            "messages": [
-                "CHU LUN CHƠI BONG RÔ KHIÊN AI CUNG NGƯƠC NHIN"
-            ],
-            "video": [
-                "facebook_video_20250401_122658.mp4"
+                "facebook_video_20250403_105609.mp4"
             ]
         }
     ],
     "https://www.facebook.com/hongthicbiz": [
         {
-            "post_index": 37,
+            "post_index": 38,
             "messages": [
                 "Video tổng hợp Tiêu Hoành Túc quốc công  Túc sĩ trước khi được vợ cầu hôn"
             ],
             "video": [
-                "facebook_video_20250401_122843.mp4"
+                "facebook_video_20250403_105813.mp4"
             ]
         }
     ],
@@ -1623,29 +666,40 @@
                 "Lâm Bảo Ngọc bật khóc nức nở khi thể hiện lại bản Thánh ca thanh xuân  Ngây Ngô tại Xuân Hạ Thu Đông rồi lại Xuân 3  Cảm xúc đến khi mà hát xong bài đó nó trào dâng lên rất là nhiều Cũng rất là nhiều năm cố gắng Rất là tự hào luôn ấybởi vì đã được có mặt ở đây  Lâm Bảo Ngọc chia sẻ xhtdrlx3 ngayngo lambaongoc xuanhathudongroilaixuan3"
             ],
             "video": [
-                "facebook_video_20250401_123052.mp4"
+                "facebook_video_20250403_110022.mp4"
             ]
         }
     ],
     "https://www.facebook.com/lacsaubich": [
         {
-            "post_index": 6,
+            "post_index": 7,
             "messages": [
                 "Thế hệ cợt nhả tiếp chiêu Lửa Hận Thù tại fan meeting của Jisoo khiến chính chủ không nhịn được cười "
             ],
             "video": [
-                "facebook_video_20250401_123138.mp4"
+                "facebook_video_20250403_110116.mp4"
+            ]
+        }
+    ],
+    "https://www.facebook.com/phimsapchieu": [
+        {
+            "post_index": 5,
+            "messages": [
+                "Final Destination 6 Bloodlines  Trailer Tử thần trở lại và mang lưỡi hái đem đến ác mộng đầy kinh hoàng Phim dự kiến khởi chiếu 052025  PhimSắpChiếu FinalDestination FinalDestination6"
+            ],
+            "video": [
+                "facebook_video_20250403_110203.mp4"
             ]
         }
     ],
     "https://www.facebook.com/cgvcinemavietnam": [
         {
-            "post_index": 2,
+            "post_index": 3,
             "messages": [
-                "Không hổ danh đạo diễn Victor Vũ chú trọng nghiên cứu lồng ghép yếu tố văn hóa qua từng món đạo cụ trong phim Làm sao để từng khung hình phim thể hiện phản ánh khéo léo văn hóa dân tộc THÁM TỬ KIÊN KỲ ÁN KHÔNG ĐẦU  Dự kiến khởi chiếu 30042025 CGVVietNam ThamTuKienKyAnKhongDau ComingSoon"
+                " TRAILER LỒNG TIẾNG CHÍNH THỨC CỦA MỘT BỘ PHIM MINECRAFT  Bảo đảm hài hước bảo đảm thú vị bảo đảm cười ra nước mắt   MỘT BỘ PHIM MINECRAFT có suất chiếu đặc biệt từ 1800 ngày 034  Đặt vé ngay httpsbitlyCGVMINECRAFT  Phim dán nhãn K dành cho mọi lứa tuổi trẻ em dưới 13 tuổi phải có phụ huynh đi kèm  Phim có cả bản lồng tiếng và phụ đề motbophimminecraft aminecraftmovie minecraft jackblack jasonmomoa emmamyers"
             ],
             "video": [
-                "facebook_video_20250401_123219.mp4"
+                "facebook_video_20250403_110249.mp4"
             ]
         }
     ],
@@ -1656,18 +710,18 @@
                 "Video này mà mỗi Tùng Dương thì chỉ dài 8s thôi "
             ],
             "video": [
-                "facebook_video_20250401_123306.mp4"
+                "facebook_video_20250403_110355.mp4"
             ]
         }
     ],
     "https://www.facebook.com/batdongsancafeland": [
         {
-            "post_index": 2,
+            "post_index": 1,
             "messages": [
-                "Thị trường logistics Việt Nam trong 10 năm tới được dự báo sẽ phát triển mạnh 1 Việt Nam trở thành trung tâm logistics khu vực  Với vị trí địa lý chiến lược ở Đông Nam Á gần các tuyến hàng hải quốc tế Việt Nam có tiềm năng trở thành hub logistics  Nhiều tập đoàn đang dịch chuyển chuỗi cung ứng sang Việt Nam do chiến tranh thương mại và xu hướng China 1 2 Bùng nổ đầu tư hạ tầng logistics  Chính phủ đặt mục tiêu đưa chi phí logistics từ 1620 GDP hiện tại xuống còn 1214 vào năm 2030  Hàng loạt dự án cao tốc cảng biển cảng cạn sân bay trung tâm logistics sẽ được đầu tư mạnh Ví dụ cảng Cái Mép  Thị Vải sân bay Long Thành và các trung tâm logistics tại miền Bắc và miền Nam 3 Dự báo quy mô thị trường Năm 2023 ngành logistics Việt Nam ước đạt gần 5055 tỷ USD Dự báo đến 2030 có thể đạt quy mô trên 80 tỷ USD với tốc độ tăng trưởng khoảng 1416năm  Nguồn video ST"
+                "Tên lửa Falcon 9 đưa tàu chở 4 phi hành gia bay lên từ trung tâm vũ trụ Kennedy lúc 21h46 ngày 313 8h46 ngày 14 theo giờ Hà Nội Nhiệm vụ tư nhân này mang tên Fram2 đưa tàu vũ trụ Crew Dragon mang tên Resilience bay theo quỹ đạo cực Chỉ huy nhiệm vụ Fram2 là Chun Wang đến từ Malta Ba thành viên còn lại của phi hành đoàn gồm người chỉ huy phương tiện Jannicke Mikkelsen từ Na Uy phi công Rabea Rogge từ Đức và chuyên viên y tế Eric Phillips từ Australia Nguồn VnExpress"
             ],
             "video": [
-                "facebook_video_20250401_123337.mp4"
+                "facebook_video_20250403_110427.mp4"
             ]
         }
     ],
@@ -1678,7 +732,7 @@
                 "GRAND OPENING KRIK VINH  THANKS FOR JOINING US"
             ],
             "video": [
-                "facebook_video_20250401_123650.mp4"
+                "facebook_video_20250403_110740.mp4"
             ]
         }
     ],
@@ -1689,7 +743,7 @@
                 "Lấy được một người đàn ông tốt thắng cả canh bạc cuộc đời 3"
             ],
             "video": [
-                "facebook_video_20250401_123753.mp4"
+                "facebook_video_20250403_110852.mp4"
             ]
         }
     ],
@@ -1700,7 +754,7 @@
                 "Xem mà chỉ muốn khóc luôn "
             ],
             "video": [
-                "facebook_video_20250401_123931.mp4"
+                "facebook_video_20250403_111036.mp4"
             ]
         }
     ],
@@ -1711,7 +765,7 @@
                 "Tình yêu trong anh vẫn luôn thầm lặng Nhưng không có nghĩa không rộng lớn"
             ],
             "video": [
-                "facebook_video_20250401_124001.mp4"
+                "facebook_video_20250403_111110.mp4"
             ]
         }
     ],
@@ -1722,7 +776,7 @@
                 "9GAG QA with JAXOMY"
             ],
             "video": [
-                "facebook_video_20250401_124050.mp4"
+                "facebook_video_20250403_111201.mp4"
             ]
         }
     ],
@@ -1733,7 +787,7 @@
                 "Tấm Cám remix tập 1"
             ],
             "video": [
-                "facebook_video_20250401_124125.mp4"
+                "facebook_video_20250403_111247.mp4"
             ]
         }
     ],
@@ -1744,7 +798,18 @@
                 "Nhạc để xem phần 280"
             ],
             "video": [
-                "facebook_video_20250401_124159.mp4"
+                "facebook_video_20250403_111336.mp4"
+            ]
+        }
+    ],
+    "https://www.facebook.com/TvcfOnline": [
+        {
+            "post_index": 3,
+            "messages": [
+                "Khi bị Ế mà muốn làm clip tìm người yêu"
+            ],
+            "video": [
+                "facebook_video_20250403_111420.mp4"
             ]
         }
     ],
@@ -1755,7 +820,7 @@
                 "Đạo diễn phim ấn độ gọi đạo diễn phim Việt Nam bằng ông nội"
             ],
             "video": [
-                "facebook_video_20250401_124248.mp4"
+                "facebook_video_20250403_111520.mp4"
             ]
         }
     ],
@@ -1766,7 +831,7 @@
                 "Hành trình làm phim đầy gian nan của QUỶ NHẬP TRÀNG  Phim đã sợ hành trình làm phim còn hãi không kém Để mang đến những thước phim chân thực nhất ekip đã phải đối mặt với loạt khó khăn thử thách từ địa hình thời tiết đến thiên tai  Quỷ Nhập Tràng  Suất chiếu đặc biệt từ 19h ngày 0503 và cả ngày 0603   Khởi chiếu chính thức từ 07032025 CuồngPhim QuyNhapTrang PhimQuyNhapTrang AMF CGV VPictures QuangTuan KhaNhu"
             ],
             "video": [
-                "facebook_video_20250401_124334.mp4"
+                "facebook_video_20250403_111711.mp4"
             ]
         }
     ],
@@ -1777,7 +842,7 @@
                 "Tro met nhanh zu me"
             ],
             "video": [
-                "facebook_video_20250401_124428.mp4"
+                "facebook_video_20250403_111816.mp4"
             ]
         }
     ],
@@ -1785,19 +850,19 @@
         {
             "post_index": 1,
             "messages": [
-                "Đội trưởng Dino out trình ngay từ khi chọn thành viên đội"
+                "Dạo chơi tận 30 Christina và Aaron vẫn cho ra món ăn đẳng cấp 5 sao"
             ],
             "video": [
-                "facebook_video_20250401_124850.mp4"
+                "facebook_video_20250403_112252.mp4"
             ]
         },
         {
-            "post_index": 1,
+            "post_index": 2,
             "messages": [
-                "Kì lạ giám khảo chê món ăn của thí sinh nhưng vẫn xin thêm"
+                "BGK Tosi chê bai gạo Mexico không đủ hấp dẫn liền bị Ramsay phản bác"
             ],
             "video": [
-                "facebook_video_20250401_145201.mp4"
+                "facebook_video_20250403_133218.mp4"
             ]
         }
     ],
@@ -1808,7 +873,7 @@
                 "Những màn biến hình đỉnh cao và kỳ công như điện ảnh Nguồn Douyin"
             ],
             "video": [
-                "facebook_video_20250401_124923.mp4"
+                "facebook_video_20250403_112359.mp4"
             ]
         },
         {
@@ -1817,7 +882,7 @@
                 "Thanh niên khiêu chiến cả võ lâm"
             ],
             "video": [
-                "facebook_video_20250401_145243.mp4"
+                "facebook_video_20250403_133259.mp4"
             ]
         }
     ],
@@ -1828,7 +893,7 @@
                 "Khi bạn có thù với loài muỗi v cre tiemtrataotau"
             ],
             "video": [
-                "facebook_video_20250401_125354.mp4"
+                "facebook_video_20250403_112911.mp4"
             ]
         }
     ],
@@ -1839,7 +904,7 @@
                 "Người dân leo thang 4m để vào nhà ở công trình Vành đai 3 TPHCM"
             ],
             "video": [
-                "facebook_video_20250401_125814.mp4"
+                "facebook_video_20250403_113436.mp4"
             ]
         }
     ],
@@ -1850,7 +915,7 @@
                 "TRAILER TẬP 3 THE HIDDEN SHOW  NAM ANH  BÙI LÝ THIÊN HƯƠNG"
             ],
             "video": [
-                "facebook_video_20250401_125856.mp4"
+                "facebook_video_20250403_113530.mp4"
             ]
         },
         {
@@ -1859,7 +924,7 @@
                 "JUN PHẠM  ST LỰA CHỌN LA BÀN CHO CUỘC ĐỜI CỦA MÌNH"
             ],
             "video": [
-                "facebook_video_20250401_150821.mp4"
+                "facebook_video_20250403_134751.mp4"
             ]
         }
     ],
@@ -1870,18 +935,18 @@
                 "Hướng Đồng Gió Nội  Minh Ti Saigon"
             ],
             "video": [
-                "facebook_video_20250401_125929.mp4"
+                "facebook_video_20250403_113622.mp4"
             ]
         }
     ],
     "https://www.facebook.com/vkrnews": [
         {
-            "post_index": 17,
+            "post_index": 28,
             "messages": [
                 " Nữa rồi đó Jisoo không nhịn được cười khi fan Việt hát Lửa Hận Thù không trượt phát nào"
             ],
             "video": [
-                "facebook_video_20250401_130035.mp4"
+                "facebook_video_20250403_113812.mp4"
             ]
         }
     ],
@@ -1892,51 +957,62 @@
                 "Kết thúc bất ngờ của Rezero Season 3 "
             ],
             "video": [
-                "facebook_video_20250401_130109.mp4"
+                "facebook_video_20250403_113854.mp4"
             ]
         }
     ],
     "https://www.facebook.com/LovelyMimiFP": [
         {
-            "post_index": 9,
+            "post_index": 2,
             "messages": [
-                "Đoạn battle gay cấn nhất giữa Pháo và Viruss cre Đỗ Thạch"
+                "Đi đào lửa gặp ngay tình đầu cre nhatha210699"
             ],
             "video": [
-                "facebook_video_20250401_130534.mp4"
+                "facebook_video_20250403_114336.mp4"
+            ]
+        }
+    ],
+    "https://www.facebook.com/BLVVanTung.Box": [
+        {
+            "post_index": 3,
+            "messages": [
+                "Xiaochaomeng vác skin mới Darius xử gọn cao thủ Tryndamere gánh team siêu mãn nhãn"
+            ],
+            "video": [
+                "facebook_video_20250403_114428.mp4"
             ]
         }
     ],
     "https://www.facebook.com/thongtinchinhphu": [
         {
-            "post_index": 14,
+            "post_index": 1,
             "messages": [
-                " Ngay trên hành trình di chuyển trong đêm Đại tá Nguyễn Minh Khương trưởng đoàn công tác của Bộ Công an phân công 26 đồng chí trong đoàn thành ba tổ công tác Trước mắt thực hiện các nhiệm vụ di chuyển tập kết trang thiết bị hàng hóa sau đó khi đến địa điểm sẽ tiến hành dựng lán trại triển khai các phương án cứu nạn cứu hộ  Dự kiến sau khoảng 8 tiếng di chuyển Đoàn sẽ đến khu vực thành phố Sagaing  địa phương cách thủ đô Naypyidaw khoảng 250 km Tại đây vào sáng mai ngay khi ổn định Đoàn công tác sẽ bắt tay ngay vào công tác cứu hộ cứu nạn tại Myanmar  Trước đó các trong quá trình di chuyển các thành viên trong đoàn đã tranh thủ nghỉ ngơi dưỡng sức để chuẩn bị bước vào nhiệm vụ quan trọng"
+                " Tranh luận nóng bỏng khi gặp tình huống khó và giây phút cân não đưa ra quyết định của người chỉ huy  vẫn là quyết định không lùi bước 3 ngày vừa qua các trường hợp tìm kiếm nạn nhân động đất của Đoàn cứu nạn Bộ Công an tại Myanmar đều là các tình huống có hiện trường khó phức tạp Nhiều đoàn cứu nạn trước đó đã đến khảo sát nhưng phải dời đi để lại sự mong chờ ngày càng lớn của gia đình nạn nhân Trước các tình huống khó khăn đó Đoàn cứu nạn của Bộ Công an Việt Nam vẫn quyết tâm tìm giải pháp không phụ niềm mong đợi của các gia đình Myanmar   Bộ Công an"
             ],
             "video": [
-                "facebook_video_20250401_130829.mp4"
+                "facebook_video_20250403_114534.mp4"
             ]
         }
     ],
     "https://www.facebook.com/hoaduongpro": [
         {
-            "post_index": 3,
+            "post_index": 1,
             "messages": [
-                "Tập 38  Cấp Bậc Gia Đình FastCollagen Kohinoor TrẻHóaDa hoaduongentertainment hai79"
+                "Đấy các bà xem mà học tập nhé FastCollagen Kohinoor TrẻHóaDa hoaduongentertainment hai79"
             ],
             "video": [
-                "facebook_video_20250401_130912.mp4"
+                "facebook_video_20250403_114637.mp4"
             ]
         }
     ],
     "https://www.facebook.com/hhsb.vn": [
         {
-            "post_index": 7,
+            "post_index": 8,
             "messages": [
-                "GDRAGON và các anh em bạn bè tham gia tiệc sau concert livestream nửa đêm cho người hữu duyên"
+                "Khoảnh khắc chú rể Tuấn Khôi ngại ngùng hỏi cô dâu HHen Niê em có đồng ý lấy anh làm chồng không và toàn cảnh ngày đi lấy vợ của anh chàng nhiếp ảnh "
             ],
             "video": [
-                "facebook_video_20250401_130957.mp4"
+                "facebook_video_20250403_114733.mp4"
             ]
         }
     ],
@@ -1944,10 +1020,10 @@
         {
             "post_index": 1,
             "messages": [
-                "HIGHLIGHTS  Crystal Palace 12 Liverpool 2018"
+                "HIGHLIGHTS  Liverpool 10 Everton "
             ],
             "video": [
-                "facebook_video_20250401_131046.mp4"
+                "facebook_video_20250403_114841.mp4"
             ]
         }
     ],
@@ -1955,10 +1031,10 @@
         {
             "post_index": 3,
             "messages": [
-                "Đầu tư bất động sản cần lưu ý điều gì "
+                "Shark Minh Beta flex chiến lược chiêu dụ startup"
             ],
             "video": [
-                "facebook_video_20250401_131132.mp4"
+                "facebook_video_20250403_114951.mp4"
             ]
         }
     ],
@@ -1969,7 +1045,7 @@
                 "Phim tài liệu  Xin Đừng Nói Dối"
             ],
             "video": [
-                "facebook_video_20250401_131213.mp4"
+                "facebook_video_20250403_115040.mp4"
             ]
         }
     ],
@@ -1980,7 +1056,7 @@
                 "Hai chẹo năm"
             ],
             "video": [
-                "facebook_video_20250401_131323.mp4"
+                "facebook_video_20250403_115155.mp4"
             ]
         }
     ],
@@ -1991,7 +1067,7 @@
                 "CKG X SONY VIỆT NAM CHÁY HẾT MÌNH TẠI DAYS OF PLAY 2025"
             ],
             "video": [
-                "facebook_video_20250401_131351.mp4"
+                "facebook_video_20250403_115229.mp4"
             ]
         }
     ],
@@ -2002,7 +1078,7 @@
                 "Những ánh mắt thất thần những nụ cười ngờ nghệch "
             ],
             "video": [
-                "facebook_video_20250401_131446.mp4"
+                "facebook_video_20250403_115326.mp4"
             ]
         }
     ],
@@ -2013,7 +1089,7 @@
                 "Highlight Rapper Pháo vs Nhạc sĩ ViruSs tối ngày 2832025 Dành cho những ai bỏ lỡ thì kết quả chung cuộc rapper Pháo đã có màn một chiến thắng áp đảo chủ nhà Viruss "
             ],
             "video": [
-                "facebook_video_20250401_131520.mp4"
+                "facebook_video_20250403_115416.mp4"
             ]
         }
     ],
@@ -2021,43 +1097,43 @@
         {
             "post_index": 1,
             "messages": [
-                "No More DIY Disasters Master Any Repair with These Genius Tips"
+                "Furtastic Fiber Turning Pet Hair into Fashion"
             ],
             "video": [
-                "facebook_video_20250401_131601.mp4"
+                "facebook_video_20250403_115524.mp4"
             ]
         }
     ],
     "https://www.facebook.com/bloombergbusiness": [
         {
-            "post_index": 16,
+            "post_index": 11,
             "messages": [
-                "Tulums MultimillionDollar Development Nightmare"
+                "Booker grabs spotlight in marathon Senate speech slamming Trump"
             ],
             "video": [
-                "facebook_video_20250401_131718.mp4"
+                "facebook_video_20250403_115636.mp4"
             ]
         }
     ],
     "https://www.facebook.com/advertisingvietnamcom": [
         {
-            "post_index": 1,
+            "post_index": 2,
             "messages": [
                 "META AI CHATBOT MIỄN PHÍ ĐƯỢC TÍCH HỢP NGAY TRÊN MESSENGER INSTAGRAM GÂY ẤN TƯỢNG VỚI TÍNH NĂNG TẠO ẢNH TỪ VĂN BẢN TÌM KIẾM REELS TRONG TIN NHẮN"
             ],
             "video": [
-                "facebook_video_20250401_131754.mp4"
+                "facebook_video_20250403_115725.mp4"
             ]
         }
     ],
     "https://www.facebook.com/chandongshowbiz": [
         {
-            "post_index": 33,
+            "post_index": 34,
             "messages": [
                 "HỒNG NHUNG RỦ HÀ ANH TUẤN BIGDADDY DIỄN TRONG CONCERT Ở HÀ NỘI Hồng Nhung hát về Hà Nội  live concert đặc biệt được tổ chức nhân kỷ niệm 70 năm Giải Phóng Thủ Đô với những ca khúc về Hà Nội cùng tình yêu Hà Nội Điều tự hào nhất của tôi là được sinh ra là người Hà Nội Dù đi đâu làm gì tôi vẫn giữ tinh thần và cốt cách Hà Nội một cô Bống nhỏ của Hồ Tây Live concert Hồng Nhung hát về Hà Nội hân hạnh chào đón ca sĩ Hà Anh Tuấn và BigDaddy  2 khách mời đặc biệt cùng hơn 80 nghệ sĩ biểu diễn trên các lĩnh vực Hy vọng sẽ mang đến 1 đêm nhạc thật mãn nhãn và đặc biệt"
             ],
             "video": [
-                "facebook_video_20250401_132134.mp4"
+                "facebook_video_20250403_120114.mp4"
             ]
         }
     ],
@@ -2068,7 +1144,7 @@
                 "cô gới này thặc thú dị  xin iem đừng lè của tui "
             ],
             "video": [
-                "facebook_video_20250401_132330.mp4"
+                "facebook_video_20250403_120325.mp4"
             ]
         }
     ],
@@ -2079,7 +1155,7 @@
                 "Why Professional Violin Bows Are So Expensive"
             ],
             "video": [
-                "facebook_video_20250401_132417.mp4"
+                "facebook_video_20250403_120420.mp4"
             ]
         }
     ],
@@ -2090,18 +1166,18 @@
                 "Bố cục và kỹ thuật quay phim trong Parasite 2019 Bong Joonho Nguồn soyhatscreativemp4  DayDreamer"
             ],
             "video": [
-                "facebook_video_20250401_132503.mp4"
+                "facebook_video_20250403_120510.mp4"
             ]
         }
     ],
     "https://www.facebook.com/Theanh28.ThemAnUong": [
         {
-            "post_index": 2,
+            "post_index": 1,
             "messages": [
-                "Bánh da lợn cuộn nhìn đã con mắt "
+                "Xoài này ăn xanh chua khỏi nói luôn "
             ],
             "video": [
-                "facebook_video_20250401_132537.mp4"
+                "facebook_video_20250403_120546.mp4"
             ]
         }
     ],
@@ -2109,10 +1185,10 @@
         {
             "post_index": 1,
             "messages": [
-                "Chị ơi mai ăn gì  P5"
+                "Dăm ba cái dụng cụ bắt hải được việc phết nhỉ "
             ],
             "video": [
-                "facebook_video_20250401_132611.mp4"
+                "facebook_video_20250403_120623.mp4"
             ]
         }
     ],
@@ -2123,7 +1199,7 @@
                 "TRAILER NGƯỜI VỢ CUỐI CÙNG RA MẮT TRAILER CHÍNH THỨC Trong sự kiện quảng bá bộ phim Nguời Vợ Cuối Cùng diễn ra vào chiều ngày 510 đạo diễn Victor Vũ cùng đoàn làm phim đã công bố trailer chính thức hé lộ cốt truyện cùng nhiều phân đoạn đáng chú ý của cặp đôi diễn viên chính Kaity Nguyễn và Thuận Nguyễn Bên cạnh đó đoạn video cũng cho thấy hình ảnh vùng quê Việt Nam ngày xưa được tái hiện chỉn chu Đạo diễn Victor Vũ chia sẻ mong muốn thông qua bộ phim khán giả có thể đồng cảm với thân phận những người phụ nữ phong kiến và có thêm tinh thần giữ gìn bản sắc dân tộc Người Vợ Cuối Cùng đang được lên lịch khởi chiếu từ 03112023 trên toàn quốc NguoiVoCuoiCung VictorVu KaityNguyen ThuanNguyen  Mọi thắc mắc và kết nối xin liên hệ  Facebook httpswwwfacebookcomphephim  Email contactpheteamvn"
             ],
             "video": [
-                "facebook_video_20250401_132724.mp4"
+                "facebook_video_20250403_120748.mp4"
             ]
         }
     ],
@@ -2134,7 +1210,7 @@
                 "Thử thách này dịu keo nha"
             ],
             "video": [
-                "facebook_video_20250401_132812.mp4"
+                "facebook_video_20250403_120844.mp4"
             ]
         }
     ],
@@ -2145,7 +1221,7 @@
                 "Một ngày nào đó trong vô số con đường ta chọn đi ta lại quên ĐƯỜNG VỀ MÌNH đang chờ ta ở đó Credit video Đang đọc gì đấy Đườngvềmình Bloom"
             ],
             "video": [
-                "facebook_video_20250401_133022.mp4"
+                "facebook_video_20250403_121057.mp4"
             ]
         }
     ],
@@ -2156,7 +1232,7 @@
                 "Sống Như Ý  Generali Việt Nam"
             ],
             "video": [
-                "facebook_video_20250401_133059.mp4"
+                "facebook_video_20250403_121138.mp4"
             ]
         }
     ],
@@ -2164,10 +1240,10 @@
         {
             "post_index": 1,
             "messages": [
-                "Đi thang máy với cái nết kém duyên và cái kết"
+                "Đôi bạn thân điển hình Đứa ăn mãi không mập đứa thở thôi cũng lên ký"
             ],
             "video": [
-                "facebook_video_20250401_133134.mp4"
+                "facebook_video_20250403_121217.mp4"
             ]
         }
     ],
@@ -2178,7 +1254,7 @@
                 "4 DẤU HIỆU CHO THẤY BẠN SỞ HỮU TRÍ THÔNG MINH CẢM XÚC"
             ],
             "video": [
-                "facebook_video_20250401_133207.mp4"
+                "facebook_video_20250403_121250.mp4"
             ]
         }
     ],
@@ -2189,7 +1265,7 @@
                 "Lâu lắm mới lại có dịp để lên video thanh l ý đồ cho nhà mình Hẹn mọi người đúng 9h30 Kiên gửi ninh nha Mọi người chú ý theo dõi nhé số lượng cực ít nên ai nhanh tay thì được "
             ],
             "video": [
-                "facebook_video_20250401_133254.mp4"
+                "facebook_video_20250403_121338.mp4"
             ]
         }
     ],
@@ -2200,7 +1276,7 @@
                 "Nguồn Gốc Dân Tộc Việt Bách Việt Lạc Việt và Định Nghĩa Dân Tộc Từ xa xưa câu hỏi về cội nguồn dân tộc Việt đã là đề tài thu hút sự quan tâm của nhiều học giả và nhà nghiên cứu Các danh xưng Bách Việt Lạc Việt và dân tộc Việt thường được nhắc đến song việc hiểu rõ nội hàm của chúng lại là một thách thức Bài viết này sẽ phân tích sâu hơn về các khái niệm này dựa trên những nghiên cứu khảo cổ và nhân chủng học hiện đại để làm sáng tỏ bức tranh về nguồn gốc dân tộc ta Bách Việt Những Mảnh Ghép Lịch Sử Danh xưng Bách Việt xuất hiện lần đầu trong Lã Thị Xuân Thu ám chỉ những bộ lạc phân bố rải rác ở phía Nam sông Dương Tử Âu Đại Nhậm trong Bách Việt tiên hiền chí lại cho rằng Bách Việt là các nhóm người Việt di cư xuống phía Nam sau khi nước Việt của Câu Tiễn bị Sở tiêu diệt Như vậy Bách Việt không phải là tổ tiên của người Việt mà là tên gọi chung cho nhiều tiểu quốc người Việt phân tán thần phục nước Sở Quan niệm Bách Việt nghĩa là trăm tộc Việt là một ngộ nhận cần được đính chính Vậy tại sao quan niệm Bách Việt là cội nguồn dân tộc Việt vẫn tồn tại Có lẽ nguồn gốc của quan niệm này bắt nguồn từ Sử ký của Tư Mã Thiên với câu chuyện Thiếu Khang di cư xuống phía Nam và lập nước Việt Tuy nhiên nghiên cứu khoa học hiện đại đã bác bỏ giả thuyết này khẳng định Hạ Vũ tổ tiên của Thiếu Khang cũng là hậu duệ của tộc Việt cổ Lạc Việt Tổ Tiên Chung Của Người Đông Á Lạc Việt trước đây được hiểu là tộc người sống ở Việt Nam và Nam Trung Hoa Tuy nhiên những khám phá khảo cổ học gần đây tại các di chỉ như Lương Chử Giả Hồ Ngưỡng Thiều đã hé lộ một bức tranh rộng lớn hơn Chủ nhân của các nền văn hóa này đều là người Lạc Việt mang mã di truyền O3 M122 Nghiên cứu nhân chủng học kết hợp phân tích 70 sọ cổ tìm thấy ở Việt Nam cho thấy người Lạc Việt thuộc chủng Indonesian xuất hiện từ 70000 năm trước Từ Việt Nam người Lạc Việt đã di cư và phân bố rộng khắp Đông Á trở thành tổ tiên của đại đa số dân cư khu vực này Điều này có nghĩa là người Lạc Việt không chỉ là tổ tiên của người Việt mà còn là tổ tiên chung của nhiều dân tộc Đông Á khác Dân Tộc Việt và Dân Tộc Việt Nam Sự Phân Định Cần Thiết Quá trình hình thành dân tộc Việt trải qua hai thời kỳ Thời kỳ đầu người Việt cổ mang mã di truyền Australoid Thời kỳ sau từ 7000 năm trước người Việt cổ hòa huyết với người Mông Cổ phương Bắc hình thành nên người Việt hiện đại Mongoloid phương Nam Người Việt hiện đại di cư xuống phía Nam mang theo nguồn gen Mongoloid góp phần hình thành nên các cộng đồng dân cư ở Việt Nam và Đông Nam Á Đến đầu Công nguyên hầu hết dân cư Đông Á đều mang mã di truyền Mongoloid phương Nam Với những phát hiện mới này việc gọi người Việt Nam là dân tộc Việt không còn phù hợp Cần phân biệt rõ dân tộc Việt Viet race Viet nation với dân tộc Việt Nam Vietnamese nation Người Việt Nam được định nghĩa là người Lạc Việt sống trên đất Việt Nam Cũng cần làm rõ thuật ngữ người Kinh Người Kinh là một sắc tộc ethnicity trong cộng đồng dân tộc Việt Nam bên cạnh các sắc tộc khác như Tày Thái Mường Khmer Việc đồng nhất người Kinh với người Việt là một sai lầm cần được khắc phục Kết Luận Hành Trình Tìm Về Cội Nguồn Việc tìm hiểu về nguồn gốc dân tộc là một hành trình dài và đầy thách thức Những nghiên cứu khoa học không ngừng bổ sung và làm mới hiểu biết của chúng ta về quá khứ Qua việc phân tích các khái niệm Bách Việt Lạc Việt và dân tộc Việt chúng ta có cái nhìn rõ ràng hơn về cội nguồn và quá trình hình thành dân tộc Việt Nam Đây là cơ sở quan trọng để xây dựng ý thức tự hào dân tộc và hướng tới tương lai LichSuVietNam BachViet DanTocVietNam KhaoCoHoc NguoiLacViet NguonGocDanToc  Chi tiết httpskhamphalichsucomnguongocdantocvietbachvietlacvietvadinhnghiadantoc"
             ],
             "video": [
-                "facebook_video_20250401_133340.mp4"
+                "facebook_video_20250403_121419.mp4"
             ]
         }
     ],
@@ -2211,7 +1287,7 @@
                 "The Stubborn Cholo"
             ],
             "video": [
-                "facebook_video_20250401_133511.mp4"
+                "facebook_video_20250403_121620.mp4"
             ]
         }
     ],
@@ -2219,10 +1295,10 @@
         {
             "post_index": 1,
             "messages": [
-                "Phát minh hữu ích thật"
+                "Những kiểu tóc khiến chị em mê mệt"
             ],
             "video": [
-                "facebook_video_20250401_133745.mp4"
+                "facebook_video_20250403_121850.mp4"
             ]
         }
     ],
@@ -2233,7 +1309,7 @@
                 "Have yall caught Blake Redferrin Drew Baldridge  Ryan Larkins  George Birge and all your favorite artists on Music Choice Explore the ultimate experience for Country music lovers now httpsmusicchoiceapplinkilovecountrycma"
             ],
             "video": [
-                "facebook_video_20250401_133935.mp4"
+                "facebook_video_20250403_122036.mp4"
             ]
         }
     ],
@@ -2244,18 +1320,18 @@
                 "AfterEverything  Official Trailer"
             ],
             "video": [
-                "facebook_video_20250401_134121.mp4"
+                "facebook_video_20250403_122219.mp4"
             ]
         }
     ],
     "https://www.facebook.com/sorrymusicc": [
         {
-            "post_index": 8,
+            "post_index": 5,
             "messages": [
-                "THỬ THÁCH ÂM NHẠC CÙNG ANH TÚ VOI Không hổ danh quán quân Ca sỹ mặt nạ mùa 2 Anh Tú Voi cân tất cả thể loại nhạc Xem đến cuối để không bỏ lỡ màn ca chèo cực đỉnh của ảnh "
+                "Trước khi có một Anh Tú tình ca tử tế thiện lương đã từng có một Anh Tú ngỗ nghịch đến thế"
             ],
             "video": [
-                "facebook_video_20250401_134209.mp4"
+                "facebook_video_20250403_122302.mp4"
             ]
         }
     ],
@@ -2266,7 +1342,7 @@
                 " Introducing Test Drive Unlimited Solar Crowns Season 3 Convoy Missions Navigation Mode new cars customisable plates and much more Heres the trailer you saw at NaconConnect with all the details See you March 19th "
             ],
             "video": [
-                "facebook_video_20250401_134255.mp4"
+                "facebook_video_20250403_122345.mp4"
             ]
         }
     ],
@@ -2277,18 +1353,18 @@
                 "Mệt mỏi với mọi thứ xung quanh"
             ],
             "video": [
-                "facebook_video_20250401_134538.mp4"
+                "facebook_video_20250403_122630.mp4"
             ]
         }
     ],
     "https://www.facebook.com/MCV.1001chuyen": [
         {
-            "post_index": 3,
+            "post_index": 9,
             "messages": [
-                "Sông Dài 38  Anh Niễng về rồi Lượm không lấy chồng nữa đâu Lượm chỉ làm cô dâu của mình anh Niễng thôi"
+                "Đang bi đập thì vập ngay 2 tỏi vào mồm"
             ],
             "video": [
-                "facebook_video_20250401_134619.mp4"
+                "facebook_video_20250403_122722.mp4"
             ]
         }
     ],
@@ -2299,7 +1375,7 @@
                 "Robert F Kennedy nói về Tổng sản phẩm quốc gia GNPGDP"
             ],
             "video": [
-                "facebook_video_20250401_135127.mp4"
+                "facebook_video_20250403_123039.mp4"
             ]
         }
     ],
@@ -2310,18 +1386,18 @@
                 "Chủ nhân của bản hit Smile  Johnny Stimson  có màn phỏng vấn độc quyền cực dễ thương cùng XONE Radio Trong buổi phỏng vấn anh đã tung hứng khéo léo với host của XONE với loạt câu hỏi xoáy  đáp nhanh bằng lời bài hát của mình Cùng đón xem full màn phỏng vấn của Johnny Stimson vào 1800 ngày mai 2112 tại Youtube XONE radio httpsyoutubebVQMqgMFUmk XONE XONEhangout johnnystimson"
             ],
             "video": [
-                "facebook_video_20250401_135209.mp4"
+                "facebook_video_20250403_123124.mp4"
             ]
         }
     ],
     "https://www.facebook.com/gamek.vn": [
         {
-            "post_index": 31,
+            "post_index": 6,
             "messages": [
-                ""
+                "Giờ cứ vào pick là auto cấm Shaco Con tướng gây ức chế quá trời"
             ],
             "video": [
-                "facebook_video_20250401_135351.mp4"
+                "facebook_video_20250403_123219.mp4"
             ]
         }
     ],
@@ -2332,18 +1408,18 @@
                 "Khu rừng cổ tích  The fairy forest"
             ],
             "video": [
-                "facebook_video_20250401_135442.mp4"
+                "facebook_video_20250403_123311.mp4"
             ]
         }
     ],
     "https://www.facebook.com/XacXuocXinhXan": [
         {
-            "post_index": 3,
+            "post_index": 4,
             "messages": [
-                "Outfit quẩy đám cưới cực choáy"
+                "Ao chình ở khắp nơi"
             ],
             "video": [
-                "facebook_video_20250401_135538.mp4"
+                "facebook_video_20250403_123412.mp4"
             ]
         }
     ],
@@ -2354,7 +1430,7 @@
                 "Sâu Ciety EP07  TS Đặng Hoàng Ngân"
             ],
             "video": [
-                "facebook_video_20250401_135620.mp4"
+                "facebook_video_20250403_123500.mp4"
             ]
         }
     ],
@@ -2365,7 +1441,7 @@
                 "Trái tim rung cảm trước vẻ đẹp của HAUS DALAT"
             ],
             "video": [
-                "facebook_video_20250401_135659.mp4"
+                "facebook_video_20250403_123544.mp4"
             ]
         }
     ],
@@ -2376,51 +1452,51 @@
                 "Tăng mạnh phức phạt kết quả giờ ra sao  Giải thích trừ 12 điểm bằng lái dễ hiểu"
             ],
             "video": [
-                "facebook_video_20250401_135740.mp4"
+                "facebook_video_20250403_123631.mp4"
             ]
         }
     ],
     "https://www.facebook.com/trautv": [
         {
-            "post_index": 10,
+            "post_index": 14,
             "messages": [
                 "Nghẹo không bao giờ là muộn  trautv trautft shopacclmht shopacclol shoptrautft"
             ],
             "video": [
-                "facebook_video_20250401_135833.mp4"
+                "facebook_video_20250403_123733.mp4"
             ]
         }
     ],
     "https://www.facebook.com/TrenDuongPitch": [
         {
-            "post_index": 42,
+            "post_index": 46,
             "messages": [
                 "Chiều 123 ĐT Việt Nam có buổi tập đầu tiên tại Bình Dương chuẩn bị cho 2 trận đấu trong đợt FIFA Days tháng 3 Tại đây đội trưởng Duy Mạnh đã có những chia sẻ về tình hình toàn đội"
             ],
             "video": [
-                "facebook_video_20250401_140040.mp4"
+                "facebook_video_20250403_123951.mp4"
             ]
         }
     ],
     "https://www.facebook.com/FAPtivi": [
         {
-            "post_index": 3,
+            "post_index": 2,
             "messages": [
-                "Ăn quả này ba đời sau Thái Vũ vẫn thấy nhợn "
+                "Đụng nhầm chủ tịch và cái kết"
             ],
             "video": [
-                "facebook_video_20250401_140120.mp4"
+                "facebook_video_20250403_124037.mp4"
             ]
         }
     ],
     "https://www.facebook.com/thepetcollective": [
         {
-            "post_index": 2,
+            "post_index": 11,
             "messages": [
-                "HILARIOUS Pet TikToks of the Month  March 2025"
+                "Judgy Cats BEST Pranks "
             ],
             "video": [
-                "facebook_video_20250401_140203.mp4"
+                "facebook_video_20250403_124145.mp4"
             ]
         }
     ],
@@ -2428,10 +1504,10 @@
         {
             "post_index": 1,
             "messages": [
-                "ANG GALING MERON NA PALANG NAIMBENTONG GANITOPERO BAKIT ANG MAHAL HAHAHA"
+                "MAS MALALA PA PALA ITONG MGA IBANG FLAVOR NG TRENDING NA HOTDOG NA PUMUPUTOK"
             ],
             "video": [
-                "facebook_video_20250401_140441.mp4"
+                "facebook_video_20250403_124424.mp4"
             ]
         }
     ],
@@ -2442,40 +1518,40 @@
                 "Khóc thét  thí sinh VNTM run rẩy khi bạn diễn là trăn"
             ],
             "video": [
-                "facebook_video_20250401_140526.mp4"
+                "facebook_video_20250403_124505.mp4"
             ]
         }
     ],
     "https://www.facebook.com/ovotri": [
         {
-            "post_index": 39,
+            "post_index": 42,
             "messages": [
                 "Cười xỉu fypシ trending xuhuong fyp"
             ],
             "video": [
-                "facebook_video_20250401_140723.mp4"
+                "facebook_video_20250403_124709.mp4"
             ]
         }
     ],
     "https://www.facebook.com/autoprovn": [
         {
-            "post_index": 44,
+            "post_index": 46,
             "messages": [
                 " XUẤT HIỆN VIDEO TRONG BUỒNG LÁI VỤ LẬT TÀU TẠI HÀ TĨNH "
             ],
             "video": [
-                "facebook_video_20250401_140929.mp4"
+                "facebook_video_20250403_124919.mp4"
             ]
         }
     ],
     "https://www.facebook.com/90sbangcassette": [
         {
-            "post_index": 5,
+            "post_index": 1,
             "messages": [
-                "Toà k chơi toà làm sao hiểu đc"
+                "Thế hệ cợt nhả đi đào lửa "
             ],
             "video": [
-                "facebook_video_20250401_141009.mp4"
+                "facebook_video_20250403_124953.mp4"
             ]
         }
     ],
@@ -2486,7 +1562,7 @@
                 "Một ngày ở Hàn Quốc "
             ],
             "video": [
-                "facebook_video_20250401_141213.mp4"
+                "facebook_video_20250403_125158.mp4"
             ]
         }
     ],
@@ -2497,7 +1573,7 @@
                 "Thông điệp về người yêu cũ"
             ],
             "video": [
-                "facebook_video_20250401_141247.mp4"
+                "facebook_video_20250403_125240.mp4"
             ]
         }
     ],
@@ -2508,7 +1584,7 @@
                 "CRUMP Talks Detailed training with Chadwick Boseman"
             ],
             "video": [
-                "facebook_video_20250401_141329.mp4"
+                "facebook_video_20250403_125326.mp4"
             ]
         }
     ],
@@ -2516,10 +1592,10 @@
         {
             "post_index": 1,
             "messages": [
-                "cut Lợi dụng danh tiếng Anh Áo Đen để PR và cái kết"
+                "cut Đi gửi xe bị luộc mất IC Anh Áo Đen dàn cảnh bắt trọn kẻ chủ mưu"
             ],
             "video": [
-                "facebook_video_20250401_141556.mp4"
+                "facebook_video_20250403_125554.mp4"
             ]
         }
     ],
@@ -2527,10 +1603,10 @@
         {
             "post_index": 1,
             "messages": [
-                "Đừng Làm Mẹ Cáu tập 1  Mẹ trẻ bất ngờ bị dạy đời vì có ý định bỏn co"
+                "Vậy mà nương tử cũng phải đổ đứ đừ thì hiểu rồi  Gara hạnh phúc tập cuối"
             ],
             "video": [
-                "facebook_video_20250401_141642.mp4"
+                "facebook_video_20250403_125647.mp4"
             ]
         }
     ],
@@ -2541,18 +1617,18 @@
                 "Giấc mơ của con trai kiểu"
             ],
             "video": [
-                "facebook_video_20250401_141724.mp4"
+                "facebook_video_20250403_125735.mp4"
             ]
         }
     ],
     "https://www.facebook.com/thichquangcao": [
         {
-            "post_index": 9,
+            "post_index": 10,
             "messages": [
                 "BELIEVE"
             ],
             "video": [
-                "facebook_video_20250401_142008.mp4"
+                "facebook_video_20250403_130023.mp4"
             ]
         }
     ],
@@ -2563,18 +1639,18 @@
                 "Đã bảo 1 điều nhịn 9 điều lành mà không nghe "
             ],
             "video": [
-                "facebook_video_20250401_142102.mp4"
+                "facebook_video_20250403_130126.mp4"
             ]
         }
     ],
     "https://www.facebook.com/teamusuk": [
         {
-            "post_index": 4,
+            "post_index": 1,
             "messages": [
-                "Auction of Emperor Minh Mangs sword "
+                "The film Adolescence intended for audiences aged 16 and over achieved 243 million views within four days of its release on Netflix In Adolescence Jamie is a victim of cyberbullying one of the incels who tend to behave violently towards women Incel is a relatively new internet concept referring to those who are involuntarily celibate They identify themselves as unable to find someone for romance or sexual relations despite desiring to find a suitable partner"
             ],
             "video": [
-                "facebook_video_20250401_142145.mp4"
+                "facebook_video_20250403_130216.mp4"
             ]
         }
     ],
@@ -2585,40 +1661,40 @@
                 "PSY thứ 2 thì không ai chủ nhật "
             ],
             "video": [
-                "facebook_video_20250401_142343.mp4"
+                "facebook_video_20250403_130435.mp4"
             ]
         }
     ],
     "https://www.facebook.com/yeah1music": [
         {
-            "post_index": 2,
+            "post_index": 1,
             "messages": [
-                "Phản ứng của Á hậu Thủy Tiên trước tin thầy trò rạn nứt huỷ theo dõi Tường San từng làm gì mà khiến netizen hiểu nhưng không thông cảm"
+                "Biểu cảm của loạt sao Việt ngồi hàng VIP khi xem Thanh Hằng pose dáng quay cuồng nụ cười hiếm hoi của 1 ngọc nữ gây chú ý "
             ],
             "video": [
-                "facebook_video_20250401_142433.mp4"
+                "facebook_video_20250403_130531.mp4"
             ]
         }
     ],
     "https://www.facebook.com/tiin.vn": [
         {
-            "post_index": 5,
+            "post_index": 3,
             "messages": [
-                "Ngọc Kem làm rõ các mốc thời gian mà Pháo đã nhắc tới Cô cho biết anh V có thể quen tới 8 người cùng 1 lúc tất cả đều có mã nhà của anh và đều giao tiếp với bảo vệ tòa nhà Trong hôm nay nếu anh V không xin lỗi các cô gái một cách tử tế Ngọc Kem sẽ tung hết bằng chứng lên Tiin Tiinvn PL"
+                "  Một phụ nữ Myanmar muốn trả hộ tiền mua rau cho đội cứu nạn Việt Nam"
             ],
             "video": [
-                "facebook_video_20250401_142555.mp4"
+                "facebook_video_20250403_130700.mp4"
             ]
         }
     ],
     "https://www.facebook.com/tranchauden": [
         {
-            "post_index": 9,
+            "post_index": 5,
             "messages": [
-                "HẾT TÌNH CÒN NGHĨA"
+                "LUC MOI YEU KIEU"
             ],
             "video": [
-                "facebook_video_20250401_142647.mp4"
+                "facebook_video_20250403_130750.mp4"
             ]
         }
     ],
@@ -2629,7 +1705,7 @@
                 "Trailer chính thức Đảo Độc Đắc  Tử mẫu Thiên Linh"
             ],
             "video": [
-                "facebook_video_20250401_142718.mp4"
+                "facebook_video_20250403_130831.mp4"
             ]
         }
     ],
@@ -2640,7 +1716,7 @@
                 "Tự nhiên vào bếp làm cho mình thật nhiều kem giải nhiệt thôi nào"
             ],
             "video": [
-                "facebook_video_20250401_142750.mp4"
+                "facebook_video_20250403_130907.mp4"
             ]
         }
     ],
@@ -2651,18 +1727,18 @@
                 "Ảo thật đấy "
             ],
             "video": [
-                "facebook_video_20250401_142837.mp4"
+                "facebook_video_20250403_131005.mp4"
             ]
         }
     ],
     "https://www.facebook.com/galaxycinevn": [
         {
-            "post_index": 2,
+            "post_index": 3,
             "messages": [
                 "Trailer Tay Nghiệp Dư"
             ],
             "video": [
-                "facebook_video_20250401_143113.mp4"
+                "facebook_video_20250403_131243.mp4"
             ]
         }
     ],
@@ -2673,7 +1749,7 @@
                 "Hoa Xuân Ca 2024 danh từ chương trình để xem đi xem lại cả năm cho tới khi lại có Hoa Xuân Ca 2025 VPBank Vimotvietnamthinhvuong Hoaxuanca VTV"
             ],
             "video": [
-                "facebook_video_20250401_143217.mp4"
+                "facebook_video_20250403_131341.mp4"
             ]
         }
     ],
@@ -2684,7 +1760,7 @@
                 "KHƯƠNG DỪA ĐÃ QUAY TRỞ LẠI VÀ CHẮN CHẮN SẼ LỢI HẠI HƠN XƯA với phiên livestream YouTube DLIVE x Shopee"
             ],
             "video": [
-                "facebook_video_20250401_143258.mp4"
+                "facebook_video_20250403_131420.mp4"
             ]
         }
     ],
@@ -2695,18 +1771,18 @@
                 "Nhé Anh  Muội  Vietnamidol2023"
             ],
             "video": [
-                "facebook_video_20250401_143621.mp4"
+                "facebook_video_20250403_131733.mp4"
             ]
         }
     ],
     "https://www.facebook.com/cafebiz.vn": [
         {
-            "post_index": 9,
+            "post_index": 10,
             "messages": [
                 "Giáp Thìn Rewind Tài sản những người giàu nhất sàn chứng khoán đã chạy thế nào trong năm qua"
             ],
             "video": [
-                "facebook_video_20250401_143825.mp4"
+                "facebook_video_20250403_131932.mp4"
             ]
         }
     ]
