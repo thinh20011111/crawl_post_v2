@@ -128,13 +128,16 @@ class BasePage:
     IMG_AVATAR = "/html/body/div[1]/div/div/main/div/div[2]/div/div[1]/div[1]/div[2]/div/div[1]/div[1]/div[1]/div/img"
     DIALOG_UPDATE = "//div[@role='dialog' and @aria-labelledby='customized-dialog-title']" 
     FORYOU_BUTTON = "//button[contains(@class, 'TUXButton') and .//div[contains(text(), 'Dành cho bạn')]]"
-    
     POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[1]/div/div[2]/div[2]"
     POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
+    COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div[2]/div[1]/div[1]/div/div/div/span/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/div/span"
+    GOTO_DETAIL_POST_USER = "/html/body/div/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
     
+    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/div/span"
+    FILTER_COMMENT = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[2]/div/div/span"
+    ALL_COMMENT = "//div[contains(@class, 'html-div')]//span[text()='Tất cả bình luận']"
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[3]/div/div/div[{}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
     
@@ -395,8 +398,12 @@ class BasePage:
         """
         Lấy ID của bài post từ URL hiện tại sau khi nhấp vào bài viết.
         """
-        self.wait_for_element_present(self.GOTO_DETAIL_POST)
-        self.click_element(self.GOTO_DETAIL_POST)
+        if self.is_element_present_by_xpath(self.GOTO_DETAIL_POST):
+            self.wait_for_element_present(self.GOTO_DETAIL_POST)
+            self.click_element(self.GOTO_DETAIL_POST)
+        else:
+            self.wait_for_element_present(self.GOTO_DETAIL_POST_USER)
+            self.click_element(self.GOTO_DETAIL_POST_USER)
         
         # Lấy URL hiện tại của trang
         current_url = self.driver.current_url
@@ -725,11 +732,11 @@ class BasePage:
     
     def crawl_comments(self, post_index):
         output_file = "data/comment.txt"
-
+        
         # Danh sách các XPath khả thi
         popup_xpaths = [
             self.POPUP_POST.replace("{index}", str(post_index)),
-            self.POPUP_POST_ALT.replace("{index}", str(post_index))  # Thay thế bằng XPath thứ 2
+            self.POPUP_POST_ALT.replace("{index}", str(post_index)),  # Thay thế bằng XPath thứ 2
         ]
 
         # Thử mở popup với cả hai XPath
@@ -786,7 +793,13 @@ class BasePage:
         comments_data = []
         while True:
             try:
-                comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
+                if self.is_element_present_by_xpath(self.COMMENT_POST.replace("{index}", str(comment_index))):
+                    comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
+                    print(f"Đang lấy comment với XPath: 1")
+                else: 
+                    comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
+                    print(f"Đang lấy comment với XPath: 2")
+                    
                 comment_element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, comment_xpath)))
                 
                 # Lấy nội dung comment với cấu trúc HTML
