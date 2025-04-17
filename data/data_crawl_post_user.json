@@ -1,5 +1,16 @@
 {
-
+    "account_1": {
+        "url1": "https://emso.vn/user/phamthimai123",
+        "url2": "https://www.facebook.com/NgocAnhPham.Official?locale=vi_VN",
+        "username": "phamthimai123@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_2": {
+        "url1": "https://emso.vn/user/ngothanhtung122",
+        "url2": "https://www.facebook.com/Truonganh2k3",
+        "username": "ngothanhtung122@emso.vn",
+        "password": "emso1604!@#"
+    },
     "account_3": {
         "url1": "https://emso.vn/user/lehoangnhan125",
         "url2": "https://emso.vn/user/phamthimai123",
