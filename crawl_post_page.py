@@ -14,6 +14,7 @@ def main():
     # Khởi tạo Service với đường dẫn ChromeDriver
     service = Service(config.CHROME_DRIVER_PATH)
     chrome_options = Options()
+    chrome_options.add_argument("--incognito") # Chế độ ẩn danh
     chrome_options.add_argument("--disable-notifications")  # Chặn thông báo
     # chrome_options.add_argument("--headless")  # Chế độ không giao diện
     chrome_options.add_argument("--disable-gpu")  # Vô hiệu hóa GPU khi chạy headless
