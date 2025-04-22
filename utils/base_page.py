@@ -715,7 +715,7 @@ class BasePage:
                     
                     # Đăng comment
                     id_post = self.get_id_post()
-                    self.post_comments(in_reply_to_id=id_post)
+                    self.post_comments(status_id=id_post)
                     self.clear_comment_file()
 
                 except Exception as post_err:
@@ -869,14 +869,8 @@ class BasePage:
             print(f"Lỗi khi đọc comment: {e}")
             return []
 
-    def post_comments(self, in_reply_to_id, delay=2):
-        """
-        Gửi comment từ file comment.txt lên API với token từ file tokens.json.
-        - Mỗi comment dùng một token ngẫu nhiên, không trùng trong cùng một lần chạy.
-        - `delay`: Thời gian chờ giữa các lần gửi để tránh bị block.
-        """
-
-        url = "https://prod-sn.emso.vn/api/v1/statuses"
+    def post_comments(self, status_id, delay=2):
+        url = f"https://prod-sn.emso.vn/api/v1/statuses/{status_id}/comments"
 
         # Đọc danh sách token từ file
         tokens_file = "data/tokens.json"
@@ -920,13 +914,25 @@ class BasePage:
 
             headers = {
                 'accept': 'application/json, text/plain, */*',
+                'accept-language': 'vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5',
                 'authorization': f'Bearer {token}',
                 'content-type': 'application/json',
+                'origin': 'https://emso.vn',
+                'priority': 'u=1, i',
+                'referer': 'https://emso.vn/',
+                'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-site',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36'
             }
             
             payload = json.dumps({
+                "id": random.random(),  # Tạo số ngẫu nhiên như trong curl example
                 "status": comment,
-                "in_reply_to_id": in_reply_to_id,
+                "status_id": str(status_id),
                 "sensitive": False,
                 "media_ids": [],
                 "spoiler_text": "",
@@ -934,25 +940,19 @@ class BasePage:
                 "poll": None,
                 "extra_body": None,
                 "tags": [],
-                "page_owner_id": None,
+                "page_owner_id": None
             })
 
-            print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {in_reply_to_id} với token: {token[:10]}...")
+            print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {status_id} với token: {token[:10]}...")
 
             try:
                 response = requests.post(url, data=payload, headers=headers)
-                response_text = response.text  # Đọc phản hồi dưới dạng text
-
-                # print(f"📌 Response Status Code: {response.status_code}")
-                # print(f"📌 Response Body: {response_text}")  # In phản hồi để debug
-                # print(f"📌 Response payload: {payload}")  # In phản hồi để debug
-                # print(f"📌 Response url: {url}")  # In phản hồi để debug
-                
+                response_text = response.text
 
                 if response.status_code == 200:
                     print(f"✅ Đã gửi comment thành công: {comment}")
                 elif response.status_code == 404:
-                    print(f"⚠️ Lỗi 404: Bài viết không tồn tại hoặc đã bị xóa. ID post: in_reply_to_id")
+                    print(f"⚠️ Lỗi 404: Bài viết không tồn tại hoặc đã bị xóa. ID post: {status_id}")
                 elif response.status_code == 500:
                     print(f"❌ Lỗi máy chủ (500): API có thể đang gặp vấn đề hoặc payload không đúng.")
                 else:
@@ -1765,7 +1765,7 @@ class BasePage:
             
             if post_id:
                 print(f"📢 Chuẩn bị gọi post_comments với ID bài viết: {post_id}")
-                self.post_comments(in_reply_to_id=post_id)
+                self.post_comments(status_id=post_id)
                 self.clear_comment_file()
                 
                 video_folder = "videos"
