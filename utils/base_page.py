@@ -401,10 +401,7 @@ class BasePage:
         
         if self.is_element_present_by_xpath(self.GOTO_DETAIL_POST):
             self.wait_for_element_present(self.GOTO_DETAIL_POST)
-            if self.click_element(self.GOTO_DETAIL_POST):
-                print("Đã nhấp vào bài viết.")
-            else:
-                print("Không thể nhấp vào bài viết.aaaaaaaaaa")
+            self.click_element(self.GOTO_DETAIL_POST)
         else:
             self.wait_for_element_present(self.GOTO_DETAIL_POST_USER)
             self.click_element(self.GOTO_DETAIL_POST_USER)
@@ -716,6 +713,7 @@ class BasePage:
                         print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
 
                     self.driver.refresh()
+                    time.sleep(2)
                     
                     # Đăng comment
                     id_post = self.get_id_post()
