@@ -139,6 +139,10 @@ class BasePage:
     VIDEO_TAB_2 = "//a[.//span[text()='Video'] and contains(@class, 'x1i10hfl')]"
     VIDEO_TAB_1 = "//span[text()='Video' and contains(@class, 'x193iq5w')]"
     
+    OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
+    COMMENT_XPATH_TEMPLATE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[3]/div/div/div[{}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
+    TITLE_IN_DETAIL = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]"
+    
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
     
@@ -721,7 +725,7 @@ class BasePage:
                     
                     # Đăng comment
                     id_post = self.get_id_post()
-                    self.post_comments(in_reply_to_id=id_post)
+                    self.post_comments(status_id=id_post)
                     self.clear_comment_file()
 
                 except Exception as post_err:
@@ -868,14 +872,8 @@ class BasePage:
             print(f"Lỗi khi đọc comment: {e}")
             return []
 
-    def post_comments(self, in_reply_to_id, delay=2):
-        """
-        Gửi comment từ file comment.txt lên API với token từ file tokens.json.
-        - Mỗi comment dùng một token ngẫu nhiên, không trùng trong cùng một lần chạy.
-        - `delay`: Thời gian chờ giữa các lần gửi để tránh bị block.
-        """
-
-        url = "https://prod-sn.emso.vn/api/v1/statuses"
+    def post_comments(self, status_id, delay=2):
+        url = f"https://prod-sn.emso.vn/api/v1/statuses/{status_id}/comments"
 
         # Đọc danh sách token từ file
         tokens_file = "data/tokens.json"
@@ -919,13 +917,25 @@ class BasePage:
 
             headers = {
                 'accept': 'application/json, text/plain, */*',
+                'accept-language': 'vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5',
                 'authorization': f'Bearer {token}',
                 'content-type': 'application/json',
+                'origin': 'https://emso.vn',
+                'priority': 'u=1, i',
+                'referer': 'https://emso.vn/',
+                'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-site',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36'
             }
             
             payload = json.dumps({
+                "id": random.random(),  # Tạo số ngẫu nhiên như trong curl example
                 "status": comment,
-                "in_reply_to_id": in_reply_to_id,
+                "status_id": str(status_id),
                 "sensitive": False,
                 "media_ids": [],
                 "spoiler_text": "",
@@ -933,25 +943,19 @@ class BasePage:
                 "poll": None,
                 "extra_body": None,
                 "tags": [],
-                "page_owner_id": None,
+                "page_owner_id": None
             })
 
-            print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {in_reply_to_id} với token: {token[:10]}...")
+            print(f"\n📌 Gửi comment: \"{comment}\" vào bài viết ID: {status_id} với token: {token[:10]}...")
 
             try:
                 response = requests.post(url, data=payload, headers=headers)
-                response_text = response.text  # Đọc phản hồi dưới dạng text
-
-                # print(f"📌 Response Status Code: {response.status_code}")
-                # print(f"📌 Response Body: {response_text}")  # In phản hồi để debug
-                # print(f"📌 Response payload: {payload}")  # In phản hồi để debug
-                # print(f"📌 Response url: {url}")  # In phản hồi để debug
-                
+                response_text = response.text
 
                 if response.status_code == 200:
                     print(f"✅ Đã gửi comment thành công: {comment}")
                 elif response.status_code == 404:
-                    print(f"⚠️ Lỗi 404: Bài viết không tồn tại hoặc đã bị xóa. ID post: in_reply_to_id")
+                    print(f"⚠️ Lỗi 404: Bài viết không tồn tại hoặc đã bị xóa. ID post: {status_id}")
                 elif response.status_code == 500:
                     print(f"❌ Lỗi máy chủ (500): API có thể đang gặp vấn đề hoặc payload không đúng.")
                 else:
@@ -1236,9 +1240,15 @@ class BasePage:
             print(f"Error getting video duration: {e}")
             return None
     
-    def get_and_create_moment(self, username, password, nums_post):
+    def contains_vietnamese(self, text):
+        # Biểu thức chính quy kiểm tra sự tồn tại của các ký tự tiếng Việt
+        vietnamese_pattern = re.compile(r'[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]')
+        return bool(vietnamese_pattern.search(text))
+    
+    def get_and_create_moment(self, nums_post):
         self.driver.get("https://www.facebook.com/reel/")
         self.click_element(self.NEXT_REELS)
+        self.click_element(self.OPEN_TAB_COMMENT)
 
         post_data = []  # List to store valid post data
         output_file = "data/moment.json"
@@ -1272,9 +1282,16 @@ class BasePage:
 
                 # Check if message_elements is iterable
                 if isinstance(message_elements, list) or hasattr(message_elements, '__iter__'):
-                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message.text) for message in message_elements]
+                    messages = [
+                        re.sub(r'\b(Xem thêm|Ẩn bản dịch)\b', '', 
+                            re.sub(r'[^\w\s,.\'\"#]', '', message.text)).strip()
+                        for message in message_elements
+                    ]
                 else:
-                    messages = [re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)]
+                    messages = [
+                        re.sub(r'\b(Xem thêm|Ẩn bản dịch)\b', '', 
+                            re.sub(r'[^\w\s,.\'\"#]', '', message_elements.text)).strip()
+                    ]
 
                 # Check if messages list is empty or only contains blank text
                 if not messages or all(not msg.strip() for msg in messages):
@@ -1282,6 +1299,22 @@ class BasePage:
                     print("No messages found, clicked Next.")
                     current_post_index += 1
                     continue
+                
+                 # Trích xuất nội dung từ TITLE_IN_DETAIL mà không cần dùng hàm get_element_text
+                try:
+                    title_in_detail_element = self.driver.find_element(By.XPATH, self.TITLE_IN_DETAIL)
+                    title_in_detail = title_in_detail_element.text
+                except Exception as e:
+                    print(f"Error extracting title: {e}")
+                    title_in_detail = ""
+
+                # Kiểm tra xem tiêu đề có chứa tiếng Việt không
+                if not self.contains_vietnamese(title_in_detail):
+                    print("No Vietnamese text found, skipping this video.")
+                    self.click_element(self.NEXT_REELS)
+                    current_post_index += 1
+                    continue
+
 
                 # Truncate each message to 150 characters
                 shortened_messages = []
@@ -1323,7 +1356,6 @@ class BasePage:
                 })
 
                 print(f"Processed post {current_post_index}. Text: {shortened_messages}, Valid video: {len(video_path)}")
-                self.click_element(self.NEXT_REELS)
 
             except Exception as e:
                 print(f"Error processing element at index {current_post_index}: {e}")
@@ -1346,33 +1378,43 @@ class BasePage:
         # Login and create posts on post_page
         if post_data:
             try:
-                self.login_emso(username, password)
-                WebDriverWait(self.driver, 120).until(EC.presence_of_element_located((By.XPATH, self.OPEN_FORM)))
-                self.wait_for_element_present(self.OPEN_FORM)
-
-                if not self.is_element_present_by_xpath(self.OPEN_FORM):
-                    self.driver.refresh()
-
-                # Iterate through all posts in post_data
-                for index, post in enumerate(post_data):
-                    try:
-                        self.create_moment(post["messages"][0], post["video"])
-                        print(f"Đã đăng bài thành công cho post {index + 1}")
-                    except Exception as post_err:
-                        print(f"Lỗi khi đăng bài {index + 1}: {post_err}")
-
+                # Crawl comment
+                time.sleep(3)
+                comments = self.get_random_comments()
+                if comments:
+                    self.save_comments_to_file(comments)
+                else:
+                    print("⚠ Không có bình luận nào để lưu.")
+                        
+                first_post = post_data[0]
+                if first_post['messages']:
+                    print("Messages đầu tiên:", first_post['messages'][0])
+                
+                # In đường dẫn video
+                print("Video path:", first_post['video'])
+                video_file = f"media/{first_post['video']}"
+                print("Video file path:", video_file)
+                
+                # Đăng lên EMSO
+                print("🔄 Chuyển sang EMSO để đăng video...")
+                if self.login_emso_create(first_post['messages'][0], [video_file]):
+                    print("✅ Đăng bài thành công, quay lại TikTok...")
+                    self.clear_comment_file()
+                else:
+                    print("⚠ Đăng bài thất bại, quay lại TikTok...")
+                    self.clear_comment_file()
+                    
+                
             except Exception as login_err:
                 print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
 
             finally:
-                self.logout()
-                print("Đã đăng xuất khỏi tài khoản.")
-
                 # Clear the output file after posting all collected posts
                 try:
                     with open(output_file, "w", encoding="utf-8") as json_file:
                         json.dump({}, json_file, ensure_ascii=False, indent=4)
                     print(f"Dữ liệu đã được xóa khỏi {output_file} sau khi đăng bài thành công.")
+                    self.click_element(self.NEXT_REELS)
                 except Exception as json_err:
                     print(f"Lỗi khi xóa dữ liệu trong tệp JSON: {json_err}")
 
@@ -1729,6 +1771,172 @@ class BasePage:
         except Exception as e:
             return False  # Trả về False nếu có lỗi xảy ra
 
+    def get_random_token(self, tokens_file="data/token_create_moment.json"):
+        """Lấy một token ngẫu nhiên từ file JSON."""
+        try:
+            with open(tokens_file, "r", encoding="utf-8") as file:
+                tokens = json.load(file)  # Đọc danh sách token
+
+                if not tokens:
+                    print("⚠ Không có token nào trong file.")
+                    return None
+
+                return random.choice(tokens)  # Chọn ngẫu nhiên một token
+        except Exception as e:
+            print(f"⚠ Lỗi đọc file token: {e}")
+            return None
+
+    def login_emso_create(self, title, image_names):
+        token = self.get_random_token()
+        
+        file_path = image_names[0]  # Lấy file_path từ danh sách
+        print(f"Debug - Uploading file: {file_path}")
+        media_ids = self.upload(file_path=file_path, file_name=os.path.basename(file_path), token=token)
+        
+        if media_ids:
+            post_id = self.statuses(token=token, content=title, media_ids=[media_ids])
+            print("ID post:", post_id)
+            
+            if post_id:
+                print(f"📢 Chuẩn bị gọi post_comments với ID bài viết: {post_id}")
+                self.post_comments(status_id=post_id)
+                self.clear_comment_file()
+                
+                video_folder = "videos"
+                try:
+                    for filename in os.listdir(video_folder):
+                        file_to_remove = os.path.join(video_folder, filename)
+                        if os.path.isfile(file_to_remove):
+                            os.remove(file_to_remove)
+                            print(f"🗑️ Đã xóa vĩnh viễn file: {file_to_remove}")
+                    print(f"🗑️ Đã xóa toàn bộ file trong thư mục {video_folder}")
+                except Exception as e:
+                    print(f"⚠ Lỗi khi xóa file trong thư mục {video_folder}: {e}")
+                return True
+        return False
+
+    def upload(self, file_path, file_name, token, channel_id=2, privacy=1, mime_type="video/mp4"):
+        if not os.path.exists(file_path):
+            print(f"⚠ File không tồn tại: {file_path}")
+            return None
+
+        try:
+            with open("data/token_upload.json", "r", encoding="utf-8") as f:
+                token_data = json.load(f)
+                if isinstance(token_data, list):
+                    token_upload = random.choice(token_data)
+                elif isinstance(token_data, dict):
+                    token_upload = token_data.get("token")
+                else:
+                    raise ValueError("Định dạng token_upload.json không hợp lệ")
+        except Exception as e:
+            print(f"⚠ Lỗi đọc token_upload.json: {e}")
+            return None
+
+        url = "https://prod-pt.emso.vn/api/v1/videos/upload"
+        headers = {
+            "accept": "application/json, text/plain, */*",
+            "authorization": f"Bearer {token_upload}",
+            "origin": "https://emso.vn",
+            "referer": "https://emso.vn/",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        }
+
+        files = {
+            "videofile": (file_name, open(file_path, "rb"), mime_type),
+            "name": (None, file_name),
+            "token": (None, token),
+            "channelId": (None, str(channel_id)),
+            "privacy": (None, str(privacy)),
+            "mimeType": (None, mime_type)
+        }
+
+        try:
+            response = requests.post(url, headers=headers, files=files)
+            response_data = response.json()
+            if response.status_code == 200 and "id" in response_data:
+                return response_data["id"]
+            else:
+                print(f"⚠ Lỗi tải video: {response.text}")
+                return None
+        except Exception as e:
+            print(f"⚠ Lỗi kết nối API: {e}")
+            return None
+        
+    def statuses(self, token, content, media_ids, post_type="moment", visibility="public"):
+        """Đăng bài lên EMSO và trả về ID bài đăng."""
+        
+        url = "https://prod-sn.emso.vn/api/v1/statuses"
+        headers = {
+            "accept": "application/json, text/plain, */*",
+            "authorization": f"Bearer {token}",
+            "content-type": "application/json",
+            "origin": "https://emso.vn",
+            "referer": "https://emso.vn/",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        }
+
+        payload = {
+            "status": content,
+            "post_type": post_type,
+            "visibility": visibility,
+            "media_ids": media_ids,
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response_data = response.json()
+
+            if response.status_code == 200 and "id" in response_data:
+                return response_data["id"]
+            else:
+                print(f"⚠ Lỗi đăng bài: {response_data}")
+                return None
+        except Exception as e:
+            print(f"⚠ Lỗi kết nối API: {e}")
+            return None
+
+    def get_random_comments(self):
+        """Lấy số lượng bình luận ngẫu nhiên từ video TikTok, bắt đầu từ bình luận thứ 3."""
+        comments = []
+        num_comments = random.randint(1, 20)  # Chọn số lượng bình luận ngẫu nhiên
+
+        # Chờ bình luận thứ 3 xuất hiện trước khi tiếp tục
+        third_comment_xpath = self.COMMENT_XPATH_TEMPLATE.format(2)
+        try:
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((By.XPATH, third_comment_xpath))
+            )
+        except Exception as e:
+            print(f"⚠ Không tìm thấy bình luận thứ 3: {e}")
+            return []
+
+        # Lấy bình luận từ vị trí thứ 3 trở đi
+        i = 3  # Bắt đầu từ comment số 3
+        while len(comments) < num_comments:
+            comment_xpath = self.COMMENT_XPATH_TEMPLATE.format(i)
+            try:
+                comment_element = WebDriverWait(self.driver, 3).until(
+                    EC.presence_of_element_located((By.XPATH, comment_xpath))
+                )
+                comment_text = comment_element.text.strip()
+                if comment_text:
+                    comments.append(comment_text)
+            except Exception:
+                break  # Nếu không tìm thấy comment tiếp theo, dừng vòng lặp
+            i += 1  # Tiếp tục lấy comment tiếp theo
+
+        return comments
+        
+    def save_comments_to_file(self, comments, filename="data/comment.txt"):
+        """Lưu bình luận vào file, mỗi bình luận là một dòng."""
+        try:
+            with open(filename, "a", encoding="utf-8") as file:
+                for comment in comments:
+                    file.write(comment + "\n")
+            print(f"✅ Đã lưu {len(comments)} bình luận vào {filename}")
+        except Exception as e:
+            print(f"⚠ Lỗi lưu bình luận: {e}")
 
 
 
