@@ -1,19 +1,7 @@
 {
-    "account_1": {
-        "url1": "https://emso.vn/user/phamthimai123",
-        "url2": "https://www.facebook.com/NgocAnhPham.Official?locale=vi_VN",
-        "username": "phamthimai123@emso.vn",
-        "password": "emso1604!@#"
-    },
-    "account_2": {
-        "url1": "https://emso.vn/user/ngothanhtung122",
-        "url2": "https://www.facebook.com/Truonganh2k3",
-        "username": "ngothanhtung122@emso.vn",
-        "password": "emso1604!@#"
-    },
     "account_3": {
         "url1": "https://emso.vn/user/lehoangnhan125",
-        "url2": "https://emso.vn/user/phamthimai123",
+        "url2": "https://www.facebook.com/Dsculpt",
         "username": "lehoangnhan125@emso.vn",
         "password": "emso1604!@#"
     },
@@ -25,7 +13,7 @@
     },
     "account_5": {
         "url1": "https://emso.vn/user/vuquangbao121",
-        "url2": "https://www.facebook.com/DungBHobby?locale=vi_VN",
+        "url2": "https://www.facebook.com/aothihoa.413707",
         "username": "vuquangbao121@emso.vn",
         "password": "emso1604!@#"
     },
@@ -49,7 +37,7 @@
     },
     "account_9": {
         "url1": "https://emso.vn/user/buiquocdat129",
-        "url2": "https://www.facebook.com/ohoang.426658?locale=vi_VN",
+        "url2": "https://www.facebook.com/emy.keodang",
         "username": "buiquocdat129@emso.vn",
         "password": "emso1604!@#"
     },
@@ -111,6 +99,42 @@
         "url1": "https://emso.vn/user/buiquangdung138",
         "url2": "https://www.facebook.com/keny.dat.180",
         "username": "buiquangdung138@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_21": {
+        "url1": "https://emso.vn/user/phamdinhhieu141",
+        "url2": "https://www.facebook.com/laithihonggam",
+        "username": "nguyenthihanh157@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_22": {
+        "url1": "https://emso.vn/user/nguyenvanquang148",
+        "url2": "https://www.facebook.com/tam.thao.3344",
+        "username": "nguyenvanquang148@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_23": {
+        "url1": "https://emso.vn/user/tranthithanh152",
+        "url2": "https://www.facebook.com/ceophamcong",
+        "username": "tranthithanh152@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_24": {
+        "url1": "https://emso.vn/user/trinhhoangtrung185",
+        "url2": "https://www.facebook.com/kim18.dung09",
+        "username": "trinhhoangtrung185@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_25": {
+        "url1": "https://emso.vn/user/phamthanhmai165",
+        "url2": "https://www.facebook.com/nhis.diem.5",
+        "username": "phamthanhmai165@emso.vn",
+        "password": "emso1604!@#"
+    },
+    "account_26": {
+        "url1": "https://emso.vn/user/ngoquangminh189",
+        "url2": "https://www.facebook.com/tieuthanh2510",
+        "username": "ngoquangminh189@emso.vn",
         "password": "emso1604!@#"
     }
 }
