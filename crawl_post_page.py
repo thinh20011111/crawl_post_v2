@@ -44,7 +44,7 @@ def main():
 
         driver.get(config.FACEBOOK_URL)
         base_page.login_facebook(email_facebook, password_facebook)
-        time.sleep(35)
+        time.sleep(30)
         print("Đăng nhập thành công vào Facebook.")
 
         # Lặp qua tất cả các tài khoản và xử lý
