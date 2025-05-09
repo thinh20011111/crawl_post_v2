@@ -64,7 +64,7 @@ def main():
                 post_url = account_data["url1"]
 
                 num_posts = 1
-                base_page.scroll_to_element_and_crawl(
+                success = base_page.scroll_to_element_and_crawl(
                     username=emso_username,
                     password=emso_password,
                     nums_post=num_posts,
@@ -73,8 +73,13 @@ def main():
                     page=True
                 )
 
-                print(f"Hoàn tất xử lý tài khoản: {account_key}")
-                base_page.clear_media_folder()
+                if success:
+                    print(f"Hoàn tất xử lý tài khoản: {account_key}")
+                    base_page.clear_media_folder()
+                    print(f"Đăng bài thành công, chờ 500 giây trước khi xử lý tài khoản tiếp theo.")
+                    time.sleep(500)
+                else:
+                    print(f"Không có bài đăng thành công, tiếp tục với tài khoản tiếp theo.")
             except Exception as e:
                 print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
                 continue

@@ -737,6 +737,7 @@ class BasePage:
         finally:
             self.logout()
             print("Đã đăng xuất khỏi tài khoản.")
+            return id_post is not None
 
     
     def crawl_comments(self, post_index):
