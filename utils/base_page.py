@@ -133,7 +133,7 @@ class BasePage:
     POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/div/span"
+    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/span"
     
     MORE_MENU_PAGE = "//span[text()='Xem thêm' and contains(@class, 'x193iq5w')]/ancestor::div[@role='tab']"
     VIDEO_TAB_2 = "//a[.//span[text()='Video'] and contains(@class, 'x1i10hfl')]"
@@ -685,7 +685,7 @@ class BasePage:
 
             for post in post_data:
                 try:
-                    self.create_post(post["content"], post["images"])
+                    self.create_post(post["content"] if post["content"] is not None else post["messages"], post["images"])
                     
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
 
@@ -722,6 +722,7 @@ class BasePage:
                         print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
 
                     self.driver.refresh()
+                    time.sleep(2)
                     
                     # Đăng comment
                     id_post = self.get_id_post()
@@ -730,6 +731,7 @@ class BasePage:
 
                 except Exception as post_err:
                     print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
+                    self.clear_comment_file()
 
         except Exception as login_err:
             print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
@@ -739,14 +741,13 @@ class BasePage:
             print("Đã đăng xuất khỏi tài khoản.")
             return id_post is not None
 
-    
     def crawl_comments(self, post_index):
         output_file = "data/comment.txt"
 
         # Danh sách các XPath khả thi
         popup_xpaths = [
             self.POPUP_POST.replace("{index}", str(post_index)),
-            self.POPUP_POST_ALT.replace("{index}", str(post_index))  # Thay thế bằng XPath thứ 2
+            self.POPUP_POST_ALT.replace("{index}", str(post_index))
         ]
 
         # Thử mở popup với cả hai XPath
@@ -757,7 +758,7 @@ class BasePage:
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
                 time.sleep(3)  # Chờ comment load
                 
-                # Kiểm tra xem popup có mở thực sự không bằng cách tìm phần tử trong popup
+                # Kiểm tra xem popup có mở thực sự không
                 if self.driver.find_elements(By.XPATH, self.CONTENT_POST):
                     popup_opened = True
                     print("Popup đã mở thành công.")
@@ -765,51 +766,56 @@ class BasePage:
                     print("Popup không hiển thị sau khi click.")
                     continue
 
-                # --- LẤY NỘI DUNG BÀI VIẾT GIỮ ĐÚNG CẤU TRÚC VÀ ICON ---
+                # --- LẤY NỘI DUNG BÀI VIẾT ---
                 content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
+                print(f"Số phần tử nội dung tìm được: {len(content_elements)}")
                 content_parts = []
 
                 for element in content_elements:
-                    self.driver.execute_script("arguments[0].scrollIntoView();", element)  # Cuộn vào element
-                    time.sleep(1)  # Đợi load
-                    
-                    # Lấy nội dung với định dạng HTML để đảm bảo giữ nguyên cấu trúc
+                    self.driver.execute_script("arguments[0].scrollIntoView();", element)
+                    time.sleep(1)
                     content_html = element.get_attribute("innerHTML")
+                    print(f"HTML nội dung: {content_html}")
                     
-                    # Xử lý để thay thế các icon (emoji) bằng alt text
                     soup = BeautifulSoup(content_html, "html.parser")
                     for img in soup.find_all("img"):
                         alt_text = img.get("alt", "")
                         img.replace_with(alt_text)
                     
                     cleaned_text = soup.get_text(" ", strip=True)
+                    print(f"Nội dung đã xử lý: {cleaned_text}")
                     
                     if cleaned_text:
                         content_parts.append(cleaned_text)
 
-                # Ghép các phần nội dung lại thành một bài viết hoàn chỉnh
                 content_text = "\n".join(content_parts)
-                break  # Nếu mở được popup thì thoát vòng lặp
+                print(f"Nội dung bài viết cuối cùng: {content_text}")
+                if not content_text:
+                    content_text = "[Nội dung bài viết rỗng]"
+                break
+            except TimeoutException:
+                print(f"Timeout khi mở popup với XPath {popup_xpath}")
+                continue
+            except NoSuchElementException:
+                print(f"Không tìm thấy phần tử với XPath {popup_xpath}")
+                continue
             except Exception as e:
-                print(f"Lỗi mở popup với XPath {popup_xpath}")
-                continue  # Thử XPath tiếp theo nếu thất bại
+                print(f"Lỗi không xác định khi mở popup với XPath {popup_xpath}: {e}")
+                continue
 
         if not popup_opened:
             print(f"Không thể mở popup cho post {post_index}, bỏ qua.")
             return None
 
-        # Lấy comment từ COMMENT_POST với index tăng dần
+        # Lấy comment từ COMMENT_POST
         comment_index = 1
         comments_data = []
         while True:
             try:
                 comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                 comment_element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, comment_xpath)))
-                
-                # Lấy nội dung comment với cấu trúc HTML
                 comment_html = comment_element.get_attribute("innerHTML")
                 
-                # Xử lý HTML để giữ nguyên icon và xuống dòng
                 soup = BeautifulSoup(comment_html, "html.parser")
                 for img in soup.find_all("img"):
                     alt_text = img.get("alt", "")
@@ -822,9 +828,9 @@ class BasePage:
                 
                 comment_index += 1
             except:
-                break  # Khi không tìm thấy comment mới, thoát vòng lặp
-            
-        # Lưu tất cả comment vào file, mỗi comment trên một dòng
+                break
+
+        # Lưu comment vào file
         try:
             with open(output_file, "a", encoding="utf-8") as file:
                 for comment in comments_data:
@@ -833,7 +839,7 @@ class BasePage:
         except Exception as e:
             print(f"Lỗi khi lưu dữ liệu vào comment.txt: {e}")
             
-        # Đóng popup nếu cần (nếu popup không tự đóng)
+        # Đóng popup
         try:
             self.driver.find_element(By.XPATH, "//button[contains(@aria-label, 'Close')]").click()
         except:
