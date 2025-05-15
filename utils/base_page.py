@@ -11,6 +11,7 @@ from selenium.webdriver.remote.webelement import WebElement
 import os
 import logging
 from PIL import Image
+import urllib.parse
 from io import BytesIO
 import csv
 import pandas as pd
@@ -131,9 +132,12 @@ class BasePage:
     
     POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[1]/div/div[2]/div[2]"
     POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
-    COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div/div"
+    COMMENT_POST = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div/div/span"
+    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]"
+    MORE_OPTION_POST = "//div[@aria-posinset='{index}']//div[contains(@class, 'xqcrz7y') and contains(@class, 'x78zum5')]"
+    SHOW_POPUP_GET_ID = "(//div[@role='menuitem' and .//span[text()='Nhúng']])[1]"
+    INPUT_GET_ID = "(//input[contains(@placeholder, 'Mã nhúng sẽ xuất hiện')])[1]"
     
     MORE_MENU_PAGE = "//span[text()='Xem thêm' and contains(@class, 'x193iq5w')]/ancestor::div[@role='tab']"
     VIDEO_TAB_2 = "//a[.//span[text()='Video'] and contains(@class, 'x1i10hfl')]"
@@ -741,111 +745,121 @@ class BasePage:
             print("Đã đăng xuất khỏi tài khoản.")
             return id_post is not None
 
-    def crawl_comments(self, post_index):
-        output_file = "data/comment.txt"
+    def extract_facebook_post_info(self, input_xpath):
+        element = self.driver.find_element(By.XPATH, input_xpath)
+        raw_value = element.get_attribute("value")
 
-        # Danh sách các XPath khả thi
-        popup_xpaths = [
-            self.POPUP_POST.replace("{index}", str(post_index)),
-            self.POPUP_POST_ALT.replace("{index}", str(post_index))
-        ]
-
-        # Thử mở popup với cả hai XPath
-        popup_opened = False
-        content_text = ""  # Biến lưu content của bài viết
-        for popup_xpath in popup_xpaths:
-            try:
-                WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, popup_xpath))).click()
-                time.sleep(3)  # Chờ comment load
-                
-                # Kiểm tra xem popup có mở thực sự không
-                if self.driver.find_elements(By.XPATH, self.CONTENT_POST):
-                    popup_opened = True
-                    print("Popup đã mở thành công.")
-                else:
-                    print("Popup không hiển thị sau khi click.")
-                    continue
-
-                # --- LẤY NỘI DUNG BÀI VIẾT ---
-                content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
-                print(f"Số phần tử nội dung tìm được: {len(content_elements)}")
-                content_parts = []
-
-                for element in content_elements:
-                    self.driver.execute_script("arguments[0].scrollIntoView();", element)
-                    time.sleep(1)
-                    content_html = element.get_attribute("innerHTML")
-                    print(f"HTML nội dung: {content_html}")
-                    
-                    soup = BeautifulSoup(content_html, "html.parser")
-                    for img in soup.find_all("img"):
-                        alt_text = img.get("alt", "")
-                        img.replace_with(alt_text)
-                    
-                    cleaned_text = soup.get_text(" ", strip=True)
-                    print(f"Nội dung đã xử lý: {cleaned_text}")
-                    
-                    if cleaned_text:
-                        content_parts.append(cleaned_text)
-
-                content_text = "\n".join(content_parts)
-                print(f"Nội dung bài viết cuối cùng: {content_text}")
-                if not content_text:
-                    content_text = "[Nội dung bài viết rỗng]"
-                break
-            except TimeoutException:
-                print(f"Timeout khi mở popup với XPath {popup_xpath}")
-                continue
-            except NoSuchElementException:
-                print(f"Không tìm thấy phần tử với XPath {popup_xpath}")
-                continue
-            except Exception as e:
-                print(f"Lỗi không xác định khi mở popup với XPath {popup_xpath}: {e}")
-                continue
-
-        if not popup_opened:
-            print(f"Không thể mở popup cho post {post_index}, bỏ qua.")
+        if not raw_value:
             return None
 
-        # Lấy comment từ COMMENT_POST
-        comment_index = 1
-        comments_data = []
-        while True:
-            try:
-                comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
-                comment_element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, comment_xpath)))
-                comment_html = comment_element.get_attribute("innerHTML")
-                
-                soup = BeautifulSoup(comment_html, "html.parser")
-                for img in soup.find_all("img"):
-                    alt_text = img.get("alt", "")
-                    img.replace_with(alt_text)
-                
-                cleaned_comment = soup.get_text(" ", strip=True)
-                
-                if cleaned_comment:
-                    comments_data.append(cleaned_comment)
-                
-                comment_index += 1
-            except:
-                break
+        # Tìm phần href=... trong raw_value
+        match = re.search(r'href=([^&"\']+)', raw_value)
+        if match:
+            encoded_url = match.group(1)
+            decoded_url = urllib.parse.unquote(encoded_url)
+            return decoded_url
+        else:
+            return None
 
-        # Lưu comment vào file
+    def crawl_comments(self, post_index):
+        output_file = "data/comment.txt"
+        content_text = ""
+
+        # Step 1: Click MORE_OPTION_POST
         try:
-            with open(output_file, "a", encoding="utf-8") as file:
-                for comment in comments_data:
-                    file.write(comment + "\n")
-            print(f"Đã lưu {len(comments_data)} comment vào {output_file}")
+            more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
+            self.click_element(more_btn_xpath)
+            print("Clicked MORE_OPTION_POST")
+            time.sleep(2)
         except Exception as e:
-            print(f"Lỗi khi lưu dữ liệu vào comment.txt: {e}")
-            
-        # Đóng popup
+            print(f"Failed to click MORE_OPTION_POST: {e}")
+            return None
+
+        # Step 2: Click SHOW_POPUP_GET_ID
         try:
-            self.driver.find_element(By.XPATH, "//button[contains(@aria-label, 'Close')]").click()
-        except:
-            pass
-            
+            get_id_btn = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, self.SHOW_POPUP_GET_ID))
+            )
+            get_id_btn.click()
+            print("Clicked SHOW_POPUP_GET_ID")
+            time.sleep(2)
+        except Exception as e:
+            print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
+            return None
+
+        # Step 3: Get post URL via INPUT_GET_ID
+        try:
+            post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
+            if not post_url:
+                print("Failed to extract post URL")
+                return None
+            print(f"Extracted Post URL: {post_url}")
+        except Exception as e:
+            print(f"Error extracting post URL: {e}")
+            return None
+
+        # Step 4: Navigate to post page
+        try:
+            self.driver.get(post_url)
+            print(f"Navigated to post page: {post_url}")
+            time.sleep(5)
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+        except Exception as e:
+            print(f"Failed to navigate to post URL: {e}")
+            return None
+
+        # Step 5: Scrape content
+        try:
+            content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
+            content_parts = []
+            for element in content_elements:
+                self.driver.execute_script("arguments[0].scrollIntoView();", element)
+                time.sleep(1)
+                content_html = element.get_attribute("innerHTML")
+                soup = BeautifulSoup(content_html, "html.parser")
+                for img in soup.find_all("img"):
+                    img.replace_with(img.get("alt", ""))
+                cleaned_text = soup.get_text(" ", strip=True)
+                if cleaned_text:
+                    content_parts.append(cleaned_text)
+            content_text = "\n".join(content_parts)
+            print(f"Scraped post content: {content_text[:100]}...")
+
+            # Step 6: Scrape comments
+            comment_index = 1
+            comments_data = []
+            while True:
+                try:
+                    comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
+                    comment_element = WebDriverWait(self.driver, 3).until(
+                        EC.presence_of_element_located((By.XPATH, comment_xpath))
+                    )
+                    comment_html = comment_element.get_attribute("innerHTML")
+                    soup = BeautifulSoup(comment_html, "html.parser")
+                    for img in soup.find_all("img"):
+                        img.replace_with(img.get("alt", ""))
+                    cleaned_comment = soup.get_text(" ", strip=True)
+                    if cleaned_comment:
+                        comments_data.append(cleaned_comment)
+                    comment_index += 1
+                except:
+                    break
+
+            # Save comments
+            try:
+                with open(output_file, "a", encoding="utf-8") as file:
+                    for comment in comments_data:
+                        file.write(comment + "\n")
+                print(f"Saved {len(comments_data)} comments to {output_file}")
+            except Exception as e:
+                print(f"Error saving comments: {e}")
+        except Exception as e:
+            print(f"Error scraping content/comments: {e}")
+            return None
+
         return content_text
+
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
