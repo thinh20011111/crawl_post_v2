@@ -142,6 +142,7 @@ class BasePage:
     MORE_MENU_PAGE = "//span[text()='Xem thêm' and contains(@class, 'x193iq5w')]/ancestor::div[@role='tab']"
     VIDEO_TAB_2 = "//a[.//span[text()='Video'] and contains(@class, 'x1i10hfl')]"
     VIDEO_TAB_1 = "//span[text()='Video' and contains(@class, 'x193iq5w')]"
+    DETAIL_POST_FB = "//div[@aria-posinset='{index}']//div[13]/div/div/div[2]/div/div[2]/div/div[2]/span/div/span[1]/span/span/a[1]"
     
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[3]/div/div/div[{}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
@@ -789,15 +790,27 @@ class BasePage:
 
         # Step 3: Get post URL via INPUT_GET_ID
         try:
-            post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
-            if not post_url:
-                print("Failed to extract post URL")
+            detail_post_xpath = self.DETAIL_POST_FB.replace("{index}", str(post_index))
+            detail_post_element = WebDriverWait(self.driver, 5).until(
+                EC.element_to_be_clickable((By.XPATH, detail_post_xpath))
+            )
+            detail_post_element.click()
+            time.sleep(3)
+            post_url = self.driver.current_url
+            print(f"Primary method - Extracted Post URL from DETAIL_POST_FB: {post_url}")
+        except Exception as e1:
+            print(f"Primary method failed: {e1}")
+            print("Trying fallback method using INPUT_GET_ID...")
+            try:
+                post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
+                if not post_url:
+                    print("Fallback failed: Empty URL from INPUT_GET_ID")
+                    return None
+                print(f"Fallback method - Extracted Post URL: {post_url}")
+            except Exception as e2:
+                print(f"Fallback method also failed: {e2}")
                 return None
-            print(f"Extracted Post URL: {post_url}")
-        except Exception as e:
-            print(f"Error extracting post URL: {e}")
-            return None
-
+            
         # Step 4: Navigate to post page
         try:
             self.driver.get(post_url)
