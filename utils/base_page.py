@@ -132,7 +132,7 @@ class BasePage:
     
     POPUP_POST = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[1]/div/div[2]/div[2]"
     POPUP_POST_ALT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[3]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[1]/div/div[2]/div[2]"
-    COMMENT_POST = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
+    COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div"
     GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]"
     MORE_OPTION_POST = "//div[@aria-posinset='{index}']//div[contains(@class, 'xqcrz7y') and contains(@class, 'x78zum5')]"
@@ -147,6 +147,9 @@ class BasePage:
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[3]/div/div/div[{}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
     TITLE_IN_DETAIL = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]"
+    
+    DROPDOWN_OPTIONS_COMMENT = "//span[contains(text(),'Phù hợp nhất')]"
+    OPTIONS_ALL_COMMENT = "//div[@class='__fb-light-mode x1n2onr6 x1vjfegm']//div[@class='x78zum5 xdt5ytf x1iyjqo2 x1n2onr6']//div[3]"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -415,7 +418,7 @@ class BasePage:
     
     def get_id_post(self):
         """
-        Lấy ID của bài post từ URL hiện tại sau khi nhấp vào bài viết.
+        Lấy ID của bài post từ URL hiện tại sau khi nhấp vào bài viết và lưu vào file data/id_post.txt.
         """
         self.wait_for_element_present(self.GOTO_DETAIL_POST)
         self.click_element(self.GOTO_DETAIL_POST)
@@ -427,6 +430,21 @@ class BasePage:
         post_id = current_url.split("/")[-1]  # Lấy phần cuối cùng của URL
 
         print(f"ID bài post: {post_id}")
+
+        # Đường dẫn tới file lưu ID
+        file_path = "data/id_post.txt"
+        
+        # Tạo thư mục data nếu chưa tồn tại
+        os.makedirs("data", exist_ok=True)
+        
+        try:
+            # Ghi ID bài post vào file
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(post_id)
+            print(f"Đã lưu ID bài post vào {file_path}")
+        except Exception as e:
+            print(f"Lỗi khi lưu ID vào file: {e}")
+        
         return post_id  # Trả về ID của post
     
     def create_moment(self, title, image_names):
@@ -731,7 +749,7 @@ class BasePage:
                     
                     # Đăng comment
                     id_post = self.get_id_post()
-                    self.post_comments(status_id=id_post)
+                    # self.post_comments(status_id=id_post)
                     self.clear_comment_file()
 
                 except Exception as post_err:
@@ -842,6 +860,15 @@ class BasePage:
             # Step 6: Scrape comments
             comment_index = 1
             comments_data = []
+            
+            
+            #Step 6.1: open all comments
+            try:
+                self.click_element(self.DROPDOWN_OPTIONS_COMMENT)
+                self.click_element(self.OPTIONS_ALL_COMMENT)
+            except Exception as e:
+                print(f"Error opening comments: {e}")
+            
             while True:
                 try:
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
