@@ -772,7 +772,7 @@ class BasePage:
             print("Clicked MORE_OPTION_POST")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click MORE_OPTION_POST: {e}")
+            print(f"Failed to click MORE_OPTION_POST")
             return None
 
         # Step 2: Click SHOW_POPUP_GET_ID
@@ -784,7 +784,7 @@ class BasePage:
             print("Clicked SHOW_POPUP_GET_ID")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
+            print(f"Failed to click SHOW_POPUP_GET_ID")
             return None
 
         # Step 3: Get post URL via INPUT_GET_ID
@@ -807,7 +807,7 @@ class BasePage:
                     return None
                 print(f"Fallback method - Extracted Post URL: {post_url}")
             except Exception as e2:
-                print(f"Fallback method also failed: {e2}")
+                print(f"Fallback method also failed")
                 return None
             
         # Step 4: Navigate to post page
@@ -823,7 +823,9 @@ class BasePage:
 
         # Step 5: Scrape content
         try:
-            try:
+            self.wait_for_element_present(self.CONTENT_POST)
+            
+            if self.is_element_present_by_xpath(self.EXPAND_CONTENT):
                 expand_button = WebDriverWait(self.driver, 3).until(
                     EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
                 )
@@ -831,7 +833,7 @@ class BasePage:
                 expand_button.click()
                 time.sleep(1)  # Wait for content to expand
                 print("Clicked 'Xem thêm' button")
-            except:
+            else:
                 print("No 'Xem thêm' button found or already expanded")
                 
             # Scrape post content
