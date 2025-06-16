@@ -151,7 +151,7 @@ class BasePage:
     ALL_COMMENT = "//div[contains(@class, 'html-div')]//span[text()='Tất cả bình luận']"
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
-    EXPAND_CONTENT = "(//div[@role='button'][normalize-space()='Xem thêm'])[4]"
+    EXPAND_CONTENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]//div[@role='button' and text()='Xem thêm']"
     
     POST_SHARE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div/div/div/div[2]"
     
@@ -772,7 +772,7 @@ class BasePage:
             print("Clicked MORE_OPTION_POST")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click MORE_OPTION_POST")
+            print(f"Failed to click MORE_OPTION_POST: {e}")
             return None
 
         # Step 2: Click SHOW_POPUP_GET_ID
@@ -784,7 +784,7 @@ class BasePage:
             print("Clicked SHOW_POPUP_GET_ID")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click SHOW_POPUP_GET_ID")
+            print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
             return None
 
         # Step 3: Get post URL via INPUT_GET_ID
@@ -807,7 +807,7 @@ class BasePage:
                     return None
                 print(f"Fallback method - Extracted Post URL: {post_url}")
             except Exception as e2:
-                print(f"Fallback method also failed")
+                print(f"Fallback method also failed: {e2}")
                 return None
             
         # Step 4: Navigate to post page
@@ -823,7 +823,7 @@ class BasePage:
 
         # Step 5: Scrape content
         try:
-            self.wait_for_element_present(self.CONTENT_POST)
+            self.wait_for_element_present(self.CONTENT_POST, timeout=10)
             
             if self.is_element_present_by_xpath(self.EXPAND_CONTENT):
                 expand_button = WebDriverWait(self.driver, 3).until(
