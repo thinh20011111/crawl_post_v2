@@ -539,6 +539,7 @@ class BasePage:
         post_data = []  # Danh sách để lưu dữ liệu của các bài post hợp lệ
         current_post_index = index_start  # Bắt đầu từ index_start
         skip_count = 0  # Biến đếm số bài bỏ qua
+        success = False  # Theo dõi trạng thái đăng bài thành công
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
         output_file = "data/post.json" if page else "data/post_user.json"
@@ -694,6 +695,7 @@ class BasePage:
                 try:
                     self.create_post(post["content"] if post["content"] is not None else post["messages"], post["images"])
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
+                    success = True  # Đặt success thành True khi đăng bài thành công
 
                     # Cập nhật số lượng post thành công
                     success_count += 1
@@ -737,6 +739,7 @@ class BasePage:
                 except Exception as post_err:
                     print(f"Lỗi khi đăng bài {post['post_index']}: {post_err}")
                     self.clear_comment_file()
+                    continue
 
         except Exception as login_err:
             print(f"Lỗi khi đăng nhập hoặc truy cập trang đăng bài: {login_err}")
@@ -744,6 +747,8 @@ class BasePage:
         finally:
             self.logout()
             print("Đã đăng xuất khỏi tài khoản.")
+
+        return success  # Trả về True nếu có ít nhất một bài đăng thành công, False nếu không
 
     def extract_facebook_post_info(self, input_xpath):
         element = self.driver.find_element(By.XPATH, input_xpath)
