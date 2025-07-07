@@ -59,7 +59,7 @@ class BasePage:
     LOGIN_EMAIL_INPUT = "//input[@id='email' and @type='text']"
     LOGIN_PWD_INPUT = "//input[@id='password' and @type='password']"
     LOGIN_SUBMIT_BTN = "//button[@id='demo-customized-button' and ./div[text()='Đăng nhập']]"
-    PROFILE_ACCOUNT_ICON = "//div[@id='root']/div/div/div/div/header/div/div/div[3]/div/div[2]/div[2]/i"
+    PROFILE_ACCOUNT_ICON = "/html/body/div/div/div[1]/div/header/div/div/div[3]/div/div[2]/div[2]/i"
     INPUT_POST = "//textarea[@name='textInputCreatePost']"
     INPUT_MEDIA = "//input[@type='file' and @accept='image/jpeg,image/png,/.glb,video/mp4,video/avi,video/quicktime,video/Ogg,video/wmv,video/mov' and @multiple and @autocomplete='off']"
     CREATE_POST_BUTTON = "//button[@id='demo-customized-button']//div[text()='Đăng']"
@@ -139,8 +139,8 @@ class BasePage:
     
     COMMENT_POST =     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div/span/div"
     COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div[2]/div[1]/div[1]/div/div/div/span/div/div"
-    GOTO_DETAIL_POST = "/html/body/div/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
-    GOTO_DETAIL_POST_USER = "/html/body/div/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
+    GOTO_DETAIL_POST = "/html/body/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
+    GOTO_DETAIL_POST_USER = "/html/body/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
     
     
     DETAIL_POST_FB = "//div[@aria-posinset='{index}']//div[13]/div/div/div[2]/div/div[2]/div/div[2]/span/div/span[1]/span/span/a[1]"
