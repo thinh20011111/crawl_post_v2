@@ -138,7 +138,7 @@ class BasePage:
     INPUT_GET_ID = "(//input[contains(@placeholder, 'Mã nhúng sẽ xuất hiện')])[1]"
     
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
-    COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div/div[2]/div[3]/div[{index}]/div/div[1]/div[2]/div[1]/div[1]/div/div/div/span/div/div"
+    COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div[2]/div[1]/div[1]/div/div/div"
     GOTO_DETAIL_POST = "/html/body/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     GOTO_DETAIL_POST_USER = "/html/body/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
     
@@ -862,6 +862,7 @@ class BasePage:
             comments_data = []
             while True:
                 try:
+                    # Try with COMMENT_POST first
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                     comment_element = WebDriverWait(self.driver, 3).until(
                         EC.presence_of_element_located((By.XPATH, comment_xpath))
@@ -875,7 +876,23 @@ class BasePage:
                         comments_data.append(cleaned_comment)
                     comment_index += 1
                 except:
-                    break
+                    # If COMMENT_POST fails, try with COMMENT_POST_2
+                    try:
+                        comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
+                        comment_element = WebDriverWait(self.driver, 3).until(
+                            EC.presence_of_element_located((By.XPATH, comment_xpath))
+                        )
+                        comment_html = comment_element.get_attribute("innerHTML")
+                        soup = BeautifulSoup(comment_html, "html.parser")
+                        for img in soup.find_all("img"):
+                            img.replace_with(img.get("alt", ""))
+                        cleaned_comment = soup.get_text(" ", strip=True)
+                        if cleaned_comment:
+                            comments_data.append(cleaned_comment)
+                        comment_index += 1
+                    except:
+                        # If both fail, break the loop
+                        break
 
             # Save comments
             try:

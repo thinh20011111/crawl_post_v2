@@ -2140,5 +2140,27 @@
                 "page_1_img_1.jpg"
             ]
         }
+    ],
+    "https://www.facebook.com/otruongduong": [
+        {
+            "post_index": 6,
+            "messages": "Hiện nay có một số thành phần đi lừa đảo bằng cách kêu gọi Tặng sản phẩm nước giặt đồ cho bà con dùng thửSau đó sử dụng chiêu trò , đánh vào lòng tin và lòng tham của...Xem thêm",
+            "images": [
+                "page_6_img_0.jpg"
+            ]
+        }
+    ],
+    "https://www.facebook.com/inhthiha.786287": [
+        {
+            "post_index": 1,
+            "messages": "Măng Đen mùa hoa Anh Đào nở🥰Nam Dinh",
+            "images": [
+                "page_1_img_0.jpg",
+                "page_1_img_1.jpg",
+                "page_1_img_2.jpg",
+                "page_1_img_3.jpg",
+                "page_1_img_4.jpg"
+            ]
+        }
     ]
 }
