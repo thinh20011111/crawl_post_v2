@@ -153,7 +153,7 @@ class BasePage:
     COMMENT_XPATH_TEMPLATE = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
     EXPAND_CONTENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]//div[@role='button' and text()='Xem thêm']"
     
-    POST_SHARE = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div/div/div/div[2]"
+    POST_SHARE = "//div[@aria-posinset='{index}']//div[13]/div/div/div[3]/div/div/div/div[2]/div/div[2]/div[2]/span"
     
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
