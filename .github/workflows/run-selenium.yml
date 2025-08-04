@@ -1,16 +1,16 @@
 name: Run Crawl Post Script
 on:
   schedule:
-    - cron: "*/15 * * * *" # Chạy mỗi 30 phút
-  workflow_dispatch: # Cho phép chạy thủ công
+    - cron: "*/30 * * * *" # Run every 30 minutes
+  workflow_dispatch: # Allow manual trigger
 jobs:
   run-crawl:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -21,10 +21,16 @@ jobs:
           sudo apt-get install -y google-chrome-stable
       - name: Install ChromeDriver
         run: |
+          # Get Chrome major version
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          wget -N https://chromedriver.storage.googleapis.com/$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          chmod +x chromedriver
-          sudo mv chromedriver /usr/local/bin/
+          echo "Chrome version: $CHROME_VERSION"
+          # Fetch the latest ChromeDriver version for this Chrome version
+          DRIVER_VERSION=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION})
+          echo "ChromeDriver version: $DRIVER_VERSION"
+          # Download ChromeDriver from the new Chrome for Testing URL
+          wget -N https://storage.googleapis.com/chrome-for-testing-public/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          chmod +x chromedriver-linux64/chromedriver
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
       - name: Run crawl script
         run: python crawl_post_user.py
