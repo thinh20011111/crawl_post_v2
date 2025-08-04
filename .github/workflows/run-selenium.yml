@@ -1,0 +1,30 @@
+name: Run Crawl Post Script
+on:
+  schedule:
+    - cron: "*/15 * * * *" # Chạy mỗi 30 phút
+  workflow_dispatch: # Cho phép chạy thủ công
+jobs:
+  run-crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install selenium
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          wget -N https://chromedriver.storage.googleapis.com/$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          chmod +x chromedriver
+          sudo mv chromedriver /usr/local/bin/
+      - name: Run crawl script
+        run: python crawl_post_user.py
