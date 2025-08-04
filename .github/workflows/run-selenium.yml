@@ -13,12 +13,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Install dependencies
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable libjpeg-dev zlib1g-dev ffmpeg
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium pillow
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          pip install selenium pillow pandas requests beautifulsoup4 yt-dlp send2trash unidecode
       - name: Install ChromeDriver
         run: |
           # Get Chrome major version
