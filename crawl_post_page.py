@@ -42,9 +42,13 @@ def main():
 
         driver.get(config.FACEBOOK_URL)
         base_page.login_facebook(email_facebook, password_facebook)
-        time.sleep(40)
         print("Đăng nhập thành công vào Facebook.")
-
+        driver.back()  # Quay lại trang trước đó
+        base_page.login_facebook(email_facebook, password_facebook)
+        print("Đăng nhập lại thành công vào Facebook.")
+        time.sleep(10)  # Đợi một chút để đảm bảo đăng nhập hoàn tất
+        
+        
         # Vòng lặp vô tận
         while True:
             # Đọc dữ liệu tài khoản từ account.json
