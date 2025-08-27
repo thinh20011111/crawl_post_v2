@@ -47,21 +47,34 @@ def main():
         base_page.login_facebook(email_facebook, password_facebook)
         print("Đăng nhập lại thành công vào Facebook.")
         time.sleep(10)  # Đợi một chút để đảm bảo đăng nhập hoàn tất
-        
-        
+
         # Vòng lặp vô tận
         while True:
             # Đọc dữ liệu tài khoản từ account.json
             with open(accounts_filename, 'r') as file:
                 accounts_data = json.load(file)
 
-            # Xáo trộn danh sách tài khoản
-            account_items = list(accounts_data.items())
-            random.shuffle(account_items)  # Ngẫu nhiên thứ tự, không trùng lặp
+            # Tách danh sách tài khoản thành hai nhóm
+            priority_accounts = []
+            non_priority_accounts = []
 
-            print("Bắt đầu chu kỳ crawl mới với danh sách tài khoản đã xáo trộn.")
+            for account_key, account_data in accounts_data.items():
+                group_url = account_data.get("url2", "").lower()
+                if "beat" in group_url or "tin" in group_url:
+                    priority_accounts.append((account_key, account_data))
+                else:
+                    non_priority_accounts.append((account_key, account_data))
 
-            # Lặp qua danh sách tài khoản đã được shuffle
+            # Xáo trộn từng nhóm
+            random.shuffle(priority_accounts)
+            random.shuffle(non_priority_accounts)
+
+            # Gộp danh sách ưu tiên trước, không ưu tiên sau
+            account_items = priority_accounts + non_priority_accounts
+
+            print("Bắt đầu chu kỳ crawl mới với danh sách tài khoản đã xáo trộn (ưu tiên 'beat' và 'tin').")
+
+            # Lặp qua danh sách tài khoản đã được sắp xếp
             for account_key, account_data in account_items:
                 try:
                     print(f"\nĐang xử lý tài khoản: {account_key}")
