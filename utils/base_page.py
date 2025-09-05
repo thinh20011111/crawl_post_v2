@@ -773,6 +773,7 @@ class BasePage:
 
         # Step 1: Click MORE_OPTION_POST
         try:
+            self.wait_for_element_present(self.MORE_OPTION_POST.replace("{index}", str(post_index)), timeout=10)
             more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
             self.click_element(more_btn_xpath)
             print("Clicked MORE_OPTION_POST")
