@@ -910,6 +910,7 @@ class BasePage:
 
             while len(comments_data) < max_comments and max_attempts > 0:
                 try:
+                    # --- COMMENT_POST ---
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                     comment_element = WebDriverWait(self.driver, 3).until(
                         EC.presence_of_element_located((By.XPATH, comment_xpath))
@@ -921,13 +922,34 @@ class BasePage:
                     for img in soup.find_all("img"):
                         img.replace_with(img.get("alt", ""))
                     cleaned_comment = soup.get_text(" ", strip=True)
+
+                    # ✅ Nếu comment == "Tác giả" → lấy từ COMMENT_LINK
+                    if cleaned_comment.strip() == "Tác giả":
+                        try:
+                            comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
+                            comment_link_element = WebDriverWait(self.driver, 3).until(
+                                EC.presence_of_element_located((By.XPATH, comment_link_xpath))
+                            )
+                            link_html = comment_link_element.get_attribute("innerHTML")
+                            soup = BeautifulSoup(link_html, "html.parser")
+                            for img in soup.find_all("img"):
+                                img.replace_with(img.get("alt", ""))
+                            fallback_text = soup.get_text(" ", strip=True)
+                            if fallback_text:
+                                cleaned_comment = fallback_text
+                                print(f"Replaced 'Tác giả' at comment {comment_index} with COMMENT_LINK")
+                        except Exception as e:
+                            print(f"Failed to replace 'Tác giả' at comment {comment_index}: {e}")
+
                     if cleaned_comment:
                         comments_data.append(cleaned_comment)
                         consecutive_failures = 0
                     comment_index += 1
                     max_attempts -= 1
+
                 except:
                     try:
+                        # --- COMMENT_POST_2 ---
                         comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
                         comment_element = WebDriverWait(self.driver, 3).until(
                             EC.presence_of_element_located((By.XPATH, comment_xpath))
@@ -939,11 +961,31 @@ class BasePage:
                         for img in soup.find_all("img"):
                             img.replace_with(img.get("alt", ""))
                         cleaned_comment = soup.get_text(" ", strip=True)
+
+                        # ✅ Nếu comment == "Tác giả" → lấy từ COMMENT_LINK
+                        if cleaned_comment.strip() == "Tác giả":
+                            try:
+                                comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
+                                comment_link_element = WebDriverWait(self.driver, 3).until(
+                                    EC.presence_of_element_located((By.XPATH, comment_link_xpath))
+                                )
+                                link_html = comment_link_element.get_attribute("innerHTML")
+                                soup = BeautifulSoup(link_html, "html.parser")
+                                for img in soup.find_all("img"):
+                                    img.replace_with(img.get("alt", ""))
+                                fallback_text = soup.get_text(" ", strip=True)
+                                if fallback_text:
+                                    cleaned_comment = fallback_text
+                                    print(f"Replaced 'Tác giả' at comment {comment_index} with COMMENT_LINK")
+                            except Exception as e:
+                                print(f"Failed to replace 'Tác giả' at comment {comment_index}: {e}")
+
                         if cleaned_comment:
                             comments_data.append(cleaned_comment)
                             consecutive_failures = 0
                         comment_index += 1
                         max_attempts -= 1
+
                     except:
                         print(f"Failed to crawl comment at index {comment_index}, trying next index...")
                         consecutive_failures += 1
@@ -974,6 +1016,7 @@ class BasePage:
             return None
 
         return content_text
+
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
