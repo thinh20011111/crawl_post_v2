@@ -774,7 +774,6 @@ class BasePage:
 
         # Step 1: Click MORE_OPTION_POST
         try:
-            self.wait_for_element_present(self.MORE_OPTION_POST.replace("{index}", str(post_index)), timeout=10)
             more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
             self.click_element(more_btn_xpath)
             print("Clicked MORE_OPTION_POST")
@@ -795,7 +794,7 @@ class BasePage:
             print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
             return None
 
-        # Step 3: Get post URL
+        # Step 3: Get post URL via INPUT_GET_ID
         try:
             detail_post_xpath = self.DETAIL_POST_FB.replace("{index}", str(post_index))
             detail_post_element = WebDriverWait(self.driver, 5).until(
@@ -817,7 +816,7 @@ class BasePage:
             except Exception as e2:
                 print(f"Fallback method also failed: {e2}")
                 return None
-
+            
         # Step 4: Navigate to post page
         try:
             self.driver.get(post_url)
@@ -829,7 +828,7 @@ class BasePage:
             print(f"Failed to navigate to post URL: {e}")
             return None
 
-        # Step 5: Click Filter Comment and All Comment
+        # Step 5: Click Filter Comment and All Comment buttons
         try:
             filter_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.FILTER_COMMENT))
@@ -849,10 +848,10 @@ class BasePage:
         except Exception as e:
             print(f"Failed to click filter/all comments buttons: {e}")
 
-        # Step 6: Scrape content
+        # Step 6: Scrape content + comments
         try:
             self.wait_for_element_present(self.CONTENT_POST, timeout=10)
-
+            
             if self.is_element_present_by_xpath(self.EXPAND_CONTENT):
                 expand_button = WebDriverWait(self.driver, 3).until(
                     EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
@@ -863,7 +862,7 @@ class BasePage:
                 print("Clicked 'Xem thêm' button")
             else:
                 print("No 'Xem thêm' button found or already expanded")
-
+                
             # Scrape post content
             content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
             content_parts = []
@@ -880,26 +879,6 @@ class BasePage:
             content_text = "\n".join(content_parts)
             print(f"Scraped post content: {content_text[:100]}...")
 
-            # ✅ Nếu content_text == "Tác giả" thì thay thế bằng COMMENT_LINK
-            if content_text.strip() == "Tác giả":
-                try:
-                    comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(post_index))
-                    comment_link_element = WebDriverWait(self.driver, 5).until(
-                        EC.presence_of_element_located((By.XPATH, comment_link_xpath))
-                    )
-                    self.driver.execute_script("arguments[0].scrollIntoView();", comment_link_element)
-                    time.sleep(1)
-                    link_html = comment_link_element.get_attribute("innerHTML")
-                    soup = BeautifulSoup(link_html, "html.parser")
-                    for img in soup.find_all("img"):
-                        img.replace_with(img.get("alt", ""))
-                    fallback_text = soup.get_text(" ", strip=True)
-                    if fallback_text:
-                        content_text = fallback_text
-                        print(f"Replaced 'Tác giả' with COMMENT_LINK content: {content_text[:100]}...")
-                except Exception as e:
-                    print(f"Failed to get COMMENT_LINK content: {e}")
-
             # Step 7: Scrape comments
             comment_index = 1
             comments_data = []
@@ -910,7 +889,7 @@ class BasePage:
 
             while len(comments_data) < max_comments and max_attempts > 0:
                 try:
-                    # --- COMMENT_POST ---
+                    # COMMENT_POST
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                     comment_element = WebDriverWait(self.driver, 3).until(
                         EC.presence_of_element_located((By.XPATH, comment_xpath))
@@ -923,13 +902,11 @@ class BasePage:
                         img.replace_with(img.get("alt", ""))
                     cleaned_comment = soup.get_text(" ", strip=True)
 
-                    # ✅ Nếu comment == "Tác giả" → lấy từ COMMENT_LINK
+                    # ✅ Nếu là "Tác giả" thì thay thế bằng COMMENT_LINK
                     if cleaned_comment.strip() == "Tác giả":
                         try:
                             comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
-                            comment_link_element = WebDriverWait(self.driver, 3).until(
-                                EC.presence_of_element_located((By.XPATH, comment_link_xpath))
-                            )
+                            comment_link_element = self.driver.find_element(By.XPATH, comment_link_xpath)
                             link_html = comment_link_element.get_attribute("innerHTML")
                             soup = BeautifulSoup(link_html, "html.parser")
                             for img in soup.find_all("img"):
@@ -948,8 +925,8 @@ class BasePage:
                     max_attempts -= 1
 
                 except:
+                    # COMMENT_POST_2 fallback
                     try:
-                        # --- COMMENT_POST_2 ---
                         comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
                         comment_element = WebDriverWait(self.driver, 3).until(
                             EC.presence_of_element_located((By.XPATH, comment_xpath))
@@ -962,13 +939,11 @@ class BasePage:
                             img.replace_with(img.get("alt", ""))
                         cleaned_comment = soup.get_text(" ", strip=True)
 
-                        # ✅ Nếu comment == "Tác giả" → lấy từ COMMENT_LINK
+                        # ✅ Replace "Tác giả" here too
                         if cleaned_comment.strip() == "Tác giả":
                             try:
                                 comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
-                                comment_link_element = WebDriverWait(self.driver, 3).until(
-                                    EC.presence_of_element_located((By.XPATH, comment_link_xpath))
-                                )
+                                comment_link_element = self.driver.find_element(By.XPATH, comment_link_xpath)
                                 link_html = comment_link_element.get_attribute("innerHTML")
                                 soup = BeautifulSoup(link_html, "html.parser")
                                 for img in soup.find_all("img"):
@@ -985,7 +960,6 @@ class BasePage:
                             consecutive_failures = 0
                         comment_index += 1
                         max_attempts -= 1
-
                     except:
                         print(f"Failed to crawl comment at index {comment_index}, trying next index...")
                         consecutive_failures += 1
@@ -996,6 +970,7 @@ class BasePage:
                             break
                         continue
 
+            # Kiểm soát số lượng comment
             if len(comments_data) < min_comments:
                 print(f"Only {len(comments_data)} comments available, taking all.")
             else:
@@ -1010,13 +985,11 @@ class BasePage:
                 print(f"Saved {len(comments_data)} comments to {output_file}")
             except Exception as e:
                 print(f"Error saving comments: {e}")
-
         except Exception as e:
             print(f"Error scraping content/comments: {e}")
             return None
 
         return content_text
-
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
