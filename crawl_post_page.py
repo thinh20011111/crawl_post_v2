@@ -54,13 +54,16 @@ def main():
             with open(accounts_filename, 'r') as file:
                 accounts_data = json.load(file)
 
-            # Tách danh sách tài khoản thành hai nhóm
+            # Danh sách từ khóa ưu tiên
+            priority_keywords = ["beat", "24h", "tin", "hong", "quan"]
+
             priority_accounts = []
             non_priority_accounts = []
 
+            # Phân loại account theo từ khóa
             for account_key, account_data in accounts_data.items():
                 group_url = account_data.get("url2", "").lower()
-                if "beat" in group_url or "tin" in group_url:
+                if any(keyword in group_url for keyword in priority_keywords):
                     priority_accounts.append((account_key, account_data))
                 else:
                     non_priority_accounts.append((account_key, account_data))
@@ -69,20 +72,24 @@ def main():
             random.shuffle(priority_accounts)
             random.shuffle(non_priority_accounts)
 
-            # Gộp danh sách ưu tiên trước, không ưu tiên sau
+            # Gộp danh sách: ưu tiên trước, sau đó là không ưu tiên
             account_items = priority_accounts + non_priority_accounts
 
-            print("Bắt đầu chu kỳ crawl mới với danh sách tài khoản đã xáo trộn (ưu tiên 'beat' và 'tin').")
+            print(f"\n===== Bắt đầu chu kỳ crawl mới với {len(account_items)} tài khoản =====")
 
-            # Lặp qua danh sách tài khoản đã được sắp xếp
+            # Lặp qua toàn bộ account
             for account_key, account_data in account_items:
                 try:
-                    print(f"\nĐang xử lý tài khoản: {account_key}")
+                    print(f"\n[ACCOUNT] Đang xử lý: {account_key} - {account_data.get('url2')}")
 
-                    group_url = account_data["url2"]
-                    emso_username = account_data["username"]
-                    emso_password = account_data["password"]
-                    post_url = account_data["url1"]
+                    group_url = account_data.get("url2", "")
+                    emso_username = account_data.get("username")
+                    emso_password = account_data.get("password")
+                    post_url = account_data.get("url1")
+
+                    if not group_url or not emso_username or not emso_password or not post_url:
+                        print(f"[SKIP] Bỏ qua account {account_key} vì thiếu dữ liệu.")
+                        continue
 
                     num_posts = 1
                     success = base_page.scroll_to_element_and_crawl(
@@ -95,17 +102,20 @@ def main():
                     )
 
                     if success:
-                        print(f"Hoàn tất xử lý tài khoản: {account_key}")
+                        print(f"[DONE] Hoàn tất xử lý tài khoản: {account_key}")
                         base_page.clear_media_folder()
-                        print(f"Đăng bài thành công, chờ 500 giây trước khi xử lý tài khoản tiếp theo.")
-                        time.sleep(800)
+                        print(f"⏳ Nghỉ 300 giây trước khi xử lý account tiếp theo.")
+                        time.sleep(300)
                     else:
-                        print(f"Không có bài đăng thành công, tiếp tục với tài khoản tiếp theo.")
+                        print(f"[FAIL] Không crawl được bài đăng cho {account_key}, chuyển tiếp account khác.")
+
                 except Exception as e:
-                    print(f"Đã gặp lỗi khi xử lý tài khoản {account_key}: {e}")
+                    import traceback
+                    print(f"[ERROR] Lỗi khi xử lý tài khoản {account_key}: {e}")
+                    traceback.print_exc()
                     continue
 
-            print("Đã hoàn tất xử lý tất cả các tài khoản trong chu kỳ này. Bắt đầu chu kỳ mới.")
+            print("===== Đã hoàn tất xử lý tất cả account. Bắt đầu vòng lặp mới =====")
 
     except Exception as e:
         print(f"Lỗi nghiêm trọng trong quá trình chạy: {e}")
