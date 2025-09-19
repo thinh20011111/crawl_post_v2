@@ -61,7 +61,7 @@ def main():
             driver.get(config.FACEBOOK_URL)
             base_page.login_facebook(email_facebook, password_facebook)
             print("Đăng nhập thành công vào Facebook.")
-            time.sleep(5)  # Đợi đăng nhập hoàn tất
+            time.sleep(30)  # Đợi đăng nhập hoàn tất
         except Exception as e:
             print(f"Lỗi khi đăng nhập Facebook: {str(e)}")
             return

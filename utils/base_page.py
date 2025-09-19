@@ -155,7 +155,9 @@ class BasePage:
     EXPAND_CONTENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]//div[@role='button' and text()='Xem thêm']"
     
     POST_SHARE = "//div[@aria-posinset='{index}']//div[13]/div/div/div[3]/div/div/div/div[2]/div/div[2]/div[2]/span"
-    
+    BTN_XEMTHEM = "//div[@aria-posinset='{index}']//div[@role='button' and normalize-space(text())='Xem thêm']"
+
+
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
     
@@ -772,11 +774,20 @@ class BasePage:
         output_file = "data/comment.txt"
         content_text = ""
 
-        # Step 1: Click MORE_OPTION_POST
+        # Step 1: Click MORE_OPTION_POST và nút xem thêm nếu có
         try:
             more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
+            xemthem_btc_xpath = self.BTN_XEMTHEM.replace("{index}", str(post_index))
+
+            # Click nút More trước
             self.click_element(more_btn_xpath)
-            print("Clicked MORE_OPTION_POST")
+
+            # Kiểm tra xem 'Xem thêm' có tồn tại không
+            if self.is_element_present_by_xpath(xemthem_btc_xpath):
+                self.click_element(xemthem_btc_xpath)
+            else:
+                print(f"'Xem thêm' không tồn tại tại index {post_index}")
+
             time.sleep(2)
         except Exception as e:
             print(f"Failed to click MORE_OPTION_POST: {e}")
