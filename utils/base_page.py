@@ -54,7 +54,6 @@ class BasePage:
     INPUT_PASSWORD = "//input[@id='pass']"    
     LOGIN_BUTTON = "//button[text()='Log in']"
     CONTAIN_MEDIA = "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[2]"
-    TITLE_POST = "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div"
     MEDIA_DIR = "media"  # Thư mục lưu ảnh
     LOGIN_EMAIL_INPUT = "//input[@id='email' and @type='text']"
     LOGIN_PWD_INPUT = "//input[@id='password' and @type='password']"
@@ -69,7 +68,8 @@ class BasePage:
     VIEW_DETAIL = "//a[text()='Xem bài viết']"
     CLOSE_DETAIL = "/html/body/div[1]/div/div/div[1]/div/div[2]/div[1]/a"
     MEDIA_IN_DETAIL = "/html/body/div[1]/div/div/div[1]/div/div[6]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]"
-    TITLE_POST = "(//div[contains(@data-ad-comet-preview, 'message')])[{index}]"
+    TITLE_POST = "//div[@aria-posinset='{index}']//div[@data-ad-preview='message']"
+    
     POST = "//div[@aria-posinset='{index}']"
     MORE_OPTION = "(//div[@aria-haspopup='menu' and contains(@class, 'x1i10hfl') and contains(@aria-label, 'Hành động với bài viết này')])[{index}]"
     SKIP_BANNER = "//div[contains(text(), 'Tiếp tục')]"
@@ -140,6 +140,7 @@ class BasePage:
     COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
     COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div[2]/div[1]/div[1]/div/div/div"
     COMMENT_LINK = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div[2]"
+
     GOTO_DETAIL_POST = "/html/body/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
     GOTO_DETAIL_POST_USER = "/html/body/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
     
@@ -665,8 +666,18 @@ class BasePage:
 
             except Exception as e:
                 print(f"Lỗi khi xử lý phần tử tại index {current_post_index}: {e}")
+                
+                # Thử scroll để load thêm nội dung
+                try:
+                    self.driver.execute_script("window.scrollBy(0, 1000);")  # scroll xuống 500px
+                    time.sleep(2)  # chờ load thêm nội dung
+                except Exception as scroll_err:
+                    print(f"Lỗi khi scroll: {scroll_err}")
+
+                # Sau khi scroll mà vẫn lỗi thì bỏ qua index này
                 current_post_index += 1
                 skip_count += 1
+
                 if skip_count >= 20:
                     print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
                     break
@@ -774,26 +785,16 @@ class BasePage:
         output_file = "data/comment.txt"
         content_text = ""
 
-        # Step 1: Click MORE_OPTION_POST và nút xem thêm nếu có
+        # Step 1: Click MORE_OPTION_POST
         try:
             more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
-            xemthem_btc_xpath = self.BTN_XEMTHEM.replace("{index}", str(post_index))
-
-            # Click nút More trước
             self.click_element(more_btn_xpath)
-
-            # Kiểm tra xem 'Xem thêm' có tồn tại không
-            if self.is_element_present_by_xpath(xemthem_btc_xpath):
-                self.click_element(xemthem_btc_xpath)
-            else:
-                print(f"'Xem thêm' không tồn tại tại index {post_index}")
-
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click MORE_OPTION_POST: {e}")
+            print(f"Failed to click MORE_OPTION_POST")
             return None
 
-        # Step 2: Click SHOW_POPUP_GET_ID
+        # Step 2: Click SHOW_POPUP_GET_ID (hoặc fallback BTN_XEMTHEM + TITLE_POST)
         try:
             get_id_btn = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.SHOW_POPUP_GET_ID))
@@ -802,8 +803,33 @@ class BasePage:
             print("Clicked SHOW_POPUP_GET_ID")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
-            return None
+            print(f"Failed to click SHOW_POPUP_GET_ID")
+            try:
+                # Fallback: click nút Xem thêm
+                xemthem_btc_xpath = self.BTN_XEMTHEM.replace("{index}", str(post_index))
+                self.click_element(xemthem_btc_xpath)
+                print(f"Clicked BTN_XEMTHEM at index {post_index}")
+                time.sleep(2)
+
+                # Lấy content từ TITLE_POST
+                title_xpath = self.TITLE_POST.replace("{index}", str(post_index))
+                title_element = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, title_xpath))
+                )
+                raw_html = title_element.get_attribute("innerHTML")
+                soup = BeautifulSoup(raw_html, "html.parser")
+
+                # Thay ảnh bằng alt text
+                for img in soup.find_all("img"):
+                    img.replace_with(img.get("alt", ""))
+
+                content_text = soup.get_text(" ", strip=True)
+                print(f"Fallback content_text extracted: {content_text[:100]}...")
+
+                return content_text  # ❌ Dừng tại đây, vì không có post_url để đi tiếp
+            except Exception as e2:
+                print(f"Fallback BTN_XEMTHEM + TITLE_POST failed")
+                return None
 
         # Step 3: Get post URL via INPUT_GET_ID
         try:
@@ -816,7 +842,7 @@ class BasePage:
             post_url = self.driver.current_url
             print(f"Primary method - Extracted Post URL from DETAIL_POST_FB: {post_url}")
         except Exception as e1:
-            print(f"Primary method failed: {e1}")
+            print(f"Primary method failed")
             print("Trying fallback method using INPUT_GET_ID...")
             try:
                 post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
@@ -825,10 +851,10 @@ class BasePage:
                     return None
                 print(f"Fallback method - Extracted Post URL: {post_url}")
             except Exception as e2:
-                print(f"Fallback method also failed: {e2}")
+                print(f"Fallback method also failed")
                 return None
-            
-        # Step 4: Navigate to post page
+
+        # Step 4+: Giữ nguyên logic cũ (navigate, scrape comment, save file)
         try:
             self.driver.get(post_url)
             print(f"Navigated to post page: {post_url}")
@@ -836,7 +862,7 @@ class BasePage:
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to navigate to post URL: {e}")
+            print(f"Failed to navigate to post URL")
             return None
 
         # Step 5: Click Filter Comment and All Comment buttons
@@ -857,7 +883,7 @@ class BasePage:
             print("Clicked ALL_COMMENT button")
             time.sleep(2)
         except Exception as e:
-            print(f"Failed to click filter/all comments buttons: {e}")
+            print(f"Failed to click filter/all comments buttons")
 
         # Step 6: Scrape content + comments
         try:
@@ -1001,6 +1027,7 @@ class BasePage:
             return None
 
         return content_text
+
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
