@@ -544,6 +544,7 @@ class BasePage:
         current_post_index = index_start  # Bắt đầu từ index_start
         skip_count = 0  # Biến đếm số bài bỏ qua
         success = False  # Theo dõi trạng thái đăng bài thành công
+        self.driver.execute_script("window.scrollBy(0, 800);")
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
         output_file = "data/post.json" if page else "data/post_user.json"

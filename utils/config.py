@@ -6,3 +6,4 @@ class Config:
     FACEBOOK_URL = "https://www.facebook.com/"
     EMSO_URL = "https://emso.vn/"
     ADMIN_URL = "https://cmc-admin.emso.vn/"
+    POST_DELAY = 600  # thời gian nghỉ giữa các lần xử lý account (giây)

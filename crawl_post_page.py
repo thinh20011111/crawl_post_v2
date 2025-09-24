@@ -4,15 +4,44 @@ from selenium.webdriver.chrome.service import Service
 from utils.config import Config
 from selenium.webdriver.chrome.options import Options
 import time
-import os
 import json
 import random
+
+
+def run_account(base_page, account_key, account_data):
+    """Xử lý crawl 1 account."""
+    group_url = account_data.get("url2", "")
+    emso_username = account_data.get("username")
+    emso_password = account_data.get("password")
+    post_url = account_data.get("url1")
+
+    if not group_url or not emso_username or not emso_password or not post_url:
+        print(f"[SKIP] Bỏ qua account {account_key} vì thiếu dữ liệu.")
+        return False
+
+    success = base_page.scroll_to_element_and_crawl(
+        username=emso_username,
+        password=emso_password,
+        nums_post=1,
+        crawl_page=group_url,
+        post_page=post_url,
+        page=True
+    )
+
+    if success:
+        print(f"[DONE] Hoàn tất xử lý tài khoản: {account_key}")
+        base_page.clear_media_folder()
+        return True
+    else:
+        print(f"[FAIL] Không crawl được bài đăng cho {account_key}")
+        return False
+
 
 def main():
     # Load cấu hình
     config = Config()
 
-    # Khởi tạo Service với đường dẫn ChromeDriver
+    # Khởi tạo Chrome
     service = Service(config.CHROME_DRIVER_PATH)
     chrome_options = Options()
     chrome_options.add_argument("--incognito")
@@ -22,107 +51,102 @@ def main():
     chrome_options.add_argument("--window-size=1920x1080")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    # Mở trang web
     base_page = BasePage(driver)
     accounts_filename = "data/account.json"
-    output_file = "data/facebook_posts.json"
     data_filename = "data/data.json"
 
-    # Đọc dữ liệu tài khoản từ data.json
-    with open(data_filename, 'r') as data_file:
+    # Đọc thông tin login Facebook
+    with open(data_filename, "r") as data_file:
         data = json.load(data_file)
 
     driver.maximize_window()
 
     try:
-        # Đăng nhập vào Facebook một lần
+        # Đăng nhập Facebook
         facebook_account = data.get("account_facebook", {})
-        email_facebook = facebook_account["email"]
-        password_facebook = facebook_account["password"]
+        email_facebook = facebook_account.get("email")
+        password_facebook = facebook_account.get("password")
 
         driver.get(config.FACEBOOK_URL)
         base_page.login_facebook(email_facebook, password_facebook)
-        print("✅ Đăng nhập thành công vào Facebook.")
-        time.sleep(60)  # Đợi một chút để đảm bảo đăng nhập hoàn tất
-        print("🔄 Tiếp tục chạy sau khi đăng nhập Facebook.")
+        time.sleep(15)
+        driver.back()
+        base_page.login_facebook(email_facebook, password_facebook)
 
-        # Vòng lặp vô tận
+        print("✅ Đăng nhập thành công vào Facebook.")
+        print("🔄 Bắt đầu chạy chương trình...")
+
+        # Biến quản lý vòng lặp thường
+        normal_index = 0
+        normal_count = 0
+
         while True:
-            # Đọc dữ liệu tài khoản từ account.json
-            with open(accounts_filename, 'r') as file:
+            # Đọc dữ liệu account
+            with open(accounts_filename, "r") as file:
                 accounts_data = json.load(file)
 
-            # Danh sách từ khóa ưu tiên
+            # Tách ưu tiên và thường
             priority_keywords = ["beat", "24h", "tintuc", "hong", "tin", "office"]
+            priority_accounts, normal_accounts = [], []
 
-            priority_accounts = []
-            non_priority_accounts = []
-
-            # Phân loại account theo từ khóa
             for account_key, account_data in accounts_data.items():
                 group_url = account_data.get("url2", "").lower()
                 if any(keyword in group_url for keyword in priority_keywords):
                     priority_accounts.append((account_key, account_data))
                 else:
-                    non_priority_accounts.append((account_key, account_data))
+                    normal_accounts.append((account_key, account_data))
 
-            # Xáo trộn từng nhóm
-            random.shuffle(priority_accounts)
-            random.shuffle(non_priority_accounts)
+            print(f"\n🔑 Page ưu tiên: {len(priority_accounts)}")
+            print(f"📄 Page thường: {len(normal_accounts)}")
 
-            # In số lượng page
-            print(f"\n🔑 Số page ưu tiên: {len(priority_accounts)}")
-            print(f"📄 Số page còn lại: {len(non_priority_accounts)}")
+            # --- 1. Chạy 5 page ưu tiên ---
+            if priority_accounts:
+                selected_priority = random.sample(
+                    priority_accounts, min(5, len(priority_accounts))
+                )
+                print(f"\n=== Bắt đầu block ưu tiên ({len(selected_priority)} page) ===")
+                for account_key, account_data in selected_priority:
+                    try:
+                        print(f"[PRIORITY] Đang xử lý: {account_key} - {account_data.get('url2')}")
+                        success = run_account(base_page, account_key, account_data)
+                        if success:
+                            print(f"⏳ Nghỉ {config.POST_DELAY} giây...\n")
+                            time.sleep(config.POST_DELAY)
+                    except Exception as e:
+                        print(f"[ERROR] Lỗi ưu tiên {account_key}: {e}")
 
-            # Gộp danh sách: ưu tiên trước, sau đó là không ưu tiên
-            account_items = priority_accounts + non_priority_accounts
+            # --- 2. Chạy page thường (tối đa 20) ---
+            if normal_accounts:
+                print(f"\n=== Bắt đầu block thường (tối đa 20 page) ===")
+                while normal_count < 20:
+                    account_key, account_data = normal_accounts[normal_index]
 
-            print(f"\n===== Bắt đầu chu kỳ crawl mới với {len(account_items)} tài khoản =====")
+                    try:
+                        print(f"[NORMAL] Đang xử lý: {account_key} - {account_data.get('url2')}")
+                        success = run_account(base_page, account_key, account_data)
+                        if success:
+                            print(f"⏳ Nghỉ {config.POST_DELAY} giây...\n")
+                            time.sleep(config.POST_DELAY)
+                    except Exception as e:
+                        print(f"[ERROR] Lỗi thường {account_key}: {e}")
 
-            # Lặp qua toàn bộ account
-            for account_key, account_data in account_items:
-                try:
-                    print(f"\n[ACCOUNT] Đang xử lý: {account_key} - {account_data.get('url2')}")
+                    # Tăng index + count
+                    normal_index += 1
+                    normal_count += 1
 
-                    group_url = account_data.get("url2", "")
-                    emso_username = account_data.get("username")
-                    emso_password = account_data.get("password")
-                    post_url = account_data.get("url1")
+                    # Nếu hết list thường thì quay lại từ đầu
+                    if normal_index >= len(normal_accounts):
+                        print("🔄 Hết list thường, quay lại từ đầu.")
+                        normal_index = 0
 
-                    if not group_url or not emso_username or not emso_password or not post_url:
-                        print(f"[SKIP] Bỏ qua account {account_key} vì thiếu dữ liệu.")
-                        continue
-
-                    num_posts = 1
-                    success = base_page.scroll_to_element_and_crawl(
-                        username=emso_username,
-                        password=emso_password,
-                        nums_post=num_posts,
-                        crawl_page=group_url,
-                        post_page=post_url,
-                        page=True
-                    )
-
-                    if success:
-                        print(f"[DONE] Hoàn tất xử lý tài khoản: {account_key}")
-                        base_page.clear_media_folder()
-                        print("⏳ Nghỉ 300 giây trước khi xử lý account tiếp theo.")
-                        time.sleep(115)
-                    else:
-                        print(f"[FAIL] Không crawl được bài đăng cho {account_key}, chuyển tiếp account khác.")
-
-                except Exception as e:
-                    import traceback
-                    print(f"[ERROR] Lỗi khi xử lý tài khoản {account_key}: {e}")
-                    traceback.print_exc()
-                    continue
-
-            print("\n===== Đã hoàn tất xử lý tất cả account. Bắt đầu vòng lặp mới =====")
+                # Reset bộ đếm sau khi xong 20 thường
+                normal_count = 0
 
     except Exception as e:
-        print(f"❌ Lỗi nghiêm trọng trong quá trình chạy: {e}")
+        print(f"❌ Lỗi nghiêm trọng: {e}")
     finally:
         driver.quit()
+
 
 if __name__ == "__main__":
     main()
