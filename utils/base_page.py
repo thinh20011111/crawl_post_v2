@@ -111,7 +111,6 @@ class BasePage:
     VIDEO_TIKTOK = "//video"
     TITLE_VIDEO_TIKTOK = "(//h1[@data-e2e='video-desc'])[{index}]"
     SKIP_LOGIN = "/html/body/div[7]/div[3]/div/div/div/div[1]/div/div/div[3]/div/div[2]"
-    SHARE_BUTTON = "(//span[@data-e2e='share-icon'])[{index}]"
     INPUT_URL = "//input[@class='TUXTextInputCore-input']"
     CLOSE_POPUP_URL = "//button[@class='TUXUnstyledButton TUXNavBarIconButton' and @aria-label='close']"
     CLOSE_GUIDE = "//div[@class='css-mp9aqo-DivIconCloseContainer e1vz198y6']"
@@ -137,7 +136,7 @@ class BasePage:
     SHOW_POPUP_GET_ID = "(//div[@role='menuitem' and .//span[text()='Nhúng']])[1]"
     INPUT_GET_ID = "(//input[contains(@placeholder, 'Mã nhúng sẽ xuất hiện')])[1]"
     
-    COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
+    COMMENT_POST = "(//div[@role='dialog']//div[@class='x1lliihq xjkvuk6 x1iorvi4'])[{index}]"
     COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div[2]/div[1]/div[1]/div/div/div"
     COMMENT_LINK = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div[2]"
 
@@ -147,17 +146,18 @@ class BasePage:
     
     DETAIL_POST_FB = "//div[@aria-posinset='{index}']//div[13]/div/div/div[2]/div/div[2]/div/div[2]/span/div/span[1]/span/span/a[1]"
     
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]"
-    
-    FILTER_COMMENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[2]/div/div/span"
-    ALL_COMMENT = "//div[contains(@class, 'html-div')]//span[text()='Tất cả bình luận']"
+    CONTENT_POST = "//div[@role='dialog']//div[@data-ad-rendering-role='story_message']"
+    SHARE_BUTTON = "//div[@aria-posinset='{index}']//div[@role='button' and .//span[@data-ad-rendering-role='share_button' and text()='Chia sẻ']]"
+    COPY_URL_POST = "//span[normalize-space(text())='Sao chép liên kết']/ancestor::div[@role='button']"
+    COMMENT_BUTTON = "//div[@aria-posinset='{index}']//div[@aria-label='Viết bình luận' and @role='button'][1]"
+    FILTER_COMMENT = "//div[@role='button' and .//span[normalize-space(text())='Phù hợp nhất']]"
+    ALL_COMMENT = "//div[@role='menuitem' and .//span[normalize-space(text())='Tất cả bình luận']]"
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
     EXPAND_CONTENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]//div[@role='button' and text()='Xem thêm']"
     
     POST_SHARE = "//div[@aria-posinset='{index}']//div[13]/div/div/div[3]/div/div/div/div[2]/div/div[2]/div[2]/span"
     BTN_XEMTHEM = "//div[@aria-posinset='{index}']//div[@role='button' and normalize-space(text())='Xem thêm']"
-
 
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
@@ -569,11 +569,28 @@ class BasePage:
                     break
 
                 post_xpath = self.POST.replace("{index}", str(current_post_index))
-                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
-                post_element = self.driver.find_element(By.XPATH, post_xpath)
 
-                # Cuộn đến vị trí của phần tử chính
+                try:
+                    # Thử tìm phần tử tại index hiện tại
+                    WebDriverWait(self.driver, 5).until(
+                        EC.presence_of_element_located((By.XPATH, post_xpath))
+                    )
+                    post_element = self.driver.find_element(By.XPATH, post_xpath)
+
+                except Exception as e:
+                    print(f"Không tìm thấy post tại index {current_post_index}, scroll xuống và thử lại: {e}")
+                    # Scroll xuống rồi thử tìm lại
+                    self.driver.execute_script("window.scrollBy(0, 800);")
+                    time.sleep(2)
+                    WebDriverWait(self.driver, 5).until(
+                        EC.presence_of_element_located((By.XPATH, post_xpath))
+                    )
+                    post_element = self.driver.find_element(By.XPATH, post_xpath)
+
+                # Nếu đã lấy được element thì scroll tới nó
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
+
+                # Chờ post kế tiếp
                 self.wait_for_element_present(self.POST.replace("{index}", str(current_post_index + 1)))
 
                 # Kiểm tra nếu bài post là bài chia sẻ (POST_SHARE tồn tại)
@@ -785,138 +802,88 @@ class BasePage:
         output_file = "data/comment.txt"
         content_text = ""
 
-        # Step 1: Click MORE_OPTION_POST
         try:
-            more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
-            self.click_element(more_btn_xpath)
-            time.sleep(2)
-        except Exception as e:
-            print(f"Failed to click MORE_OPTION_POST")
-            return None
-
-        # Step 2: Click SHOW_POPUP_GET_ID (hoặc fallback BTN_XEMTHEM + TITLE_POST)
-        try:
-            get_id_btn = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, self.SHOW_POPUP_GET_ID))
+            # =====================
+            # Step 1: Click COMMENT_BUTTON để mở bài viết
+            # =====================
+            time_xpath = self.COMMENT_BUTTON.replace("{index}", str(post_index))
+            time_btn = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, time_xpath))
             )
-            get_id_btn.click()
-            print("Clicked SHOW_POPUP_GET_ID")
-            time.sleep(2)
-        except Exception as e:
-            print(f"Failed to click SHOW_POPUP_GET_ID")
-            try:
-                # Fallback: click nút Xem thêm
-                xemthem_btc_xpath = self.BTN_XEMTHEM.replace("{index}", str(post_index))
-                self.click_element(xemthem_btc_xpath)
-                print(f"Clicked BTN_XEMTHEM at index {post_index}")
-                time.sleep(2)
 
-                # Lấy content từ TITLE_POST
-                title_xpath = self.TITLE_POST.replace("{index}", str(post_index))
-                title_element = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.XPATH, title_xpath))
-                )
-                raw_html = title_element.get_attribute("innerHTML")
-                soup = BeautifulSoup(raw_html, "html.parser")
-
-                # Thay ảnh bằng alt text
-                for img in soup.find_all("img"):
-                    img.replace_with(img.get("alt", ""))
-
-                content_text = soup.get_text(" ", strip=True)
-                print(f"Fallback content_text extracted: {content_text[:100]}...")
-
-                return content_text  # ❌ Dừng tại đây, vì không có post_url để đi tiếp
-            except Exception as e2:
-                print(f"Fallback BTN_XEMTHEM + TITLE_POST failed")
-                return None
-
-        # Step 3: Get post URL via INPUT_GET_ID
-        try:
-            detail_post_xpath = self.DETAIL_POST_FB.replace("{index}", str(post_index))
-            detail_post_element = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, detail_post_xpath))
-            )
-            detail_post_element.click()
+            # Scroll và click bằng JS để tránh bị che
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", time_btn)
+            time.sleep(1)
+            self.driver.execute_script("arguments[0].click();", time_btn)
+            print(f"Clicked COMMENT_BUTTON at index {post_index}")
             time.sleep(3)
-            post_url = self.driver.current_url
-            print(f"Primary method - Extracted Post URL from DETAIL_POST_FB: {post_url}")
-        except Exception as e1:
-            print(f"Primary method failed")
-            print("Trying fallback method using INPUT_GET_ID...")
-            try:
-                post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
-                if not post_url:
-                    print("Fallback failed: Empty URL from INPUT_GET_ID")
-                    return None
-                print(f"Fallback method - Extracted Post URL: {post_url}")
-            except Exception as e2:
-                print(f"Fallback method also failed")
-                return None
 
-        # Step 4+: Giữ nguyên logic cũ (navigate, scrape comment, save file)
-        try:
-            self.driver.get(post_url)
-            print(f"Navigated to post page: {post_url}")
-            time.sleep(5)
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)
+
         except Exception as e:
-            print(f"Failed to navigate to post URL")
+            print(f"Failed to extract post URL via COMMENT_BUTTON: {e}")
             return None
 
-        # Step 5: Click Filter Comment and All Comment buttons
+        # =====================
+        # Step 4: Click Filter Comment và All Comment
+        # =====================
         try:
             filter_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.FILTER_COMMENT))
             )
-            self.driver.execute_script("arguments[0].scrollIntoView();", filter_button)
-            filter_button.click()
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", filter_button)
+            self.driver.execute_script("arguments[0].click();", filter_button)
             print("Clicked FILTER_COMMENT button")
             time.sleep(2)
 
             all_comments_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.ALL_COMMENT))
             )
-            self.driver.execute_script("arguments[0].scrollIntoView();", all_comments_button)
-            all_comments_button.click()
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", all_comments_button)
+            self.driver.execute_script("arguments[0].click();", all_comments_button)
             print("Clicked ALL_COMMENT button")
             time.sleep(2)
-        except Exception as e:
+        except Exception:
             print(f"Failed to click filter/all comments buttons")
 
-        # Step 6: Scrape content + comments
+        # =====================
+        # Step 5: Scrape post content + comments (giữ nguyên logic cũ)
+        # =====================
         try:
             self.wait_for_element_present(self.CONTENT_POST, timeout=10)
-            
+
+            # Expand nội dung nếu có nút "Xem thêm"
             if self.is_element_present_by_xpath(self.EXPAND_CONTENT):
-                expand_button = WebDriverWait(self.driver, 3).until(
-                    EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
-                )
-                self.driver.execute_script("arguments[0].scrollIntoView();", expand_button)
-                expand_button.click()
-                time.sleep(1)
-                print("Clicked 'Xem thêm' button")
+                try:
+                    expand_button = WebDriverWait(self.driver, 3).until(
+                        EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
+                    )
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expand_button)
+                    self.driver.execute_script("arguments[0].click();", expand_button)
+                    time.sleep(1)
+                    print("Clicked 'Xem thêm' button")
+                except:
+                    print("Expand content button not clickable")
             else:
                 print("No 'Xem thêm' button found or already expanded")
-                
-            # Scrape post content
+
+            # Scrape content text
             content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
             content_parts = []
             for element in content_elements:
-                self.driver.execute_script("arguments[0].scrollIntoView();", element)
+                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
                 time.sleep(1)
                 content_html = element.get_attribute("innerHTML")
                 soup = BeautifulSoup(content_html, "html.parser")
                 for img in soup.find_all("img"):
-                    img.replace_with(img.get("alt", ""))
+                    img.replace_with(img.get("alt", ""))  # thay ảnh bằng alt text
                 cleaned_text = soup.get_text(" ", strip=True)
                 if cleaned_text:
                     content_parts.append(cleaned_text)
-            content_text = "\n".join(content_parts)
+            if content_parts:
+                content_text = "\n".join(content_parts)
             print(f"Scraped post content: {content_text[:100]}...")
 
-            # Step 7: Scrape comments
+            # Scrape comments (giữ nguyên như cũ)
             comment_index = 1
             comments_data = []
             min_comments = 20
@@ -926,20 +893,19 @@ class BasePage:
 
             while len(comments_data) < max_comments and max_attempts > 0:
                 try:
-                    # COMMENT_POST
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                     comment_element = WebDriverWait(self.driver, 3).until(
                         EC.presence_of_element_located((By.XPATH, comment_xpath))
                     )
-                    self.driver.execute_script("arguments[0].scrollIntoView();", comment_element)
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", comment_element)
                     time.sleep(1)
                     comment_html = comment_element.get_attribute("innerHTML")
                     soup = BeautifulSoup(comment_html, "html.parser")
                     for img in soup.find_all("img"):
-                        img.replace_with(img.get("alt", ""))
+                        img.replace_with(img.get("alt", ""))  # thay ảnh bằng alt text
                     cleaned_comment = soup.get_text(" ", strip=True)
 
-                    # ✅ Nếu là "Tác giả" thì thay thế bằng COMMENT_LINK
+                    # Replace "Tác giả"
                     if cleaned_comment.strip() == "Tác giả":
                         try:
                             comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
@@ -947,7 +913,7 @@ class BasePage:
                             link_html = comment_link_element.get_attribute("innerHTML")
                             soup = BeautifulSoup(link_html, "html.parser")
                             for img in soup.find_all("img"):
-                                img.replace_with(img.get("alt", ""))
+                                img.replace_with(img.get("alt", "")) 
                             fallback_text = soup.get_text(" ", strip=True)
                             if fallback_text:
                                 cleaned_comment = fallback_text
@@ -962,21 +928,20 @@ class BasePage:
                     max_attempts -= 1
 
                 except:
-                    # COMMENT_POST_2 fallback
+                    # Fallback COMMENT_POST_2
                     try:
                         comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
                         comment_element = WebDriverWait(self.driver, 3).until(
                             EC.presence_of_element_located((By.XPATH, comment_xpath))
                         )
-                        self.driver.execute_script("arguments[0].scrollIntoView();", comment_element)
+                        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", comment_element)
                         time.sleep(1)
                         comment_html = comment_element.get_attribute("innerHTML")
                         soup = BeautifulSoup(comment_html, "html.parser")
                         for img in soup.find_all("img"):
-                            img.replace_with(img.get("alt", ""))
+                            img.replace_with(img.get("alt", "")) 
                         cleaned_comment = soup.get_text(" ", strip=True)
 
-                        # ✅ Replace "Tác giả" here too
                         if cleaned_comment.strip() == "Tác giả":
                             try:
                                 comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
@@ -984,7 +949,7 @@ class BasePage:
                                 link_html = comment_link_element.get_attribute("innerHTML")
                                 soup = BeautifulSoup(link_html, "html.parser")
                                 for img in soup.find_all("img"):
-                                    img.replace_with(img.get("alt", ""))
+                                    img.replace_with(img.get("alt", "")) 
                                 fallback_text = soup.get_text(" ", strip=True)
                                 if fallback_text:
                                     cleaned_comment = fallback_text
@@ -1007,7 +972,7 @@ class BasePage:
                             break
                         continue
 
-            # Kiểm soát số lượng comment
+            # Giới hạn số comment
             if len(comments_data) < min_comments:
                 print(f"Only {len(comments_data)} comments available, taking all.")
             else:
@@ -1022,11 +987,13 @@ class BasePage:
                 print(f"Saved {len(comments_data)} comments to {output_file}")
             except Exception as e:
                 print(f"Error saving comments: {e}")
+
         except Exception as e:
             print(f"Error scraping content/comments: {e}")
             return None
 
         return content_text
+
 
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
