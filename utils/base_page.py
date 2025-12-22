@@ -54,7 +54,6 @@ class BasePage:
     INPUT_PASSWORD = "//input[@id='pass']"    
     LOGIN_BUTTON = "//button[text()='Log in']"
     CONTAIN_MEDIA = "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[2]"
-    TITLE_POST = "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[{index}]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]/div/div"
     MEDIA_DIR = "media"  # Thư mục lưu ảnh
     LOGIN_EMAIL_INPUT = "//input[@id='email' and @type='text']"
     LOGIN_PWD_INPUT = "//input[@id='password' and @type='password']"
@@ -69,7 +68,8 @@ class BasePage:
     VIEW_DETAIL = "//a[text()='Xem bài viết']"
     CLOSE_DETAIL = "/html/body/div[1]/div/div/div[1]/div/div[2]/div[1]/a"
     MEDIA_IN_DETAIL = "/html/body/div[1]/div/div/div[1]/div/div[6]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]"
-    TITLE_POST = "(//div[contains(@data-ad-comet-preview, 'message')])[{index}]"
+    TITLE_POST = "//div[@aria-posinset='{index}']//div[@data-ad-preview='message']"
+    
     POST = "//div[@aria-posinset='{index}']"
     MORE_OPTION = "(//div[@aria-haspopup='menu' and contains(@class, 'x1i10hfl') and contains(@aria-label, 'Hành động với bài viết này')])[{index}]"
     SKIP_BANNER = "//div[contains(text(), 'Tiếp tục')]"
@@ -111,7 +111,6 @@ class BasePage:
     VIDEO_TIKTOK = "//video"
     TITLE_VIDEO_TIKTOK = "(//h1[@data-e2e='video-desc'])[{index}]"
     SKIP_LOGIN = "/html/body/div[7]/div[3]/div/div/div/div[1]/div/div/div[3]/div/div[2]"
-    SHARE_BUTTON = "(//span[@data-e2e='share-icon'])[{index}]"
     INPUT_URL = "//input[@class='TUXTextInputCore-input']"
     CLOSE_POPUP_URL = "//button[@class='TUXUnstyledButton TUXNavBarIconButton' and @aria-label='close']"
     CLOSE_GUIDE = "//div[@class='css-mp9aqo-DivIconCloseContainer e1vz198y6']"
@@ -137,24 +136,29 @@ class BasePage:
     SHOW_POPUP_GET_ID = "(//div[@role='menuitem' and .//span[text()='Nhúng']])[1]"
     INPUT_GET_ID = "(//input[contains(@placeholder, 'Mã nhúng sẽ xuất hiện')])[1]"
     
-    COMMENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div"
+    COMMENT_POST = "(//div[@role='dialog']//div[@class='x1lliihq xjkvuk6 x1iorvi4'])[{index}]"
     COMMENT_POST_2 = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div[2]/div[1]/div[1]/div/div/div"
-    GOTO_DETAIL_POST = "/html/body/div/div/main/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a[2]"
+    COMMENT_LINK = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[3]/div[{index}]/div/div/div/div[1]/div/div[2]/div[1]/div[1]/div/div/div[2]"
+
+    GOTO_DETAIL_POST = "//a[contains(@class, 'MuiTypography-root') and contains(@class, 'MuiLink-root') and contains(., 'Vài giây trước')]"
     GOTO_DETAIL_POST_USER = "/html/body/div/div/main/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/div[1]/li/div[2]/p/div/h6/a"
     
     
     DETAIL_POST_FB = "//div[@aria-posinset='{index}']//div[13]/div/div/div[2]/div/div[2]/div/div[2]/span/div/span[1]/span/span/a[1]"
     
-    CONTENT_POST = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]"
-    
-    FILTER_COMMENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[2]/div[2]/div/div/span"
-    ALL_COMMENT = "//div[contains(@class, 'html-div')]//span[text()='Tất cả bình luận']"
+    CONTENT_POST = "//div[@role='dialog']//div[@data-ad-rendering-role='story_message']"
+    SHARE_BUTTON = "//div[@aria-posinset='{index}']//div[@role='button' and .//span[@data-ad-rendering-role='share_button' and text()='Chia sẻ']]"
+    COPY_URL_POST = "//span[normalize-space(text())='Sao chép liên kết']/ancestor::div[@role='button']"
+    COMMENT_BUTTON = "//div[@aria-posinset='{index}']//div[@aria-label='Viết bình luận' and @role='button'][1]"
+    FILTER_COMMENT = "//div[@role='button' and .//span[normalize-space(text())='Phù hợp nhất']]"
+    ALL_COMMENT = "//div[@role='menuitem' and .//span[normalize-space(text())='Tất cả bình luận']]"
     OPEN_TAB_COMMENT = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div"
     COMMENT_XPATH_TEMPLATE = "(//span[@lang='vi-VN' and contains(@class, 'x193iq5w')])[{index}]"
     EXPAND_CONTENT = "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[3]/div[1]//div[@role='button' and text()='Xem thêm']"
     
     POST_SHARE = "//div[@aria-posinset='{index}']//div[13]/div/div/div[3]/div/div/div/div[2]/div/div[2]/div[2]/span"
-    
+    BTN_XEMTHEM = "//div[@aria-posinset='{index}']//div[@role='button' and normalize-space(text())='Xem thêm']"
+
     def find_element(self, locator_type, locator_value):
         return self.driver.find_element(locator_type, locator_value)
     
@@ -412,6 +416,8 @@ class BasePage:
         """
         Lấy ID của bài post từ URL hiện tại sau khi nhấp vào bài viết.
         """
+    
+
         if self.is_element_present_by_xpath(self.GOTO_DETAIL_POST):
             self.wait_for_element_present(self.GOTO_DETAIL_POST)
             self.click_element(self.GOTO_DETAIL_POST)
@@ -534,16 +540,23 @@ class BasePage:
             return None
         
     # ====================================================================================================
-    def scroll_to_element_and_crawl(self, username, password, nums_post, crawl_page, post_page, index_start=1, page=True):
+    def scroll_to_element_and_crawl(
+        self, username, password, nums_post, crawl_page, post_page, index_start=1, page=True
+    ):
         self.driver.get(crawl_page)
         post_data = []  # Danh sách để lưu dữ liệu của các bài post hợp lệ
         current_post_index = index_start  # Bắt đầu từ index_start
         skip_count = 0  # Biến đếm số bài bỏ qua
+        error_count = 0  # Biến đếm lỗi liên tiếp
         success = False  # Theo dõi trạng thái đăng bài thành công
+
+        self.driver.execute_script("window.scrollBy(0, 800);")
+        time.sleep(2)
 
         # Đọc dữ liệu cũ nếu có từ tệp JSON
         output_file = "data/post.json" if page else "data/post_user.json"
         existing_data = {}
+
         if os.path.exists(output_file):
             try:
                 with open(output_file, "r", encoding="utf-8") as json_file:
@@ -553,26 +566,58 @@ class BasePage:
 
         # Kiểm tra xem trang có bài post hay không
         if not self.is_element_present_by_xpath(self.POST.replace("{index}", '1')):
-            raise Exception(f"Page lỗi không lấy được post")
+            raise Exception("Page lỗi không lấy được post")
 
         # Dùng set để theo dõi các bài đã thu thập để tránh trùng lặp
-        collected_messages = set(post["messages"] for post in existing_data.get(crawl_page, []))
+        collected_messages = set(
+            post["messages"] for post in existing_data.get(crawl_page, [])
+        )
 
-        while True:  # Vòng lặp không xác định trước, dừng bằng điều kiện bên trong
+        while True:
             try:
-                if len(post_data) >= nums_post:  # Kiểm tra nếu đã thu thập đủ bài
+                # Kiểm tra nếu đã thu thập đủ bài
+                if len(post_data) >= nums_post:
                     print(f"Đã thu thập đủ {nums_post} bài hợp lệ. Dừng quá trình thu thập.")
                     break
 
                 post_xpath = self.POST.replace("{index}", str(current_post_index))
-                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, post_xpath)))
-                post_element = self.driver.find_element(By.XPATH, post_xpath)
 
-                # Cuộn đến vị trí của phần tử chính
+                try:
+                    WebDriverWait(self.driver, 5).until(
+                        EC.presence_of_element_located((By.XPATH, post_xpath))
+                    )
+                    post_element = self.driver.find_element(By.XPATH, post_xpath)
+                except Exception as e:
+                    print(f"Không tìm thấy post tại index {current_post_index}, thử scroll xuống: {e}")
+                    found = False
+                    retry_count = 0
+
+                    while not found and retry_count < 5:
+                        self.driver.execute_script("window.scrollBy(0, 800);")
+                        time.sleep(2)
+                        try:
+                            WebDriverWait(self.driver, 5).until(
+                                EC.presence_of_element_located((By.XPATH, post_xpath))
+                            )
+                            post_element = self.driver.find_element(By.XPATH, post_xpath)
+                            found = True
+                        except:
+                            retry_count += 1
+
+                    if not found:
+                        print(f"Post {current_post_index} vẫn không tìm thấy sau {retry_count} lần scroll, bỏ qua.")
+                        current_post_index += 1
+                        skip_count += 1
+                        if skip_count >= 20:
+                            print(f"Đã bỏ qua quá 20 bài, dừng quá trình tại page - {crawl_page}.")
+                            break
+                        continue
+
+                # Nếu đã lấy được element thì scroll tới nó
                 self.driver.execute_script("arguments[0].scrollIntoView();", post_element)
                 self.wait_for_element_present(self.POST.replace("{index}", str(current_post_index + 1)))
 
-                # Kiểm tra nếu bài post là bài chia sẻ (POST_SHARE tồn tại)
+                # Kiểm tra nếu là bài chia sẻ
                 share_xpath = self.POST_SHARE.replace("{index}", str(current_post_index))
                 if self.is_element_present_by_xpath(share_xpath):
                     print(f"Post {current_post_index} là bài chia sẻ, bỏ qua.")
@@ -584,7 +629,9 @@ class BasePage:
                     continue
 
                 # Kiểm tra tiêu đề
-                message_elements = post_element.find_elements(By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]")
+                message_elements = post_element.find_elements(
+                    By.XPATH, ".//div[contains(@data-ad-comet-preview, 'message')]"
+                )
                 if not message_elements or not message_elements[0].text.strip():
                     print(f"Post {current_post_index} không có title hợp lệ, bỏ qua.")
                     current_post_index += 1
@@ -595,7 +642,6 @@ class BasePage:
                     continue
 
                 messages = self.get_text_and_icon(post_element)
-
                 if not messages or messages in collected_messages:
                     print(f"Post {current_post_index} đã tồn tại hoặc không hợp lệ, bỏ qua.")
                     current_post_index += 1
@@ -626,6 +672,7 @@ class BasePage:
                 media_dir = "media"
                 os.makedirs(media_dir, exist_ok=True)
                 image_paths = []
+
                 for i, img_url in enumerate(image_urls):
                     try:
                         response = requests.get(img_url, stream=True)
@@ -648,20 +695,37 @@ class BasePage:
                         break
                     continue
 
-                # Thêm bài viết hợp lệ vào danh sách
-                content = self.crawl_comments(current_post_index)  # Crawl comments
+                # Crawl comments
+                content = self.crawl_comments(current_post_index)
                 print(f"======Đây là content======: {content}")
+
+                # Thêm bài viết hợp lệ vào danh sách
                 post_data.append({
                     "post_index": current_post_index,
                     "content": content,
                     "messages": messages,
                     "images": image_paths
                 })
-                collected_messages.add(messages)  # Thêm messages vào tập để tránh trùng
-                current_post_index += 1  # Chỉ tăng index sau khi xử lý thành công bài
+                collected_messages.add(messages)
+                current_post_index += 1
 
             except Exception as e:
                 print(f"Lỗi khi xử lý phần tử tại index {current_post_index}: {e}")
+                error_count += 1
+                if error_count > 10:
+                    print("Lỗi liên tiếp quá 10 lần. Reload lại trang và reset index về 1.")
+                    self.driver.get(crawl_page)
+                    time.sleep(3)
+                    current_post_index = 1
+                    error_count = 0
+                    continue
+
+                try:
+                    self.driver.execute_script("window.scrollBy(0, 1000);")
+                    time.sleep(2)
+                except Exception as scroll_err:
+                    print(f"Lỗi khi scroll: {scroll_err}")
+
                 current_post_index += 1
                 skip_count += 1
                 if skip_count >= 20:
@@ -670,17 +734,15 @@ class BasePage:
                 continue
 
         # Đăng bài tuần tự sau khi thu thập đủ
-        print(f"Bắt đầu đăng bài...")
-
+        print("Bắt đầu đăng bài...")
         success_count_file = "data/success_count.json"
         success_count = 0
 
-        # Đọc số lượng post thành công từ file nếu file tồn tại
         try:
             with open(success_count_file, "r", encoding="utf-8") as count_file:
                 data = json.load(count_file)
-                success_count = data.get("success_count", 0)  # Lấy giá trị success_count, mặc định là 0 nếu không có
-            print(f"Số lượng post thành công hiện tại: {success_count}")
+                success_count = data.get("success_count", 0)
+                print(f"Số lượng post thành công hiện tại: {success_count}")
         except FileNotFoundError:
             print("File success_count.json không tồn tại, khởi tạo với giá trị 0.")
         except Exception as e:
@@ -693,22 +755,19 @@ class BasePage:
 
             for post in post_data:
                 try:
-                    self.create_post(post["content"] if post["content"] is not None else post["messages"], post["images"])
+                    self.create_post(
+                        post["content"] if post["content"] is not None else post["messages"],
+                        post["images"]
+                    )
                     print(f"Đã đăng bài thành công cho post {post['post_index']}")
-                    success = True  # Đặt success thành True khi đăng bài thành công
+                    success = True
 
-                    # Cập nhật số lượng post thành công
                     success_count += 1
+                    with open(success_count_file, "w", encoding="utf-8") as count_file:
+                        json.dump({"success_count": success_count}, count_file, ensure_ascii=False, indent=4)
+                    print(f"Cập nhật số lượng post thành công: {success_count}")
 
-                    # Lưu số lượng post thành công vào file
-                    try:
-                        with open(success_count_file, "w", encoding="utf-8") as count_file:
-                            json.dump({"success_count": success_count}, count_file, ensure_ascii=False, indent=4)
-                        print(f"Cập nhật số lượng post thành công: {success_count}")
-                    except Exception as count_err:
-                        print(f"Lỗi khi lưu số lượng post thành công: {count_err}")
-
-                    # Lưu dữ liệu bài đăng thành công vào file JSON với 'messages' thay vì 'content'
+                    # Lưu dữ liệu bài đăng thành công
                     if crawl_page in existing_data:
                         existing_data[crawl_page].append({
                             "post_index": post["post_index"],
@@ -722,17 +781,22 @@ class BasePage:
                             "images": post["images"]
                         }]
 
-                    try:
-                        with open(output_file, "w", encoding="utf-8") as json_file:
-                            json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
-                        print(f"Dữ liệu đã được lưu vào {output_file} cho post {post['post_index']}")
-                    except Exception as json_err:
-                        print(f"Lỗi khi lưu dữ liệu vào tệp JSON: {json_err}")
+                    with open(output_file, "w", encoding="utf-8") as json_file:
+                        json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
+                    print(f"Dữ liệu đã được lưu vào {output_file} cho post {post['post_index']}")
 
                     self.driver.refresh()
-
-                    # Đăng comment
                     time.sleep(5)
+
+                    half_height = self.driver.execute_script("return window.innerHeight / 2;")
+
+                    # Cuộn xuống nửa màn hình
+                    self.driver.execute_script(f"window.scrollBy(0, {half_height});")
+
+                    time.sleep(5)
+
+                    self.wait_for_element_present(self.GOTO_DETAIL_POST)
+
                     id_post = self.get_id_post()
                     self.post_comments(status_id=id_post)
                     self.clear_comment_file()
@@ -749,7 +813,9 @@ class BasePage:
             self.logout()
             print("Đã đăng xuất khỏi tài khoản.")
 
-        return success  # Trả về True nếu có ít nhất một bài đăng thành công, False nếu không
+        return success
+
+
 
     def extract_facebook_post_info(self, input_xpath):
         element = self.driver.find_element(By.XPATH, input_xpath)
@@ -771,180 +837,181 @@ class BasePage:
         output_file = "data/comment.txt"
         content_text = ""
 
-        # Step 1: Click MORE_OPTION_POST
         try:
-            more_btn_xpath = self.MORE_OPTION_POST.replace("{index}", str(post_index))
-            self.click_element(more_btn_xpath)
-            print("Clicked MORE_OPTION_POST")
-            time.sleep(2)
-        except Exception as e:
-            print(f"Failed to click MORE_OPTION_POST: {e}")
-            return None
-
-        # Step 2: Click SHOW_POPUP_GET_ID
-        try:
-            get_id_btn = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, self.SHOW_POPUP_GET_ID))
+            # =====================
+            # Step 1: Click COMMENT_BUTTON để mở bài viết
+            # =====================
+            time_xpath = self.COMMENT_BUTTON.replace("{index}", str(post_index))
+            time_btn = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, time_xpath))
             )
-            get_id_btn.click()
-            print("Clicked SHOW_POPUP_GET_ID")
-            time.sleep(2)
-        except Exception as e:
-            print(f"Failed to click SHOW_POPUP_GET_ID: {e}")
-            return None
 
-        # Step 3: Get post URL via INPUT_GET_ID
-        try:
-            detail_post_xpath = self.DETAIL_POST_FB.replace("{index}", str(post_index))
-            detail_post_element = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, detail_post_xpath))
-            )
-            detail_post_element.click()
+            # Scroll và click bằng JS để tránh bị che
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", time_btn)
+            time.sleep(1)
+            self.driver.execute_script("arguments[0].click();", time_btn)
+            print(f"Clicked COMMENT_BUTTON at index {post_index}")
             time.sleep(3)
-            post_url = self.driver.current_url
-            print(f"Primary method - Extracted Post URL from DETAIL_POST_FB: {post_url}")
-        except Exception as e1:
-            print(f"Primary method failed: {e1}")
-            print("Trying fallback method using INPUT_GET_ID...")
-            try:
-                post_url = self.extract_facebook_post_info(self.INPUT_GET_ID)
-                if not post_url:
-                    print("Fallback failed: Empty URL from INPUT_GET_ID")
-                    return None
-                print(f"Fallback method - Extracted Post URL: {post_url}")
-            except Exception as e2:
-                print(f"Fallback method also failed: {e2}")
-                return None
-            
-        # Step 4: Navigate to post page
-        try:
-            self.driver.get(post_url)
-            print(f"Navigated to post page: {post_url}")
-            time.sleep(5)
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)
-        except Exception as e:
-            print(f"Failed to navigate to post URL: {e}")
-            return None
 
-        # Step 5: Click Filter Comment and All Comment buttons
+
+        except Exception as e:
+            print(f"Failed to extract post URL via COMMENT_BUTTON: {e}")
+            
+
+        # =====================
+        # Step 4: Click Filter Comment và All Comment
+        # =====================
         try:
-            # Scroll to and click FILTER_COMMENT
             filter_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.FILTER_COMMENT))
             )
-            self.driver.execute_script("arguments[0].scrollIntoView();", filter_button)
-            filter_button.click()
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", filter_button)
+            self.driver.execute_script("arguments[0].click();", filter_button)
             print("Clicked FILTER_COMMENT button")
             time.sleep(2)
 
-            # Click ALL_COMMENT
             all_comments_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, self.ALL_COMMENT))
             )
-            self.driver.execute_script("arguments[0].scrollIntoView();", all_comments_button)
-            all_comments_button.click()
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", all_comments_button)
+            self.driver.execute_script("arguments[0].click();", all_comments_button)
             print("Clicked ALL_COMMENT button")
             time.sleep(2)
-        except Exception as e:
-            print(f"Failed to click filter/all comments buttons: {e}")
+        except Exception:
+            print(f"Failed to click filter/all comments buttons")
 
-        # Step 6: Scrape content
+        # =====================
+        # Step 5: Scrape post content + comments (giữ nguyên logic cũ)
+        # =====================
         try:
             self.wait_for_element_present(self.CONTENT_POST, timeout=10)
-            
+
+            # Expand nội dung nếu có nút "Xem thêm"
             if self.is_element_present_by_xpath(self.EXPAND_CONTENT):
-                expand_button = WebDriverWait(self.driver, 3).until(
-                    EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
-                )
-                self.driver.execute_script("arguments[0].scrollIntoView();", expand_button)
-                expand_button.click()
-                time.sleep(1)  # Wait for content to expand
-                print("Clicked 'Xem thêm' button")
+                try:
+                    expand_button = WebDriverWait(self.driver, 3).until(
+                        EC.element_to_be_clickable((By.XPATH, self.EXPAND_CONTENT))
+                    )
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expand_button)
+                    self.driver.execute_script("arguments[0].click();", expand_button)
+                    time.sleep(1)
+                    print("Clicked 'Xem thêm' button")
+                except:
+                    print("Expand content button not clickable")
             else:
                 print("No 'Xem thêm' button found or already expanded")
-                
-            # Scrape post content
+
+            # Scrape content text
             content_elements = self.driver.find_elements(By.XPATH, self.CONTENT_POST)
             content_parts = []
             for element in content_elements:
-                self.driver.execute_script("arguments[0].scrollIntoView();", element)
+                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
                 time.sleep(1)
                 content_html = element.get_attribute("innerHTML")
                 soup = BeautifulSoup(content_html, "html.parser")
                 for img in soup.find_all("img"):
-                    img.replace_with(img.get("alt", ""))
+                    img.replace_with(img.get("alt", ""))  # thay ảnh bằng alt text
                 cleaned_text = soup.get_text(" ", strip=True)
                 if cleaned_text:
                     content_parts.append(cleaned_text)
-            content_text = "\n".join(content_parts)
+            if content_parts:
+                content_text = "\n".join(content_parts)
             print(f"Scraped post content: {content_text[:100]}...")
 
-            # Step 7: Scrape comments
+            # Scrape comments (giữ nguyên như cũ)
             comment_index = 1
             comments_data = []
             min_comments = 20
             max_comments = 30
-            max_attempts = 100  # Giới hạn số lần thử để tránh vòng lặp vô hạn
-            consecutive_failures = 0  # Đếm số lần thất bại liên tiếp
+            max_attempts = 100
+            consecutive_failures = 0
 
             while len(comments_data) < max_comments and max_attempts > 0:
                 try:
-                    # Thử với COMMENT_POST trước
                     comment_xpath = self.COMMENT_POST.replace("{index}", str(comment_index))
                     comment_element = WebDriverWait(self.driver, 3).until(
                         EC.presence_of_element_located((By.XPATH, comment_xpath))
                     )
-                    # Cuộn đến comment trước khi lấy nội dung
-                    self.driver.execute_script("arguments[0].scrollIntoView();", comment_element)
-                    time.sleep(1)  # Chờ comment hiển thị
+                    self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", comment_element)
+                    time.sleep(1)
                     comment_html = comment_element.get_attribute("innerHTML")
                     soup = BeautifulSoup(comment_html, "html.parser")
                     for img in soup.find_all("img"):
-                        img.replace_with(img.get("alt", ""))
+                        img.replace_with(img.get("alt", ""))  # thay ảnh bằng alt text
                     cleaned_comment = soup.get_text(" ", strip=True)
+
+                    # Replace "Tác giả"
+                    if cleaned_comment.strip() == "Tác giả":
+                        try:
+                            comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
+                            comment_link_element = self.driver.find_element(By.XPATH, comment_link_xpath)
+                            link_html = comment_link_element.get_attribute("innerHTML")
+                            soup = BeautifulSoup(link_html, "html.parser")
+                            for img in soup.find_all("img"):
+                                img.replace_with(img.get("alt", "")) 
+                            fallback_text = soup.get_text(" ", strip=True)
+                            if fallback_text:
+                                cleaned_comment = fallback_text
+                                print(f"Replaced 'Tác giả' at comment {comment_index} with COMMENT_LINK")
+                        except Exception as e:
+                            print(f"Failed to replace 'Tác giả' at comment {comment_index}: {e}")
+
                     if cleaned_comment:
                         comments_data.append(cleaned_comment)
-                        consecutive_failures = 0  # Đặt lại số lần thất bại khi crawl thành công
+                        consecutive_failures = 0
                     comment_index += 1
                     max_attempts -= 1
+
                 except:
-                    # Nếu COMMENT_POST thất bại, thử với COMMENT_POST_2
+                    # Fallback COMMENT_POST_2
                     try:
                         comment_xpath = self.COMMENT_POST_2.replace("{index}", str(comment_index))
                         comment_element = WebDriverWait(self.driver, 3).until(
                             EC.presence_of_element_located((By.XPATH, comment_xpath))
                         )
-                        # Cuộn đến comment trước khi lấy nội dung
-                        self.driver.execute_script("arguments[0].scrollIntoView();", comment_element)
-                        time.sleep(1)  # Chờ comment hiển thị
+                        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", comment_element)
+                        time.sleep(1)
                         comment_html = comment_element.get_attribute("innerHTML")
                         soup = BeautifulSoup(comment_html, "html.parser")
                         for img in soup.find_all("img"):
-                            img.replace_with(img.get("alt", ""))
+                            img.replace_with(img.get("alt", "")) 
                         cleaned_comment = soup.get_text(" ", strip=True)
+
+                        if cleaned_comment.strip() == "Tác giả":
+                            try:
+                                comment_link_xpath = self.COMMENT_LINK.replace("{index}", str(comment_index))
+                                comment_link_element = self.driver.find_element(By.XPATH, comment_link_xpath)
+                                link_html = comment_link_element.get_attribute("innerHTML")
+                                soup = BeautifulSoup(link_html, "html.parser")
+                                for img in soup.find_all("img"):
+                                    img.replace_with(img.get("alt", "")) 
+                                fallback_text = soup.get_text(" ", strip=True)
+                                if fallback_text:
+                                    cleaned_comment = fallback_text
+                                    print(f"Replaced 'Tác giả' at comment {comment_index} with COMMENT_LINK")
+                            except Exception as e:
+                                print(f"Failed to replace 'Tác giả' at comment {comment_index}: {e}")
+
                         if cleaned_comment:
                             comments_data.append(cleaned_comment)
-                            consecutive_failures = 0  # Đặt lại số lần thất bại khi crawl thành công
+                            consecutive_failures = 0
                         comment_index += 1
                         max_attempts -= 1
                     except:
-                        # Nếu cả hai đều thất bại, tăng số lần thất bại và thử index tiếp theo
                         print(f"Failed to crawl comment at index {comment_index}, trying next index...")
                         consecutive_failures += 1
                         comment_index += 1
                         max_attempts -= 1
-                        # Nếu thất bại quá 3 lần liên tiếp, dừng crawl comment
-                        if consecutive_failures > 3:
+                        if consecutive_failures > 5:
                             print(f"Stopped crawling comments after {consecutive_failures} consecutive failures.")
                             break
                         continue
 
-            # Kiểm soát số lượng comment
+            # Giới hạn số comment
             if len(comments_data) < min_comments:
                 print(f"Only {len(comments_data)} comments available, taking all.")
             else:
-                comments_data = comments_data[:max_comments]  # Giới hạn tối đa 30 comment
+                comments_data = comments_data[:max_comments]
                 print(f"Limited to {len(comments_data)} comments (between 20-30).")
 
             # Save comments
@@ -955,11 +1022,14 @@ class BasePage:
                 print(f"Saved {len(comments_data)} comments to {output_file}")
             except Exception as e:
                 print(f"Error saving comments: {e}")
+
         except Exception as e:
             print(f"Error scraping content/comments: {e}")
             return None
 
         return content_text
+
+
 
     def clear_comment_file(self, comment_file="data/comment.txt"):
         """
@@ -2026,6 +2096,7 @@ class BasePage:
                     file.write(comment + "\n")
             print(f"✅ Đã lưu {len(comments)} bình luận vào {filename}")
         except Exception as e:
+            self.wait_for_element_present(self.GOTO_DETAIL_POST)
             print(f"⚠ Lỗi lưu bình luận: {e}")
 
 

@@ -69,15 +69,15 @@ ví dụ:
 }
 
 
-3, crawl moment - tiktok: python crawl_titkok.py
-sau khi chrome được mở cần đăng nhập nhanh vào tiktok 
-- dữ liệu được lưu vào file: tiktok.json
-- Các tài khoản dùng đề đăng trong file "account_create_moment.json"
-
 
 4, crawl watch: python crawl_watch.py
 điều kiện: sử dụng file account.json tương tự như crawl post
 - dữ liệu được lưu vào file: watch.json
+
+
+5,py sort_account_json.py
+dùng để sắp xếp lại file account.json - chuẩn hóa lại số thứ tự account
+
 
 
 
